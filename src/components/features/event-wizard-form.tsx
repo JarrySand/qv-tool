@@ -49,7 +49,9 @@ type EventFormData = {
   startDate: string;
   endDate: string;
   creditsPerVoter: number;
-  votingMode: "individual" | "google" | "line";
+  votingMode: "individual" | "google" | "line" | "discord";
+  discordGuildId: string;
+  discordGuildName: string;
 };
 
 type CreatedEvent = {
@@ -90,6 +92,8 @@ export function EventWizardForm() {
     endDate: defaultEndDate,
     creditsPerVoter: 100,
     votingMode: "individual",
+    discordGuildId: "",
+    discordGuildName: "",
   });
 
   // 投票候補
@@ -175,6 +179,8 @@ export function EventWizardForm() {
         endDate: new Date(formData.endDate),
         creditsPerVoter: formData.creditsPerVoter,
         votingMode: formData.votingMode,
+        discordGuildId: formData.votingMode === "discord" ? formData.discordGuildId || undefined : undefined,
+        discordGuildName: formData.votingMode === "discord" ? formData.discordGuildName || undefined : undefined,
         subjects,
       });
 
