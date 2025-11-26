@@ -173,7 +173,7 @@ export default async function EventPage({ params, searchParams }: PageProps) {
           </CardHeader>
           <CardContent>
             <div className="grid gap-4">
-              {event.subjects.map((subject) => (
+              {event.subjects.map((subject: { id: string; title: string; description: string | null; imageUrl: string | null; url: string | null }) => (
                 <div
                   key={subject.id}
                   className="flex gap-4 rounded-lg border bg-card p-4 transition-colors hover:bg-accent/5"
