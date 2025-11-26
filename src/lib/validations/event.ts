@@ -25,7 +25,7 @@ export const createEventSchema = z.object({
     .max(1000, "クレジット数は1000以下で入力してください")
     .default(100),
   votingMode: z.enum(["individual", "google", "line"], {
-    errorMap: () => ({ message: "認証方式を選択してください" }),
+    error: "認証方式を選択してください",
   }),
 });
 
