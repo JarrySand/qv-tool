@@ -224,6 +224,7 @@ export function EventWizardForm() {
     individual: t("authModes.individual.title"),
     google: t("authModes.google.title"),
     line: t("authModes.line.title"),
+    discord: t("authModes.discord.title"),
   };
 
   // ステップインジケーター
