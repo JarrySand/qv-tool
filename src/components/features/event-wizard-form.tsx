@@ -107,6 +107,9 @@ export function EventWizardForm() {
   // 作成されたイベント
   const [createdEvent, setCreatedEvent] = useState<CreatedEvent | null>(null);
 
+  // Discord ゲート設定
+  const [enableGuildGate, setEnableGuildGate] = useState(false);
+
   // トークン生成用
   const [tokenCount, setTokenCount] = useState(10);
   const [generatedTokens, setGeneratedTokens] = useState<string[]>([]);
@@ -179,8 +182,8 @@ export function EventWizardForm() {
         endDate: new Date(formData.endDate),
         creditsPerVoter: formData.creditsPerVoter,
         votingMode: formData.votingMode,
-        discordGuildId: formData.votingMode === "discord" ? formData.discordGuildId || undefined : undefined,
-        discordGuildName: formData.votingMode === "discord" ? formData.discordGuildName || undefined : undefined,
+        discordGuildId: formData.votingMode === "discord" && enableGuildGate ? formData.discordGuildId || undefined : undefined,
+        discordGuildName: formData.votingMode === "discord" && enableGuildGate ? formData.discordGuildName || undefined : undefined,
         subjects,
       });
 
@@ -272,7 +275,7 @@ export function EventWizardForm() {
   );
 
   // Step 1: 基本情報
-  const Step1 = () => (
+  const step1Content = (
     <div className="space-y-6">
       {generalError && (
         <div className="rounded-md border border-destructive/50 bg-destructive/10 p-4 text-sm text-destructive">
@@ -409,14 +412,80 @@ export function EventWizardForm() {
                 </span>
               </div>
             </SelectItem>
+            <SelectItem value="discord">
+              <div className="flex flex-col items-start">
+                <span className="font-medium">{t("authModes.discord.title")}</span>
+                <span className="text-xs text-muted-foreground">
+                  {t("authModes.discord.description")}
+                </span>
+              </div>
+            </SelectItem>
           </SelectContent>
         </Select>
       </div>
+
+      {/* Discord サーバーゲート設定 */}
+      {formData.votingMode === "discord" && (
+        <div className="space-y-4 rounded-lg border border-border bg-muted/30 p-4">
+          <div className="flex items-center gap-3">
+            <input
+              type="checkbox"
+              id="enableGuildGate"
+              checked={enableGuildGate}
+              onChange={(e) => setEnableGuildGate(e.target.checked)}
+              className="size-4 rounded border-input"
+            />
+            <Label htmlFor="enableGuildGate" className="cursor-pointer">
+              {t("discordGate.enableLabel")}
+            </Label>
+          </div>
+          
+          {enableGuildGate && (
+            <div className="space-y-4 pl-7">
+              <div className="space-y-2">
+                <Label htmlFor="discordGuildId">
+                  {t("discordGate.guildIdLabel")} <span className="text-destructive">*</span>
+                </Label>
+                <Input
+                  id="discordGuildId"
+                  value={formData.discordGuildId}
+                  onChange={(e) => updateFormData("discordGuildId", e.target.value)}
+                  placeholder={t("discordGate.guildIdPlaceholder")}
+                />
+                <p className="text-xs text-muted-foreground">
+                  {t("discordGate.guildIdHint")}
+                </p>
+                {errors.discordGuildId && (
+                  <p className="text-sm text-destructive">
+                    {errors.discordGuildId[0]}
+                  </p>
+                )}
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="discordGuildName">
+                  {t("discordGate.guildNameLabel")}（{tCommon("optional")}）
+                </Label>
+                <Input
+                  id="discordGuildName"
+                  value={formData.discordGuildName}
+                  onChange={(e) => updateFormData("discordGuildName", e.target.value)}
+                  placeholder={t("discordGate.guildNamePlaceholder")}
+                  maxLength={100}
+                />
+                <p className="text-xs text-muted-foreground">
+                  {t("discordGate.guildNameHint")}
+                </p>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 
   // Step 2: 投票候補
-  const Step2 = () => (
+  const step2Content = (
     <div className="space-y-6">
       {generalError && (
         <div className="rounded-md border border-destructive/50 bg-destructive/10 p-4 text-sm text-destructive">
@@ -513,7 +582,7 @@ export function EventWizardForm() {
   );
 
   // Step 3: 確認
-  const Step3 = () => (
+  const step3Content = (
     <div className="space-y-6">
       {generalError && (
         <div className="rounded-md border border-destructive/50 bg-destructive/10 p-4 text-sm text-destructive">
@@ -766,9 +835,9 @@ export function EventWizardForm() {
       <CardContent>
         <StepIndicator />
 
-        {currentStep === 1 && <Step1 />}
-        {currentStep === 2 && <Step2 />}
-        {currentStep === 3 && <Step3 />}
+        {currentStep === 1 && step1Content}
+        {currentStep === 2 && step2Content}
+        {currentStep === 3 && step3Content}
         {currentStep === 4 && <Step4 />}
       </CardContent>
 
