@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -159,11 +160,13 @@ export function SubjectList({ subjects: initialSubjects, eventId, adminToken, is
                     <GripVertical className="size-5 text-muted-foreground/50 mt-1 cursor-move" />
                   )}
                   {subject.imageUrl && (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img
+                    <Image
                       src={subject.imageUrl}
                       alt={subject.title}
+                      width={64}
+                      height={64}
                       className="size-16 rounded-md object-cover"
+                      unoptimized={subject.imageUrl.startsWith("data:")}
                     />
                   )}
                   <div className="flex-1 min-w-0">

@@ -1,0 +1,295 @@
+{
+  "common": {
+    "loading": "読み込み中...",
+    "error": "エラーが発生しました",
+    "required": "必須",
+    "optional": "任意",
+    "save": "保存",
+    "cancel": "キャンセル",
+    "delete": "削除",
+    "edit": "編集",
+    "create": "作成",
+    "back": "戻る",
+    "next": "次へ",
+    "submit": "送信",
+    "close": "閉じる",
+    "copy": "コピー",
+    "copied": "コピーしました",
+    "download": "ダウンロード"
+  },
+  "home": {
+    "badge": "Quadratic Voting",
+    "title": "より公平な意思決定を",
+    "titleHighlight": "二次投票で実現",
+    "description": "Quadratic Voting（二次投票）は、各選択肢への投票コストが票数の2乗になる仕組みです。強い選好を持つ人々の意見を反映しつつ、多様な意見のバランスを取ることができます。",
+    "createEvent": "イベントを作成",
+    "features": {
+      "title": "QV-Toolの特徴",
+      "qv": {
+        "title": "二次投票メカニズム",
+        "description": "1票=1クレジット、2票=4クレジット、3票=9クレジット... 重要な選択肢に多くの票を投じることができますが、そのコストは急激に増加します。"
+      },
+      "auth": {
+        "title": "柔軟な認証方式",
+        "description": "個別URL方式、Googleアカウント、LINEアカウントから選択可能。用途に合わせた認証方式でスムーズな投票を実現します。"
+      },
+      "realtime": {
+        "title": "リアルタイム結果",
+        "description": "投票結果はリアルタイムで集計・表示。グラフで視覚的に結果を確認でき、CSVでのエクスポートも可能です。"
+      }
+    },
+    "howItWorks": {
+      "title": "使い方",
+      "step1": {
+        "title": "イベントを作成",
+        "description": "タイトル、期間、認証方式を設定してイベントを作成します。アカウント登録は不要です。"
+      },
+      "step2": {
+        "title": "選択肢を追加",
+        "description": "投票対象となる選択肢を追加します。画像やリンクも設定可能です。"
+      },
+      "step3": {
+        "title": "投票を開始",
+        "description": "イベントURLを共有して投票を開始。結果はリアルタイムで確認できます。"
+      }
+    },
+    "footer": {
+      "projectName": "QV-Tool - Quadratic Voting Tool",
+      "openSource": "オープンソースプロジェクト"
+    }
+  },
+  "event": {
+    "create": {
+      "title": "新しい投票イベントを作成",
+      "description": "Quadratic Voting（二次投票）形式のイベントを作成します。誰でも作成可能です。",
+      "titleLabel": "タイトル",
+      "titlePlaceholder": "例: チーム旅行先を決めよう！",
+      "descriptionLabel": "説明",
+      "descriptionPlaceholder": "イベントの説明を入力してください...",
+      "customUrlLabel": "カスタムURL",
+      "customUrlPlaceholder": "my-event",
+      "customUrlHint": "英小文字、数字、ハイフンのみ。空欄の場合は自動生成されます。",
+      "startDateLabel": "開始日時",
+      "endDateLabel": "終了日時",
+      "creditsLabel": "1人あたりのクレジット数",
+      "creditsHint": "投票者が使用できるクレジット。1票=1クレジット、2票=4クレジット（票数の2乗）",
+      "authModeLabel": "投票者の認証方式",
+      "authModes": {
+        "individual": {
+          "title": "個別URL方式",
+          "description": "参加者ごとにユニークなURLを発行"
+        },
+        "google": {
+          "title": "Googleアカウント",
+          "description": "Googleでログインして投票"
+        },
+        "line": {
+          "title": "LINEアカウント",
+          "description": "LINEでログインして投票"
+        },
+        "discord": {
+          "title": "Discordアカウント",
+          "description": "Discordでログインして投票"
+        }
+      },
+      "discordGate": {
+        "enableLabel": "特定のDiscordサーバーメンバーに限定する",
+        "guildIdLabel": "DiscordサーバーID",
+        "guildIdPlaceholder": "123456789012345678",
+        "guildIdHint": "サーバー設定 → ウィジェット → サーバーID、または開発者モードで右クリック → IDをコピー",
+        "guildNameLabel": "サーバー名（表示用）",
+        "guildNamePlaceholder": "例: My Community Server",
+        "guildNameHint": "エラー画面で表示されるサーバー名です（空欄可）"
+      },
+      "submitButton": "イベントを作成",
+      "creating": "作成中...",
+      "wizard": {
+        "step1": "基本情報",
+        "step2": "投票候補",
+        "step3": "確認",
+        "step4": "完了",
+        "stepDescription1": "イベントの基本情報を入力",
+        "stepDescription2": "投票候補を追加（最低1つ必須）",
+        "stepDescription3": "内容を確認して公開",
+        "stepDescription4": "設定完了！URLを共有しましょう",
+        "addSubject": "候補を追加",
+        "subjectTitle": "候補名",
+        "subjectTitlePlaceholder": "例: 北海道",
+        "subjectDescription": "説明（任意）",
+        "subjectDescriptionPlaceholder": "候補の説明...",
+        "subjectUrl": "参考URL（任意）",
+        "subjectUrlPlaceholder": "https://...",
+        "noSubjects": "投票候補がまだありません",
+        "atLeastOneSubject": "投票候補を最低1つ追加してください",
+        "confirmTitle": "内容を確認",
+        "confirmDescription": "公開後は投票候補・クレジット数・認証方式を変更できません",
+        "confirmWarning": "公開後の変更不可",
+        "confirmWarningDetail": "不正防止のため、公開後は以下の項目を変更できません：投票候補、クレジット数、認証方式",
+        "publish": "公開する",
+        "publishing": "公開中...",
+        "generateTokens": "投票用トークンを生成",
+        "tokenCount": "生成するトークン数",
+        "tokensGenerated": "{count}件のトークンを生成しました"
+      }
+    },
+    "created": {
+      "title": "イベントが作成されました！",
+      "adminUrlLabel": "管理用URL",
+      "adminUrlWarning": "このURLは今後表示されません。必ず安全な場所に保存してください。",
+      "publicUrlLabel": "公開URL（参加者用）",
+      "nextSteps": "次のステップ",
+      "addSubjects": "投票対象を追加",
+      "goToAdmin": "管理画面へ"
+    },
+    "status": {
+      "upcoming": "開催前",
+      "active": "開催中",
+      "ended": "終了"
+    },
+    "info": {
+      "period": "開催期間",
+      "credits": "持ちクレジット",
+      "subjects": "選択肢"
+    }
+  },
+  "vote": {
+    "title": "投票",
+    "remainingCredits": "残りクレジット",
+    "totalCost": "合計コスト",
+    "creditUsage": "クレジット使用状況",
+    "votes": "票",
+    "cost": "コスト",
+    "submitVote": "投票する",
+    "submitting": "投票中...",
+    "editVote": "投票を変更",
+    "alreadyVoted": "投票済み",
+    "viewResults": "結果を見る",
+    "complete": {
+      "title": "投票が完了しました！",
+      "message": "ご投票ありがとうございました。",
+      "viewResults": "結果を見る",
+      "changeVote": "投票を変更する"
+    },
+    "errors": {
+      "notActive": "このイベントは現在投票期間外です",
+      "noCredits": "クレジットが不足しています",
+      "authRequired": "投票するにはログインが必要です"
+    }
+  },
+  "results": {
+    "title": "投票結果",
+    "liveUpdating": "リアルタイム更新中",
+    "rank": "順位",
+    "votes": "得票数",
+    "totalCredits": "消費クレジット",
+    "statistics": {
+      "title": "統計情報",
+      "participants": "参加者数",
+      "totalCreditsUsed": "総消費クレジット",
+      "averageCredits": "平均消費クレジット",
+      "participationRate": "参加率",
+      "creditUsageRate": "クレジット消費率"
+    },
+    "distribution": {
+      "title": "投票分布"
+    },
+    "export": {
+      "summary": "集計データをダウンロード",
+      "raw": "ローデータをダウンロード"
+    }
+  },
+  "admin": {
+    "title": "イベント管理",
+    "eventInfo": "イベント情報",
+    "subjects": {
+      "title": "投票対象",
+      "add": "選択肢を追加",
+      "edit": "編集",
+      "delete": "削除",
+      "confirmDelete": "この選択肢を削除してもよろしいですか？",
+      "nameLabel": "選択肢名",
+      "descriptionLabel": "説明",
+      "imageUrlLabel": "画像URL",
+      "linkUrlLabel": "リンクURL"
+    },
+    "tokens": {
+      "title": "投票用トークン",
+      "generate": "トークンを生成",
+      "generateCount": "{count}件のトークンを生成",
+      "exportCsv": "CSVをダウンロード",
+      "used": "使用済み",
+      "unused": "未使用"
+    },
+    "links": {
+      "publicUrl": "公開URL",
+      "resultsUrl": "結果URL"
+    },
+    "editRestriction": "投票開始後は選択肢とクレジット数の変更はできません"
+  },
+  "auth": {
+    "signIn": "ログイン",
+    "signOut": "ログアウト",
+    "signInWith": "{provider}でログイン",
+    "error": {
+      "title": "認証エラー",
+      "default": "認証中にエラーが発生しました",
+      "configuration": "サーバー設定に問題があります",
+      "accessDenied": "アクセスが拒否されました",
+      "verification": "認証トークンの有効期限が切れています"
+    }
+  },
+  "language": {
+    "ja": "日本語",
+    "en": "English",
+    "switchTo": "言語を切り替え"
+  },
+  "metadata": {
+    "title": "QV-Tool - Quadratic Voting Tool",
+    "description": "二次投票メカニズムを用いた民主的な意思決定プラットフォーム"
+  },
+  "errors": {
+    "validation": "入力内容に誤りがあります",
+    "endDateBeforeStart": "終了日は開始日より後の日付を指定してください",
+    "slugAlreadyUsed": "このスラッグは既に使用されています",
+    "eventCreateFailed": "イベントの作成に失敗しました。しばらく経ってから再度お試しください。",
+    "eventNotFoundOrNoAccess": "イベントが見つからないか、アクセス権限がありません",
+    "eventUpdateFailed": "イベントの更新に失敗しました",
+    "eventNotFound": "イベントが見つかりません",
+    "votingNotStarted": "投票期間がまだ開始されていません",
+    "votingEnded": "投票期間は終了しました",
+    "invalidSubject": "無効な投票対象が含まれています",
+    "creditsExceeded": "クレジットを超過しています（使用: {used} / 上限: {limit}）",
+    "tokenRequired": "投票用トークンが必要です",
+    "invalidToken": "無効なトークンです",
+    "tokenAlreadyUsed": "このトークンは既に使用されています。投票を編集する場合は編集画面からお願いします。",
+    "loginRequired": "ログインが必要です",
+    "alreadyVoted": "既に投票済みです。投票を編集する場合は編集画面からお願いします。",
+    "voteNotFound": "投票が見つかりません",
+    "noPermissionToEdit": "この投票を編集する権限がありません",
+    "submitVoteFailed": "投票の送信に失敗しました。しばらく経ってから再度お試しください。",
+    "noPermission": "管理権限がありません",
+    "subjectCreateFailed": "選択肢の作成に失敗しました",
+    "subjectUpdateFailed": "選択肢の更新に失敗しました",
+    "subjectDeleteFailed": "選択肢の削除に失敗しました",
+    "subjectNotFound": "選択肢が見つかりません",
+    "cannotModifyAfterVoting": "投票開始後は変更できません",
+    "cannotModifyLockedEvent": "公開済みのイベントは変更できません",
+    "eventPublishFailed": "イベントの公開に失敗しました",
+    "tokenGenerateFailed": "トークンの生成に失敗しました",
+    "rateLimitExceeded": "送信回数が上限に達しました。{seconds}秒後に再試行してください。",
+    "discordAuthRequired": "Discord認証が必要です",
+    "discordGuildMemberOnly": "このサーバーのメンバーのみ投票可能です",
+    "discordGuildMemberOnlyWithName": "「{guildName}」サーバーのメンバーのみ投票可能です"
+  },
+  "csv": {
+    "rank": "順位",
+    "title": "タイトル",
+    "totalVotes": "総票数",
+    "creditsUsed": "消費クレジット",
+    "voterCount": "投票者数",
+    "voteId": "投票ID",
+    "votedAt": "投票日時",
+    "totalCost": "合計コスト"
+  }
+}
+

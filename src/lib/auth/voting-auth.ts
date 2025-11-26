@@ -1,5 +1,6 @@
 import { auth } from "@/auth";
 import { prisma } from "@/lib/db";
+import { isGuildMember } from "@/lib/auth/discord-guild";
 
 export type VotingAuthResult =
   | {
@@ -18,6 +19,8 @@ export type VotingAuthResult =
   | {
       authenticated: false;
       error: string;
+      /** Discord ゲート機能: 必要なサーバー名（エラー表示用） */
+      requiredGuildName?: string;
     };
 
 /**
@@ -37,6 +40,8 @@ export async function authenticateVoter(
       votingMode: true,
       startDate: true,
       endDate: true,
+      discordGuildId: true,
+      discordGuildName: true,
     },
   });
 
@@ -82,11 +87,37 @@ export async function authenticateVoter(
     };
   }
 
-  // Social認証の場合（Google/LINE）
+  // Social認証の場合（Google/LINE/Discord）
   const session = await auth();
 
   if (!session?.user?.id) {
     return { authenticated: false, error: "ログインが必要です" };
+  }
+
+  // Discord認証でゲート機能が設定されている場合、ギルドメンバーシップを確認
+  if (event.votingMode === "discord" && event.discordGuildId) {
+    // セッションにDiscordアクセストークンがない場合
+    if (!session.discordAccessToken) {
+      return {
+        authenticated: false,
+        error: "Discord認証が必要です",
+        requiredGuildName: event.discordGuildName ?? undefined,
+      };
+    }
+
+    // ギルドメンバーシップを確認
+    const isMember = await isGuildMember(
+      session.discordAccessToken,
+      event.discordGuildId
+    );
+
+    if (!isMember) {
+      return {
+        authenticated: false,
+        error: "このサーバーのメンバーのみ投票可能です",
+        requiredGuildName: event.discordGuildName ?? undefined,
+      };
+    }
   }
 
   return {
@@ -162,7 +193,7 @@ export async function getEventAuthRequirement(eventId: string): Promise<{
     found: true,
     votingMode: event.votingMode,
     requiresToken: event.votingMode === "individual",
-    requiresSocialAuth: event.votingMode === "google" || event.votingMode === "line",
+    requiresSocialAuth: event.votingMode === "google" || event.votingMode === "line" || event.votingMode === "discord",
   };
 }
 

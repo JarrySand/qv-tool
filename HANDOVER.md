@@ -8,9 +8,9 @@
 
 - **Phase 1: 基盤構築** ✅ 完了
 - **Phase 2: 認証・イベント管理** ✅ 完了
-- **Phase 3: 投票機能** 🔲 未着手
-- **Phase 4: 集計・結果表示** 🔲 未着手
-- **Phase 5: 品質向上・最適化** 🔲 未着手
+- **Phase 3: 投票機能** ✅ 完了
+- **Phase 4: 集計・結果表示** ✅ 完了
+- **Phase 5: 品質向上・最適化** ✅ 完了
 
 ---
 
@@ -36,6 +36,9 @@ qv-tool/
 ├── prisma/
 │   ├── schema.prisma          # DBスキーマ定義
 │   └── migrations/            # マイグレーション履歴
+├── messages/
+│   ├── en.json                # 英語リソース ⭐
+│   └── ja.json                # 日本語リソース ⭐
 ├── src/
 │   ├── app/
 │   │   ├── (auth)/
@@ -49,14 +52,19 @@ qv-tool/
 │   │   │       └── [id]/      # イベント管理ページ ⭐
 │   │   ├── events/
 │   │   │   └── [id]/
-│   │   │       ├── vote/      # 投票画面（Phase 3で実装）
-│   │   │       └── result/    # 結果画面（Phase 4で実装）
+│   │   │       ├── page.tsx       # イベント公開ページ ⭐
+│   │   │       ├── vote/          # 投票画面 ⭐
+│   │   │       ├── complete/      # 投票完了画面 ⭐
+│   │   │       └── result/        # 結果画面 ⭐
 │   │   ├── api/
 │   │   │   └── auth/
 │   │   │       └── [...nextauth]/ # NextAuth API ⭐
+│   │   ├── error.tsx          # エラーバウンダリ ⭐
+│   │   ├── global-error.tsx   # グローバルエラー ⭐
+│   │   ├── not-found.tsx      # 404ページ ⭐
 │   │   ├── globals.css
 │   │   ├── layout.tsx
-│   │   └── page.tsx           # トップページ（刷新済み）
+│   │   └── page.tsx           # トップページ
 │   ├── components/
 │   │   ├── ui/                # Shadcn/ui コンポーネント
 │   │   ├── features/          # 機能コンポーネント
@@ -65,13 +73,26 @@ qv-tool/
 │   │   │   ├── event-admin-content.tsx   ⭐
 │   │   │   ├── event-edit-dialog.tsx     ⭐
 │   │   │   ├── subject-list.tsx          ⭐
-│   │   │   └── access-token-manager.tsx  ⭐
+│   │   │   ├── access-token-manager.tsx  ⭐
+│   │   │   ├── voting-interface.tsx      ⭐
+│   │   │   ├── results-chart.tsx         ⭐
+│   │   │   ├── statistics-card.tsx       ⭐
+│   │   │   ├── vote-distribution-chart.tsx ⭐
+│   │   │   ├── live-result-container.tsx ⭐
+│   │   │   ├── csv-export-buttons.tsx    ⭐
+│   │   │   └── language-switcher.tsx     ⭐
 │   │   └── layout/
+│   ├── i18n/
+│   │   ├── config.ts          # i18n設定 ⭐
+│   │   └── request.ts         # リクエスト処理 ⭐
 │   ├── lib/
 │   │   ├── actions/
 │   │   │   ├── event.ts       # イベントServer Actions ⭐
 │   │   │   ├── subject.ts     # 投票対象Server Actions ⭐
-│   │   │   └── access-token.ts # トークンServer Actions ⭐
+│   │   │   ├── access-token.ts # トークンServer Actions ⭐
+│   │   │   ├── vote.ts        # 投票Server Actions ⭐
+│   │   │   ├── result.ts      # 結果集計Server Actions ⭐
+│   │   │   └── locale.ts      # ロケールServer Actions ⭐
 │   │   ├── auth/
 │   │   │   ├── line-provider.ts   # LINE OIDCプロバイダー ⭐
 │   │   │   └── voting-auth.ts     # 投票者認証ヘルパー ⭐
@@ -81,15 +102,29 @@ qv-tool/
 │   │   │   ├── qv.ts          # QV計算
 │   │   │   ├── qv.test.ts
 │   │   │   ├── slug.ts        # スラッグ生成 ⭐
+│   │   │   ├── slug.test.ts
 │   │   │   └── index.ts
 │   │   ├── utils.ts
 │   │   └── validations/
+│   │       ├── event.ts       # イベントバリデーション ⭐
+│   │       ├── event.test.ts
+│   │       ├── subject.ts     # 投票対象バリデーション ⭐
+│   │       ├── vote.ts        # 投票バリデーション ⭐
+│   │       └── index.ts
 │   ├── test/
 │   ├── types/
 │   │   └── next-auth.d.ts     # NextAuth型拡張 ⭐
-│   ├── auth.ts                # NextAuth設定 ⭐
-│   └── middleware.ts          # ルート保護ミドルウェア ⭐
+│   └── auth.ts                # NextAuth設定 ⭐
+├── e2e/                       # E2Eテスト ⭐
+│   ├── home.spec.ts
+│   ├── event-create.spec.ts
+│   └── voting-flow.spec.ts
+├── docs/
+│   ├── DEPLOY.md              # デプロイ手順書 ⭐
+│   └── USER_MANUAL.md         # ユーザーマニュアル ⭐
 ├── docker-compose.yml
+├── vercel.json                # Vercel設定 ⭐
+├── CONTRIBUTING.md            # コントリビューションガイド ⭐
 ├── development-plan.md
 └── system-specification.md
 ```
@@ -195,58 +230,156 @@ npm run dev
 
 ---
 
-## 6. Phase 3 で実装すべき内容
+## 6. Phase 3 実装済み機能
 
-### 3.1 イベント公開ページ
+### 6.1 イベント公開ページ
 
-- [ ] イベントトップページの実装
-- [ ] イベント情報の表示（タイトル、説明、期間）
-- [ ] ステータス表示（開催中/終了）
-- [ ] 認証状態に応じたナビゲーション
+- URL: `/events/[id]` または `/events/[slug]`
+- 機能:
+  - イベント情報の表示（タイトル、説明、期間、クレジット数）
+  - ステータスバッジ（開催前/開催中/終了）
+  - 投票対象一覧のプレビュー
+  - 認証状態に応じた投票ボタン表示
+  - 投票済み状態の表示
 
-### 3.2 QV計算ユーティリティ（実装済み）
+### 6.2 QV計算ユーティリティ
 
-- [x] クレジット消費計算関数（票数² = コスト）
-- [x] 残りクレジット計算関数
-- [x] 投票可能票数の上限計算関数
-- [x] ユーティリティ関数の単体テスト
+- ファイル: `src/lib/utils/qv.ts`
+- 関数:
+  - `calculateCost()`: 票数からコスト計算
+  - `calculateMaxVotes()`: クレジットから最大票数計算
+  - `calculateTotalCost()`: 総コスト計算
+  - `calculateRemainingCredits()`: 残りクレジット計算
+  - `calculateMaxAdditionalVotes()`: 追加投票可能数計算
+  - `canChangeVote()`: 投票変更可否チェック
 
-### 3.3 投票インターフェース
+### 6.3 投票インターフェース
 
-- [ ] 投票対象一覧の表示
-- [ ] 「+」「-」ボタンの実装
-- [ ] リアルタイムクレジット計算
-- [ ] 残りクレジット表示
-- [ ] 投票プレビュー機能
+- ファイル: `src/components/features/voting-interface.tsx`
+- 機能:
+  - 投票対象一覧の表示（画像、説明、URL）
+  - 「+」「-」ボタンによる投票数調整
+  - リアルタイムクレジット計算・プログレスバー
+  - 各対象のコスト表示
+  - クレジット超過時のボタン無効化
 
-### 3.4 バリデーション実装
+### 6.4 投票送信処理
 
-- [ ] クライアントサイドバリデーション
-- [ ] サーバーサイドバリデーション
-- [ ] 二重投票の防止
+- ファイル: `src/lib/actions/vote.ts`
+- Server Actions:
+  - `submitVote()`: 投票の新規作成または更新
+  - `getExistingVote()`: 既存投票データの取得
+- 特徴:
+  - Prismaトランザクションによるデータ整合性
+  - 個別トークン/Social認証の両方に対応
+  - 投票期間・クレジット超過のサーバーサイド検証
 
-### 3.5 投票送信処理
+### 6.5 投票完了ページ
 
-- [ ] Server Action実装
-- [ ] トランザクション処理
-- [ ] 投票完了画面
+- URL: `/events/[id]/complete`
+- 機能:
+  - 投票完了メッセージ
+  - 結果ページへのリンク
+  - 投票変更ページへのリンク
 
-### 3.6 再投票機能
+### 6.6 再投票機能
 
-- [ ] 投票内容の編集機能
-- [ ] 既存投票の更新処理
+- 投票期間内であれば何度でも投票内容を変更可能
+- 既存投票データの自動読み込み
+- VoteDetailの上書き更新
 
 ---
 
-## 7. 技術的注意点
+## 7. Phase 4 実装済み機能
 
-### 7.1 認証設計
+### 7.1 結果表示ページ
+
+- URL: `/events/[id]/result` または `/events/[slug]/result`
+- 機能:
+  - 各投票対象の得票数表示（棒グラフ）
+  - ランキング形式の詳細結果表示
+  - 投票分布チャート（各選択肢への票数分布）
+  - 開催中イベントのリアルタイム更新（10秒ポーリング）
+
+### 7.2 統計情報
+
+- 総参加者数
+- 総消費クレジット / 利用可能クレジット
+- 平均消費クレジット
+- 参加率（個別投票モードの場合）/ クレジット消費率
+
+### 7.3 CSVエクスポート
+
+- 集計データ: 順位・タイトル・得票数・消費クレジット・投票者数
+- ローデータ: 個別投票データ（管理者トークン必須）
+- BOM付きCSVでExcel対応
+
+### 7.4 主要ファイル
+
+- `src/app/events/[id]/result/page.tsx` - 結果表示ページ
+- `src/lib/actions/result.ts` - 結果集計Server Actions
+- `src/components/features/results-chart.tsx` - 得票グラフ（Recharts）
+- `src/components/features/statistics-card.tsx` - 統計情報カード
+- `src/components/features/vote-distribution-chart.tsx` - 投票分布チャート
+- `src/components/features/live-result-container.tsx` - リアルタイム更新コンテナ
+- `src/components/features/csv-export-buttons.tsx` - CSVエクスポートボタン
+
+---
+
+## 8. Phase 5 実装済み機能
+
+### 8.1 国際化（i18n）
+
+- [x] next-intl の導入
+- [x] 日本語/英語リソースファイル（messages/ja.json, en.json）
+- [x] 言語切り替えUI（language-switcher.tsx）
+
+### 8.2 アクセシビリティ（a11y）
+
+- [x] WCAG 2.1 Level AA 準拠
+- [x] キーボード操作対応（Skip to content、フォーカススタイル）
+- [x] スクリーンリーダー対応（ARIA属性、代替テキスト）
+- [x] prefers-reduced-motion対応
+
+### 8.3 パフォーマンス最適化
+
+- [x] 画像最適化（Next.js Image）
+- [x] キャッシュ戦略（静的アセット、Next.js static）
+- [x] 外部画像対応（remotePatterns設定）
+
+### 8.4 セキュリティ強化
+
+- [x] セキュリティヘッダー（X-Frame-Options, CSP等）
+- [x] HSTS設定
+- [x] レート制限ガイド（docs/DEPLOY.md - Upstash Redis推奨）
+
+### 8.5 テストカバレッジ
+
+- [x] 単体テスト（39テスト）
+- [x] E2Eテスト（ホーム、イベント作成、投票フロー）
+
+### 8.6 ドキュメント整備
+
+- [x] デプロイ手順書（docs/DEPLOY.md）
+- [x] ユーザーマニュアル（docs/USER_MANUAL.md）
+- [x] コントリビューションガイド（CONTRIBUTING.md）
+
+### 8.7 デプロイ準備
+
+- [x] Vercelへのデプロイ設定（vercel.json）
+- [x] 環境変数ガイド（docs/DEPLOY.md）
+
+---
+
+## 9. 技術的注意点
+
+### 9.1 認証設計
 
 - **主催者**: 認証不要。`Event.adminToken` でイベント編集権限を制御
 - **投票者（個別）**: `AccessToken` 付きURLでアクセス（ログイン不要）
 - **投票者（Social）**: NextAuth.jsによるOAuth認証（Google/LINE）
 
-### 7.2 投票認証フロー
+### 9.2 投票認証フロー
 
 ```typescript
 // src/lib/auth/voting-auth.ts を使用
@@ -261,7 +394,7 @@ if (authResult.type === "token") {
 }
 ```
 
-### 7.3 環境変数（認証関連）
+### 9.3 環境変数（認証関連）
 
 ```env
 # .env.example 参照
@@ -273,7 +406,7 @@ LINE_CHANNEL_ID=""
 LINE_CHANNEL_SECRET=""
 ```
 
-### 7.4 設計決定事項
+### 9.4 設計決定事項
 
 1. 主催者認証: なし（誰でもイベント作成可能）
 2. 再投票: 投票期間内は何度でも変更可能（必須）
@@ -282,16 +415,23 @@ LINE_CHANNEL_SECRET=""
 
 ---
 
-## 8. 参照ドキュメント
+## 10. 参照ドキュメント
 
 | ファイル                  | 内容                                 |
 | ------------------------- | ------------------------------------ |
 | `development-plan.md`     | 開発計画書（Phase別タスク一覧）      |
 | `system-specification.md` | 要件定義書（機能要件・データモデル） |
 | `README.md`               | プロジェクト概要・セットアップ手順   |
+| `CONTRIBUTING.md`         | コントリビューションガイド           |
+| `docs/DEPLOY.md`          | デプロイ手順書                       |
+| `docs/USER_MANUAL.md`     | ユーザーマニュアル                   |
 
 ---
 
 **作成日**: 2025年11月26日  
 **Phase 1 完了日**: 2025年11月26日  
-**Phase 2 完了日**: 2025年11月26日
+**Phase 2 完了日**: 2025年11月26日  
+**Phase 3 完了日**: 2025年11月26日  
+**Phase 4 完了日**: 2025年11月26日  
+**Phase 5 完了日**: 2025年11月26日  
+**全Phase完了** 🎉

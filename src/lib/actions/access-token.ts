@@ -1,5 +1,6 @@
 "use server";
 
+import { getTranslations } from "next-intl/server";
 import { prisma } from "@/lib/db";
 
 type GenerateResult =
@@ -25,9 +26,11 @@ export async function generateAccessTokens(
   adminToken: string,
   count: number
 ): Promise<GenerateResult> {
+  const t = await getTranslations("errors");
+
   // 1. バリデーション
   if (count < 1 || count > 100) {
-    return { success: false, error: "生成数は1〜100の範囲で指定してください" };
+    return { success: false, error: t("validation") };
   }
 
   // 2. イベントの存在確認とadminToken検証
@@ -40,11 +43,11 @@ export async function generateAccessTokens(
   });
 
   if (!event || event.adminToken !== adminToken) {
-    return { success: false, error: "アクセス権限がありません" };
+    return { success: false, error: t("noPermission") };
   }
 
   if (event.votingMode !== "individual") {
-    return { success: false, error: "このイベントは個別URL方式ではありません" };
+    return { success: false, error: t("validation") };
   }
 
   // 3. トークン生成
@@ -61,7 +64,7 @@ export async function generateAccessTokens(
     return { success: true, tokens };
   } catch (error) {
     console.error("Failed to generate tokens:", error);
-    return { success: false, error: "トークンの生成に失敗しました" };
+    return { success: false, error: t("tokenGenerateFailed") };
   }
 }
 
@@ -75,6 +78,8 @@ export async function validateAccessToken(
   | { valid: true; tokenId: string; isUsed: boolean }
   | { valid: false; error: string }
 > {
+  const t = await getTranslations("errors");
+
   const accessToken = await prisma.accessToken.findFirst({
     where: {
       eventId,
@@ -87,7 +92,7 @@ export async function validateAccessToken(
   });
 
   if (!accessToken) {
-    return { valid: false, error: "無効なトークンです" };
+    return { valid: false, error: t("invalidToken") };
   }
 
   return { valid: true, tokenId: accessToken.id, isUsed: accessToken.isUsed };

@@ -6,6 +6,8 @@ declare module "next-auth" {
     user: {
       id: string;
     } & DefaultSession["user"];
+    /** Discord OAuth アクセストークン（ギルドメンバーシップ確認用） */
+    discordAccessToken?: string;
   }
 
   interface User extends DefaultUser {
@@ -16,6 +18,8 @@ declare module "next-auth" {
 declare module "next-auth/jwt" {
   interface JWT extends DefaultJWT {
     id?: string;
+    /** Discord OAuth アクセストークン（ギルドメンバーシップ確認用） */
+    discordAccessToken?: string;
   }
 }
 

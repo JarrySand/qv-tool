@@ -80,8 +80,13 @@ model Event {
   startDate       DateTime
   endDate         DateTime
   creditsPerVoter Int      @default(100)
-  votingMode      String   // "individual", "google", "line"
+  votingMode      String   // "individual", "google", "line", "discord"
   adminToken      String   @unique @default(uuid()) // 管理用トークン（認証不要のため、このトークンで編集権限を制御）
+  isLocked        Boolean  @default(false) // 公開後は候補・クレジット・認証方式の変更を禁止
+
+  // Discord ゲート機能用
+  discordGuildId   String?  // 対象DiscordサーバーのID（18桁の数値文字列）
+  discordGuildName String?  // サーバー名（表示用、オプション）
 
   // リレーション
   subjects     Subject[]

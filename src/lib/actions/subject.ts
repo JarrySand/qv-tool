@@ -1,5 +1,6 @@
 "use server";
 
+import { getTranslations } from "next-intl/server";
 import { prisma } from "@/lib/db";
 import { createSubjectSchema, updateSubjectSchema } from "@/lib/validations";
 
@@ -44,29 +45,35 @@ export async function createSubject(
   adminToken: string,
   input: CreateSubjectInput
 ): Promise<SubjectResult> {
+  const t = await getTranslations("errors");
+
   // 1. イベントの存在確認とadminToken検証
   const event = await prisma.event.findUnique({
     where: { id: eventId },
     select: {
       adminToken: true,
+      isLocked: true,
       votes: { select: { id: true }, take: 1 },
       subjects: { select: { order: true }, orderBy: { order: "desc" }, take: 1 },
     },
   });
 
   if (!event || event.adminToken !== adminToken) {
-    return { success: false, error: "アクセス権限がありません" };
+    return { success: false, error: t("noPermission") };
   }
 
-  // 2. 投票開始後は追加不可
+  // 2. ロック済みまたは投票開始後は追加不可
+  if (event.isLocked) {
+    return { success: false, error: t("cannotModifyLockedEvent") };
+  }
   if (event.votes.length > 0) {
-    return { success: false, error: "投票開始後は投票対象を追加できません" };
+    return { success: false, error: t("cannotModifyAfterVoting") };
   }
 
   // 3. バリデーション
   const parsed = createSubjectSchema.safeParse(input);
   if (!parsed.success) {
-    return { success: false, error: parsed.error.issues[0]?.message ?? "入力エラー" };
+    return { success: false, error: parsed.error.issues[0]?.message ?? t("validation") };
   }
 
   // 4. 順序の決定（最後尾に追加）
@@ -89,7 +96,7 @@ export async function createSubject(
     return { success: true, subject };
   } catch (error) {
     console.error("Failed to create subject:", error);
-    return { success: false, error: "投票対象の作成に失敗しました" };
+    return { success: false, error: t("subjectCreateFailed") };
   }
 }
 
@@ -102,28 +109,34 @@ export async function updateSubject(
   subjectId: string,
   input: UpdateSubjectInput
 ): Promise<{ success: true } | { success: false; error: string }> {
+  const t = await getTranslations("errors");
+
   // 1. イベントの存在確認とadminToken検証
   const event = await prisma.event.findUnique({
     where: { id: eventId },
     select: {
       adminToken: true,
+      isLocked: true,
       votes: { select: { id: true }, take: 1 },
     },
   });
 
   if (!event || event.adminToken !== adminToken) {
-    return { success: false, error: "アクセス権限がありません" };
+    return { success: false, error: t("noPermission") };
   }
 
-  // 2. 投票開始後は更新不可
+  // 2. ロック済みまたは投票開始後は更新不可
+  if (event.isLocked) {
+    return { success: false, error: t("cannotModifyLockedEvent") };
+  }
   if (event.votes.length > 0) {
-    return { success: false, error: "投票開始後は投票対象を編集できません" };
+    return { success: false, error: t("cannotModifyAfterVoting") };
   }
 
   // 3. バリデーション
   const parsed = updateSubjectSchema.safeParse(input);
   if (!parsed.success) {
-    return { success: false, error: parsed.error.issues[0]?.message ?? "入力エラー" };
+    return { success: false, error: parsed.error.issues[0]?.message ?? t("validation") };
   }
 
   // 4. 更新
@@ -142,7 +155,7 @@ export async function updateSubject(
     return { success: true };
   } catch (error) {
     console.error("Failed to update subject:", error);
-    return { success: false, error: "投票対象の更新に失敗しました" };
+    return { success: false, error: t("subjectUpdateFailed") };
   }
 }
 
@@ -154,22 +167,28 @@ export async function deleteSubject(
   adminToken: string,
   subjectId: string
 ): Promise<{ success: true } | { success: false; error: string }> {
+  const t = await getTranslations("errors");
+
   // 1. イベントの存在確認とadminToken検証
   const event = await prisma.event.findUnique({
     where: { id: eventId },
     select: {
       adminToken: true,
+      isLocked: true,
       votes: { select: { id: true }, take: 1 },
     },
   });
 
   if (!event || event.adminToken !== adminToken) {
-    return { success: false, error: "アクセス権限がありません" };
+    return { success: false, error: t("noPermission") };
   }
 
-  // 2. 投票開始後は削除不可
+  // 2. ロック済みまたは投票開始後は削除不可
+  if (event.isLocked) {
+    return { success: false, error: t("cannotModifyLockedEvent") };
+  }
   if (event.votes.length > 0) {
-    return { success: false, error: "投票開始後は投票対象を削除できません" };
+    return { success: false, error: t("cannotModifyAfterVoting") };
   }
 
   // 3. 削除
@@ -181,7 +200,7 @@ export async function deleteSubject(
     return { success: true };
   } catch (error) {
     console.error("Failed to delete subject:", error);
-    return { success: false, error: "投票対象の削除に失敗しました" };
+    return { success: false, error: t("subjectDeleteFailed") };
   }
 }
 

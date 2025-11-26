@@ -1,6 +1,7 @@
 import NextAuth from "next-auth";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import Google from "next-auth/providers/google";
+import Discord from "next-auth/providers/discord";
 import type { Provider } from "next-auth/providers";
 import { prisma } from "@/lib/db";
 import LineProvider from "@/lib/auth/line-provider";
@@ -28,9 +29,27 @@ if (process.env.LINE_CHANNEL_ID && process.env.LINE_CHANNEL_SECRET) {
   );
 }
 
+// Discord認証（環境変数が設定されている場合のみ有効化）
+if (process.env.DISCORD_CLIENT_ID && process.env.DISCORD_CLIENT_SECRET) {
+  providers.push(
+    Discord({
+      clientId: process.env.DISCORD_CLIENT_ID,
+      clientSecret: process.env.DISCORD_CLIENT_SECRET,
+      authorization: {
+        params: {
+          // identify: ユーザー情報, email: メールアドレス, guilds: サーバー一覧（ゲート機能用）
+          scope: "identify email guilds",
+        },
+      },
+    })
+  );
+}
+
 export const { handlers, signIn, signOut, auth } = NextAuth({
   adapter: PrismaAdapter(prisma),
   providers,
+  // シークレットキー（本番環境では必ず環境変数で設定）
+  secret: process.env.AUTH_SECRET ?? process.env.NEXTAUTH_SECRET ?? "dev-secret-key-change-in-production",
   session: {
     strategy: "jwt",
   },
@@ -40,9 +59,13 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   },
   callbacks: {
     // JWTコールバック: トークンにユーザー情報を追加
-    async jwt({ token, user }) {
+    async jwt({ token, user, account }) {
       if (user) {
         token.id = user.id;
+      }
+      // Discord認証の場合、アクセストークンを保存（ギルドメンバーシップ確認用）
+      if (account?.provider === "discord" && account.access_token) {
+        token.discordAccessToken = account.access_token;
       }
       return token;
     },
@@ -50,6 +73,10 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     async session({ session, token }) {
       if (session.user && token.id) {
         session.user.id = token.id as string;
+      }
+      // Discord アクセストークンをセッションに追加（ギルドメンバーシップ確認用）
+      if (token.discordAccessToken) {
+        session.discordAccessToken = token.discordAccessToken as string;
       }
       return session;
     },

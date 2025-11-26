@@ -58,6 +58,7 @@ type EventData = {
   subjects: Subject[];
   accessTokens: AccessToken[];
   hasVotes: boolean;
+  isLocked: boolean;
   status: "upcoming" | "active" | "ended";
 };
 
@@ -150,14 +151,14 @@ export function EventAdminContent({ event, adminToken }: Props) {
         </Button>
       </div>
 
-      {/* 投票開始後の警告 */}
-      {currentEvent.hasVotes && (
+      {/* ロック済みの警告 */}
+      {currentEvent.isLocked && (
         <div className="mb-6 rounded-lg border border-amber-500/50 bg-amber-50 p-4 dark:bg-amber-950/30">
           <div className="flex items-start gap-2">
             <AlertCircle className="size-5 text-amber-600 mt-0.5" />
             <div>
               <p className="font-medium text-amber-800 dark:text-amber-200">
-                投票が開始されています
+                {currentEvent.hasVotes ? "投票が開始されています" : "イベントは公開済みです"}
               </p>
               <p className="text-sm text-amber-700 dark:text-amber-300">
                 投票対象やクレジット数の変更はできません。タイトルや説明文のみ編集可能です。
@@ -248,7 +249,7 @@ export function EventAdminContent({ event, adminToken }: Props) {
               <Plus className="size-5" />
               投票対象
             </CardTitle>
-            {!currentEvent.hasVotes && (
+            {!currentEvent.isLocked && (
               <Button size="sm">
                 <Plus className="size-4" />
                 追加
@@ -266,7 +267,7 @@ export function EventAdminContent({ event, adminToken }: Props) {
             subjects={currentEvent.subjects}
             eventId={currentEvent.id}
             adminToken={adminToken}
-            isLocked={currentEvent.hasVotes}
+            isLocked={currentEvent.isLocked}
           />
         </CardContent>
       </Card>

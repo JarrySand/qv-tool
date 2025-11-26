@@ -45,6 +45,9 @@ export default async function EventAdminPage({
 
   // 投票開始済みかどうか
   const hasVotes = event.votes.length > 0;
+  
+  // ロック済みかどうか（公開済み or 投票開始済み）
+  const isLocked = event.isLocked || hasVotes;
 
   // イベントステータスを計算
   const now = new Date();
@@ -58,11 +61,12 @@ export default async function EventAdminPage({
   }
 
   return (
-    <main className="min-h-screen bg-background">
+    <main id="main-content" className="min-h-screen bg-background">
       <EventAdminContent
         event={{
           ...event,
           hasVotes,
+          isLocked,
           status,
         }}
         adminToken={token}

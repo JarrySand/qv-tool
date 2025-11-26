@@ -1,29 +1,31 @@
-import { EventCreateForm } from "@/components/features/event-create-form";
+import { getTranslations } from "next-intl/server";
+import { EventWizardForm } from "@/components/features/event-wizard-form";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 
 export const metadata = {
-  title: "イベント作成 | QV-Tool",
-  description: "新しい二次投票イベントを作成します",
+  title: "イベントを作成 | QV-Tool",
+  description: "Create a new quadratic voting event",
 };
 
-export default function CreateEventPage() {
+export default async function CreateEventPage() {
+  const t = await getTranslations();
+
   return (
-    <main className="min-h-screen bg-background">
+    <main id="main-content" className="min-h-screen bg-background">
       <div className="mx-auto max-w-4xl px-4 py-8">
         <Link
           href="/"
-          className="mb-6 inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
+          className="mb-6 inline-flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
         >
           <ArrowLeft className="size-4" />
-          トップへ戻る
+          {t("common.back")}
         </Link>
 
         <div className="flex justify-center">
-          <EventCreateForm />
+          <EventWizardForm />
         </div>
       </div>
     </main>
   );
 }
-

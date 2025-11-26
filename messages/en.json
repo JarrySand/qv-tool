@@ -1,0 +1,295 @@
+{
+  "common": {
+    "loading": "Loading...",
+    "error": "An error occurred",
+    "required": "Required",
+    "optional": "Optional",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "create": "Create",
+    "back": "Back",
+    "next": "Next",
+    "submit": "Submit",
+    "close": "Close",
+    "copy": "Copy",
+    "copied": "Copied",
+    "download": "Download"
+  },
+  "home": {
+    "badge": "Quadratic Voting",
+    "title": "Fair Decision Making",
+    "titleHighlight": "with Quadratic Voting",
+    "description": "Quadratic Voting is a mechanism where the cost of voting for each option equals the square of the number of votes. It reflects the opinions of those with strong preferences while balancing diverse opinions.",
+    "createEvent": "Create Event",
+    "features": {
+      "title": "Features of QV-Tool",
+      "qv": {
+        "title": "Quadratic Voting Mechanism",
+        "description": "1 vote = 1 credit, 2 votes = 4 credits, 3 votes = 9 credits... You can cast more votes on important choices, but the cost increases rapidly."
+      },
+      "auth": {
+        "title": "Flexible Authentication",
+        "description": "Choose from individual URL method, Google account, or LINE account. Smooth voting experience with authentication methods tailored to your needs."
+      },
+      "realtime": {
+        "title": "Real-time Results",
+        "description": "Voting results are aggregated and displayed in real-time. Visualize results with graphs and export to CSV."
+      }
+    },
+    "howItWorks": {
+      "title": "How It Works",
+      "step1": {
+        "title": "Create an Event",
+        "description": "Set title, period, and authentication method to create an event. No account registration required."
+      },
+      "step2": {
+        "title": "Add Options",
+        "description": "Add voting options. Images and links can also be set."
+      },
+      "step3": {
+        "title": "Start Voting",
+        "description": "Share the event URL to start voting. Results can be viewed in real-time."
+      }
+    },
+    "footer": {
+      "projectName": "QV-Tool - Quadratic Voting Tool",
+      "openSource": "Open Source Project"
+    }
+  },
+  "event": {
+    "create": {
+      "title": "Create a New Voting Event",
+      "description": "Create an event using Quadratic Voting format. Anyone can create one.",
+      "titleLabel": "Title",
+      "titlePlaceholder": "e.g., Let's decide our team trip destination!",
+      "descriptionLabel": "Description",
+      "descriptionPlaceholder": "Enter event description...",
+      "customUrlLabel": "Custom URL",
+      "customUrlPlaceholder": "my-event",
+      "customUrlHint": "Lowercase letters, numbers, and hyphens only. Auto-generated if empty.",
+      "startDateLabel": "Start Date & Time",
+      "endDateLabel": "End Date & Time",
+      "creditsLabel": "Credits per Voter",
+      "creditsHint": "Credits available to each voter. 1 vote = 1 credit, 2 votes = 4 credits (square of votes)",
+      "authModeLabel": "Voter Authentication Method",
+      "authModes": {
+        "individual": {
+          "title": "Individual URL Method",
+          "description": "Issue unique URL for each participant"
+        },
+        "google": {
+          "title": "Google Account",
+          "description": "Log in with Google to vote"
+        },
+        "line": {
+          "title": "LINE Account",
+          "description": "Log in with LINE to vote"
+        },
+        "discord": {
+          "title": "Discord Account",
+          "description": "Log in with Discord to vote"
+        }
+      },
+      "discordGate": {
+        "enableLabel": "Limit to specific Discord server members",
+        "guildIdLabel": "Discord Server ID",
+        "guildIdPlaceholder": "123456789012345678",
+        "guildIdHint": "Server Settings → Widget → Server ID, or enable Developer Mode and right-click → Copy ID",
+        "guildNameLabel": "Server Name (for display)",
+        "guildNamePlaceholder": "e.g., My Community Server",
+        "guildNameHint": "This name will be shown in error messages (optional)"
+      },
+      "submitButton": "Create Event",
+      "creating": "Creating...",
+      "wizard": {
+        "step1": "Basic Info",
+        "step2": "Options",
+        "step3": "Confirm",
+        "step4": "Complete",
+        "stepDescription1": "Enter basic event information",
+        "stepDescription2": "Add voting options (at least 1 required)",
+        "stepDescription3": "Review and publish",
+        "stepDescription4": "Setup complete! Share the URL",
+        "addSubject": "Add Option",
+        "subjectTitle": "Option Name",
+        "subjectTitlePlaceholder": "e.g., Hawaii",
+        "subjectDescription": "Description (optional)",
+        "subjectDescriptionPlaceholder": "Describe this option...",
+        "subjectUrl": "Reference URL (optional)",
+        "subjectUrlPlaceholder": "https://...",
+        "noSubjects": "No options added yet",
+        "atLeastOneSubject": "Please add at least one voting option",
+        "confirmTitle": "Confirm Details",
+        "confirmDescription": "Options, credits, and auth method cannot be changed after publishing",
+        "confirmWarning": "No changes after publishing",
+        "confirmWarningDetail": "To prevent fraud, the following cannot be changed after publishing: voting options, credits per voter, authentication method",
+        "publish": "Publish",
+        "publishing": "Publishing...",
+        "generateTokens": "Generate Voting Tokens",
+        "tokenCount": "Number of tokens to generate",
+        "tokensGenerated": "{count} tokens generated"
+      }
+    },
+    "created": {
+      "title": "Event Created Successfully!",
+      "adminUrlLabel": "Admin URL",
+      "adminUrlWarning": "This URL will not be shown again. Please save it in a secure location.",
+      "publicUrlLabel": "Public URL (for participants)",
+      "nextSteps": "Next Steps",
+      "addSubjects": "Add voting options",
+      "goToAdmin": "Go to Admin Panel"
+    },
+    "status": {
+      "upcoming": "Upcoming",
+      "active": "Active",
+      "ended": "Ended"
+    },
+    "info": {
+      "period": "Period",
+      "credits": "Credits",
+      "subjects": "Options"
+    }
+  },
+  "vote": {
+    "title": "Vote",
+    "remainingCredits": "Remaining Credits",
+    "totalCost": "Total Cost",
+    "creditUsage": "Credit usage",
+    "votes": "votes",
+    "cost": "Cost",
+    "submitVote": "Submit Vote",
+    "submitting": "Submitting...",
+    "editVote": "Change Vote",
+    "alreadyVoted": "Already Voted",
+    "viewResults": "View Results",
+    "complete": {
+      "title": "Vote Submitted!",
+      "message": "Thank you for voting.",
+      "viewResults": "View Results",
+      "changeVote": "Change Vote"
+    },
+    "errors": {
+      "notActive": "This event is not currently in the voting period",
+      "noCredits": "Insufficient credits",
+      "authRequired": "Login required to vote"
+    }
+  },
+  "results": {
+    "title": "Voting Results",
+    "liveUpdating": "Live Updating",
+    "rank": "Rank",
+    "votes": "Votes",
+    "totalCredits": "Credits Used",
+    "statistics": {
+      "title": "Statistics",
+      "participants": "Participants",
+      "totalCreditsUsed": "Total Credits Used",
+      "averageCredits": "Average Credits",
+      "participationRate": "Participation Rate",
+      "creditUsageRate": "Credit Usage Rate"
+    },
+    "distribution": {
+      "title": "Vote Distribution"
+    },
+    "export": {
+      "summary": "Download Summary Data",
+      "raw": "Download Raw Data"
+    }
+  },
+  "admin": {
+    "title": "Event Management",
+    "eventInfo": "Event Information",
+    "subjects": {
+      "title": "Voting Options",
+      "add": "Add Option",
+      "edit": "Edit",
+      "delete": "Delete",
+      "confirmDelete": "Are you sure you want to delete this option?",
+      "nameLabel": "Option Name",
+      "descriptionLabel": "Description",
+      "imageUrlLabel": "Image URL",
+      "linkUrlLabel": "Link URL"
+    },
+    "tokens": {
+      "title": "Voting Tokens",
+      "generate": "Generate Tokens",
+      "generateCount": "Generate {count} tokens",
+      "exportCsv": "Download CSV",
+      "used": "Used",
+      "unused": "Unused"
+    },
+    "links": {
+      "publicUrl": "Public URL",
+      "resultsUrl": "Results URL"
+    },
+    "editRestriction": "Options and credits cannot be changed after voting starts"
+  },
+  "auth": {
+    "signIn": "Sign In",
+    "signOut": "Sign Out",
+    "signInWith": "Sign in with {provider}",
+    "error": {
+      "title": "Authentication Error",
+      "default": "An error occurred during authentication",
+      "configuration": "There is a problem with the server configuration",
+      "accessDenied": "Access denied",
+      "verification": "The authentication token has expired"
+    }
+  },
+  "language": {
+    "ja": "日本語",
+    "en": "English",
+    "switchTo": "Switch language"
+  },
+  "metadata": {
+    "title": "QV-Tool - Quadratic Voting Tool",
+    "description": "A democratic decision-making platform using quadratic voting mechanism"
+  },
+  "csv": {
+    "rank": "Rank",
+    "title": "Title",
+    "totalVotes": "Total Votes",
+    "creditsUsed": "Credits Used",
+    "voterCount": "Voter Count",
+    "voteId": "Vote ID",
+    "votedAt": "Voted At",
+    "totalCost": "Total Cost"
+  },
+  "errors": {
+    "validation": "Invalid input",
+    "endDateBeforeStart": "End date must be after start date",
+    "slugAlreadyUsed": "This slug is already in use",
+    "eventCreateFailed": "Failed to create event. Please try again later.",
+    "eventNotFoundOrNoAccess": "Event not found or you do not have access",
+    "eventUpdateFailed": "Failed to update event",
+    "eventNotFound": "Event not found",
+    "votingNotStarted": "Voting has not started yet",
+    "votingEnded": "Voting period has ended",
+    "invalidSubject": "Invalid voting option included",
+    "creditsExceeded": "Credits exceeded (used: {used} / limit: {limit})",
+    "tokenRequired": "Voting token is required",
+    "invalidToken": "Invalid token",
+    "tokenAlreadyUsed": "This token has already been used. To edit your vote, please use the edit screen.",
+    "loginRequired": "Login required",
+    "alreadyVoted": "You have already voted. To edit your vote, please use the edit screen.",
+    "voteNotFound": "Vote not found",
+    "noPermissionToEdit": "You do not have permission to edit this vote",
+    "submitVoteFailed": "Failed to submit vote. Please try again later.",
+    "noPermission": "You do not have admin permission",
+    "subjectCreateFailed": "Failed to create option",
+    "subjectUpdateFailed": "Failed to update option",
+    "subjectDeleteFailed": "Failed to delete option",
+    "subjectNotFound": "Option not found",
+    "cannotModifyAfterVoting": "Cannot modify after voting has started",
+    "cannotModifyLockedEvent": "Cannot modify a published event",
+    "eventPublishFailed": "Failed to publish event",
+    "tokenGenerateFailed": "Failed to generate tokens",
+    "rateLimitExceeded": "Rate limit exceeded. Please try again in {seconds} seconds.",
+    "discordAuthRequired": "Discord authentication is required",
+    "discordGuildMemberOnly": "Only members of this server can vote",
+    "discordGuildMemberOnlyWithName": "Only members of \"{guildName}\" server can vote"
+  }
+}
+

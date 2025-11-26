@@ -2,6 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -26,10 +27,14 @@ import { Loader2 } from "lucide-react";
 type FormErrors = Record<string, string[]>;
 
 export function EventCreateForm() {
+  const t = useTranslations("event.create");
+  const tCommon = useTranslations("common");
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [errors, setErrors] = useState<FormErrors>({});
   const [generalError, setGeneralError] = useState<string | null>(null);
+  const [votingMode, setVotingMode] = useState<string>("individual");
+  const [enableGuildGate, setEnableGuildGate] = useState(false);
 
   // 開始日のデフォルト: 今日
   const today = new Date();
@@ -52,10 +57,13 @@ export function EventCreateForm() {
       formData.get("creditsPerVoter") as string,
       10
     );
-    const votingMode = formData.get("votingMode") as
+    const votingModeValue = formData.get("votingMode") as
       | "individual"
       | "google"
-      | "line";
+      | "line"
+      | "discord";
+    const discordGuildId = formData.get("discordGuildId") as string;
+    const discordGuildName = formData.get("discordGuildName") as string;
 
     startTransition(async () => {
       const result: CreateEventResult = await createEvent({
@@ -65,7 +73,10 @@ export function EventCreateForm() {
         startDate: new Date(startDateStr),
         endDate: new Date(endDateStr),
         creditsPerVoter: isNaN(creditsPerVoter) ? 100 : creditsPerVoter,
-        votingMode,
+        votingMode: votingModeValue,
+        // Discord ゲート機能が有効な場合のみ送信
+        discordGuildId: votingModeValue === "discord" && enableGuildGate ? discordGuildId || undefined : undefined,
+        discordGuildName: votingModeValue === "discord" && enableGuildGate ? discordGuildName || undefined : undefined,
       });
 
       if (result.success) {
@@ -85,17 +96,18 @@ export function EventCreateForm() {
   return (
     <Card className="w-full max-w-2xl">
       <CardHeader>
-        <CardTitle className="text-2xl">新しい投票イベントを作成</CardTitle>
-        <CardDescription>
-          Quadratic Voting（二次投票）形式のイベントを作成します。
-          誰でも作成可能です。
-        </CardDescription>
+        <CardTitle className="text-2xl">{t("title")}</CardTitle>
+        <CardDescription>{t("description")}</CardDescription>
       </CardHeader>
       <CardContent>
         <form action={handleSubmit} className="space-y-6">
           {/* 一般エラー */}
           {generalError && (
-            <div className="rounded-md border border-destructive/50 bg-destructive/10 p-4 text-sm text-destructive">
+            <div
+              role="alert"
+              aria-live="assertive"
+              className="rounded-md border border-destructive/50 bg-destructive/10 p-4 text-sm text-destructive"
+            >
               {generalError}
             </div>
           )}
@@ -103,13 +115,13 @@ export function EventCreateForm() {
           {/* タイトル */}
           <div className="space-y-2">
             <Label htmlFor="title">
-              タイトル <span className="text-destructive">*</span>
+              {t("titleLabel")} <span className="text-destructive">*</span>
             </Label>
             <Input
               id="title"
               name="title"
               type="text"
-              placeholder="例: チーム旅行先を決めよう！"
+              placeholder={t("titlePlaceholder")}
               required
               maxLength={100}
               aria-invalid={!!errors.title}
@@ -124,11 +136,13 @@ export function EventCreateForm() {
 
           {/* 説明 */}
           <div className="space-y-2">
-            <Label htmlFor="description">説明（任意）</Label>
+            <Label htmlFor="description">
+              {t("descriptionLabel")}（{tCommon("optional")}）
+            </Label>
             <Textarea
               id="description"
               name="description"
-              placeholder="イベントの説明を入力してください..."
+              placeholder={t("descriptionPlaceholder")}
               maxLength={2000}
               rows={4}
               aria-invalid={!!errors.description}
@@ -142,14 +156,16 @@ export function EventCreateForm() {
 
           {/* カスタムスラッグ */}
           <div className="space-y-2">
-            <Label htmlFor="slug">カスタムURL（任意）</Label>
+            <Label htmlFor="slug">
+              {t("customUrlLabel")}（{tCommon("optional")}）
+            </Label>
             <div className="flex items-center gap-2">
               <span className="text-sm text-muted-foreground">/events/</span>
               <Input
                 id="slug"
                 name="slug"
                 type="text"
-                placeholder="my-event"
+                placeholder={t("customUrlPlaceholder")}
                 pattern="[a-z0-9-]+"
                 minLength={3}
                 maxLength={50}
@@ -158,7 +174,7 @@ export function EventCreateForm() {
               />
             </div>
             <p className="text-xs text-muted-foreground">
-              英小文字、数字、ハイフンのみ。空欄の場合は自動生成されます。
+              {t("customUrlHint")}
             </p>
             {errors.slug && (
               <p className="text-sm text-destructive">{errors.slug[0]}</p>
@@ -169,7 +185,7 @@ export function EventCreateForm() {
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="space-y-2">
               <Label htmlFor="startDate">
-                開始日時 <span className="text-destructive">*</span>
+                {t("startDateLabel")} <span className="text-destructive">*</span>
               </Label>
               <Input
                 id="startDate"
@@ -187,7 +203,7 @@ export function EventCreateForm() {
             </div>
             <div className="space-y-2">
               <Label htmlFor="endDate">
-                終了日時 <span className="text-destructive">*</span>
+                {t("endDateLabel")} <span className="text-destructive">*</span>
               </Label>
               <Input
                 id="endDate"
@@ -205,7 +221,7 @@ export function EventCreateForm() {
 
           {/* クレジット数 */}
           <div className="space-y-2">
-            <Label htmlFor="creditsPerVoter">1人あたりのクレジット数</Label>
+            <Label htmlFor="creditsPerVoter">{t("creditsLabel")}</Label>
             <Input
               id="creditsPerVoter"
               name="creditsPerVoter"
@@ -215,9 +231,7 @@ export function EventCreateForm() {
               defaultValue={100}
               aria-invalid={!!errors.creditsPerVoter}
             />
-            <p className="text-xs text-muted-foreground">
-              投票者が使用できるクレジット。1票=1クレジット、2票=4クレジット（票数の2乗）
-            </p>
+            <p className="text-xs text-muted-foreground">{t("creditsHint")}</p>
             {errors.creditsPerVoter && (
               <p className="text-sm text-destructive">
                 {errors.creditsPerVoter[0]}
@@ -228,34 +242,61 @@ export function EventCreateForm() {
           {/* 認証方式 */}
           <div className="space-y-2">
             <Label htmlFor="votingMode">
-              投票者の認証方式 <span className="text-destructive">*</span>
+              {t("authModeLabel")} <span className="text-destructive">*</span>
             </Label>
-            <Select name="votingMode" defaultValue="individual" required>
+            <Select 
+              name="votingMode" 
+              defaultValue="individual" 
+              required
+              onValueChange={(value) => {
+                setVotingMode(value);
+                // Discord以外の場合はゲート機能を無効化
+                if (value !== "discord") {
+                  setEnableGuildGate(false);
+                }
+              }}
+            >
               <SelectTrigger id="votingMode" className="w-full">
-                <SelectValue placeholder="認証方式を選択" />
+                <SelectValue />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="individual">
                   <div className="flex flex-col items-start">
-                    <span className="font-medium">個別URL方式</span>
+                    <span className="font-medium">
+                      {t("authModes.individual.title")}
+                    </span>
                     <span className="text-xs text-muted-foreground">
-                      参加者ごとにユニークなURLを発行
+                      {t("authModes.individual.description")}
                     </span>
                   </div>
                 </SelectItem>
                 <SelectItem value="google">
                   <div className="flex flex-col items-start">
-                    <span className="font-medium">Googleアカウント</span>
+                    <span className="font-medium">
+                      {t("authModes.google.title")}
+                    </span>
                     <span className="text-xs text-muted-foreground">
-                      Googleでログインして投票
+                      {t("authModes.google.description")}
                     </span>
                   </div>
                 </SelectItem>
                 <SelectItem value="line">
                   <div className="flex flex-col items-start">
-                    <span className="font-medium">LINEアカウント</span>
+                    <span className="font-medium">
+                      {t("authModes.line.title")}
+                    </span>
                     <span className="text-xs text-muted-foreground">
-                      LINEでログインして投票
+                      {t("authModes.line.description")}
+                    </span>
+                  </div>
+                </SelectItem>
+                <SelectItem value="discord">
+                  <div className="flex flex-col items-start">
+                    <span className="font-medium">
+                      {t("authModes.discord.title")}
+                    </span>
+                    <span className="text-xs text-muted-foreground">
+                      {t("authModes.discord.description")}
                     </span>
                   </div>
                 </SelectItem>
@@ -265,6 +306,68 @@ export function EventCreateForm() {
               <p className="text-sm text-destructive">{errors.votingMode[0]}</p>
             )}
           </div>
+
+          {/* Discord サーバーゲート設定 */}
+          {votingMode === "discord" && (
+            <div className="space-y-4 rounded-lg border border-border bg-muted/30 p-4">
+              <div className="flex items-center gap-3">
+                <input
+                  type="checkbox"
+                  id="enableGuildGate"
+                  checked={enableGuildGate}
+                  onChange={(e) => setEnableGuildGate(e.target.checked)}
+                  className="size-4 rounded border-input"
+                />
+                <Label htmlFor="enableGuildGate" className="cursor-pointer">
+                  {t("discordGate.enableLabel")}
+                </Label>
+              </div>
+              
+              {enableGuildGate && (
+                <div className="space-y-4 pl-7">
+                  <div className="space-y-2">
+                    <Label htmlFor="discordGuildId">
+                      {t("discordGate.guildIdLabel")} <span className="text-destructive">*</span>
+                    </Label>
+                    <Input
+                      id="discordGuildId"
+                      name="discordGuildId"
+                      type="text"
+                      placeholder={t("discordGate.guildIdPlaceholder")}
+                      pattern="\d{17,19}"
+                      required={enableGuildGate}
+                      aria-invalid={!!errors.discordGuildId}
+                    />
+                    <p className="text-xs text-muted-foreground">
+                      {t("discordGate.guildIdHint")}
+                    </p>
+                    {errors.discordGuildId && (
+                      <p className="text-sm text-destructive">
+                        {errors.discordGuildId[0]}
+                      </p>
+                    )}
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="discordGuildName">
+                      {t("discordGate.guildNameLabel")}（{tCommon("optional")}）
+                    </Label>
+                    <Input
+                      id="discordGuildName"
+                      name="discordGuildName"
+                      type="text"
+                      placeholder={t("discordGate.guildNamePlaceholder")}
+                      maxLength={100}
+                      aria-invalid={!!errors.discordGuildName}
+                    />
+                    <p className="text-xs text-muted-foreground">
+                      {t("discordGate.guildNameHint")}
+                    </p>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
 
           {/* 送信ボタン */}
           <Button
@@ -276,10 +379,10 @@ export function EventCreateForm() {
             {isPending ? (
               <>
                 <Loader2 className="animate-spin" />
-                作成中...
+                {t("creating")}
               </>
             ) : (
-              "イベントを作成"
+              t("submitButton")
             )}
           </Button>
         </form>
@@ -287,4 +390,3 @@ export function EventCreateForm() {
     </Card>
   );
 }
-

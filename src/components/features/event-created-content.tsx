@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -37,12 +38,16 @@ type Props = {
 };
 
 export function EventCreatedContent({ event }: Props) {
+  const t = useTranslations();
   const [adminUrlCopied, setAdminUrlCopied] = useState(false);
   const [eventUrlCopied, setEventUrlCopied] = useState(false);
 
   // URLの生成
-  const baseUrl = typeof window !== "undefined" ? window.location.origin : "";
-  const eventPath = event.slug ? `/events/${event.slug}` : `/events/${event.id}`;
+  const baseUrl =
+    typeof window !== "undefined" ? window.location.origin : "";
+  const eventPath = event.slug
+    ? `/events/${event.slug}`
+    : `/events/${event.id}`;
   const eventUrl = `${baseUrl}${eventPath}`;
   const adminUrl = `${baseUrl}/admin/${event.id}?token=${event.adminToken}`;
 
@@ -61,11 +66,12 @@ export function EventCreatedContent({ event }: Props) {
     }
   };
 
-  const votingModeLabel = {
-    individual: "個別URL方式",
-    google: "Googleアカウント",
-    line: "LINEアカウント",
-  }[event.votingMode] ?? event.votingMode;
+  const votingModeLabel =
+    {
+      individual: t("event.create.authModes.individual.title"),
+      google: t("event.create.authModes.google.title"),
+      line: t("event.create.authModes.line.title"),
+    }[event.votingMode] ?? event.votingMode;
 
   return (
     <div className="space-y-6">
@@ -73,10 +79,10 @@ export function EventCreatedContent({ event }: Props) {
       <div className="flex items-center justify-center gap-3 py-8">
         <CheckCircle className="size-12 text-green-600" />
         <div>
-          <h1 className="text-2xl font-bold">イベントを作成しました！</h1>
-          <p className="text-muted-foreground">
-            「{event.title}」の準備が整いました
-          </p>
+          <h1 className="text-2xl font-bold">
+            {t("event.created.title")}
+          </h1>
+          <p className="text-muted-foreground">{event.title}</p>
         </div>
       </div>
 
@@ -84,29 +90,31 @@ export function EventCreatedContent({ event }: Props) {
       <Card className="border-amber-500/50 bg-amber-50 dark:bg-amber-950/30">
         <CardHeader className="pb-3">
           <div className="flex items-start gap-2">
-            <AlertTriangle className="size-5 text-amber-600 mt-0.5" />
+            <AlertTriangle className="mt-0.5 size-5 text-amber-600" />
             <div>
               <CardTitle className="text-amber-800 dark:text-amber-200">
-                重要：管理用URLを必ず保存してください
+                {t("event.created.adminUrlLabel")}
               </CardTitle>
               <CardDescription className="text-amber-700 dark:text-amber-300">
-                このページを閉じると、管理用URLは再表示できません。
-                安全な場所に保存してください。
+                {t("event.created.adminUrlWarning")}
               </CardDescription>
             </div>
           </div>
         </CardHeader>
         <CardContent>
           <div className="space-y-2">
-            <Label htmlFor="admin-url" className="text-amber-800 dark:text-amber-200">
-              管理用URL
+            <Label
+              htmlFor="admin-url"
+              className="text-amber-800 dark:text-amber-200"
+            >
+              Admin URL
             </Label>
             <div className="flex gap-2">
               <Input
                 id="admin-url"
                 value={adminUrl}
                 readOnly
-                className="bg-white dark:bg-black font-mono text-sm"
+                className="bg-white font-mono text-sm dark:bg-black"
               />
               <Button
                 onClick={() => copyToClipboard(adminUrl, "admin")}
@@ -116,12 +124,12 @@ export function EventCreatedContent({ event }: Props) {
                 {adminUrlCopied ? (
                   <>
                     <Check className="size-4" />
-                    コピー済み
+                    {t("common.copied")}
                   </>
                 ) : (
                   <>
                     <Copy className="size-4" />
-                    コピー
+                    {t("common.copy")}
                   </>
                 )}
               </Button>
@@ -133,12 +141,14 @@ export function EventCreatedContent({ event }: Props) {
       {/* イベント情報 */}
       <Card>
         <CardHeader>
-          <CardTitle>イベント情報</CardTitle>
+          <CardTitle>{t("admin.eventInfo")}</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           {/* イベントURL */}
           <div className="space-y-2">
-            <Label htmlFor="event-url">イベントURL（参加者向け）</Label>
+            <Label htmlFor="event-url">
+              {t("event.created.publicUrlLabel")}
+            </Label>
             <div className="flex gap-2">
               <Input
                 id="event-url"
@@ -154,12 +164,12 @@ export function EventCreatedContent({ event }: Props) {
                 {eventUrlCopied ? (
                   <>
                     <Check className="size-4" />
-                    コピー済み
+                    {t("common.copied")}
                   </>
                 ) : (
                   <>
                     <Copy className="size-4" />
-                    コピー
+                    {t("common.copy")}
                   </>
                 )}
               </Button>
@@ -167,40 +177,46 @@ export function EventCreatedContent({ event }: Props) {
           </div>
 
           {/* 詳細情報 */}
-          <div className="grid gap-4 sm:grid-cols-2 pt-4 border-t">
+          <div className="grid gap-4 border-t pt-4 sm:grid-cols-2">
             <div>
-              <p className="text-sm text-muted-foreground">開始日時</p>
+              <p className="text-sm text-muted-foreground">
+                {t("event.create.startDateLabel")}
+              </p>
               <p className="font-medium">
-                {new Date(event.startDate).toLocaleString("ja-JP")}
+                {new Date(event.startDate).toLocaleString()}
               </p>
             </div>
             <div>
-              <p className="text-sm text-muted-foreground">終了日時</p>
+              <p className="text-sm text-muted-foreground">
+                {t("event.create.endDateLabel")}
+              </p>
               <p className="font-medium">
-                {new Date(event.endDate).toLocaleString("ja-JP")}
+                {new Date(event.endDate).toLocaleString()}
               </p>
             </div>
             <div>
-              <p className="text-sm text-muted-foreground">クレジット数</p>
-              <p className="font-medium">{event.creditsPerVoter} クレジット/人</p>
+              <p className="text-sm text-muted-foreground">
+                {t("event.create.creditsLabel")}
+              </p>
+              <p className="font-medium">{event.creditsPerVoter}</p>
             </div>
             <div>
-              <p className="text-sm text-muted-foreground">認証方式</p>
+              <p className="text-sm text-muted-foreground">
+                {t("event.create.authModeLabel")}
+              </p>
               <p className="font-medium">{votingModeLabel}</p>
             </div>
           </div>
         </CardContent>
-        <CardFooter className="flex gap-3 flex-wrap">
+        <CardFooter className="flex flex-wrap gap-3">
           <Button asChild>
             <Link href={`/admin/${event.id}?token=${event.adminToken}`}>
               <ExternalLink className="size-4" />
-              管理画面を開く
+              {t("event.created.goToAdmin")}
             </Link>
           </Button>
           <Button variant="outline" asChild>
-            <Link href="/">
-              トップへ戻る
-            </Link>
+            <Link href="/">{t("common.back")}</Link>
           </Button>
         </CardFooter>
       </Card>
@@ -208,20 +224,14 @@ export function EventCreatedContent({ event }: Props) {
       {/* 次のステップ */}
       <Card>
         <CardHeader>
-          <CardTitle>次のステップ</CardTitle>
+          <CardTitle>{t("event.created.nextSteps")}</CardTitle>
         </CardHeader>
         <CardContent>
-          <ol className="list-decimal list-inside space-y-2 text-muted-foreground">
-            <li>管理画面で投票対象（選択肢）を追加してください</li>
-            {event.votingMode === "individual" && (
-              <li>参加者用の個別URLを生成し、配布してください</li>
-            )}
-            <li>イベントURLを参加者に共有してください</li>
-            <li>投票期間が終了したら、結果を確認してください</li>
+          <ol className="list-inside list-decimal space-y-2 text-muted-foreground">
+            <li>{t("event.created.addSubjects")}</li>
           </ol>
         </CardContent>
       </Card>
     </div>
   );
 }
-

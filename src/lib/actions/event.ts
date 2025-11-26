@@ -1,5 +1,7 @@
 "use server";
 
+import { headers } from "next/headers";
+import { getTranslations } from "next-intl/server";
 import { prisma } from "@/lib/db";
 import {
   createEventSchema,
@@ -8,6 +10,7 @@ import {
   type UpdateEventInput,
 } from "@/lib/validations";
 import { generateSlug, sanitizeSlug } from "@/lib/utils/slug";
+import { checkEventCreateRateLimit, getClientIp } from "@/lib/rate-limit";
 
 export type CreateEventResult =
   | {
@@ -32,6 +35,21 @@ export type CreateEventResult =
 export async function createEvent(
   input: CreateEventInput
 ): Promise<CreateEventResult> {
+  const t = await getTranslations("errors");
+
+  // 0. レート制限チェック
+  const headersList = await headers();
+  const clientIp = getClientIp(headersList);
+  const rateLimitResult = await checkEventCreateRateLimit(clientIp);
+
+  if (!rateLimitResult.success) {
+    const secondsUntilReset = Math.ceil((rateLimitResult.reset - Date.now()) / 1000);
+    return {
+      success: false,
+      error: t("rateLimitExceeded", { seconds: secondsUntilReset }),
+    };
+  }
+
   // 1. バリデーション
   const parsed = createEventSchema.safeParse(input);
   if (!parsed.success) {
@@ -45,7 +63,7 @@ export async function createEvent(
     }
     return {
       success: false,
-      error: "入力内容に誤りがあります",
+      error: t("validation"),
       fieldErrors,
     };
   }
@@ -56,9 +74,9 @@ export async function createEvent(
   if (data.endDate <= data.startDate) {
     return {
       success: false,
-      error: "終了日は開始日より後の日付を指定してください",
+      error: t("endDateBeforeStart"),
       fieldErrors: {
-        endDate: ["終了日は開始日より後の日付を指定してください"],
+        endDate: [t("endDateBeforeStart")],
       },
     };
   }
@@ -76,9 +94,9 @@ export async function createEvent(
     if (existing) {
       return {
         success: false,
-        error: "このスラッグは既に使用されています",
+        error: t("slugAlreadyUsed"),
         fieldErrors: {
-          slug: ["このスラッグは既に使用されています"],
+          slug: [t("slugAlreadyUsed")],
         },
       };
     }
@@ -112,6 +130,9 @@ export async function createEvent(
         endDate: data.endDate,
         creditsPerVoter: data.creditsPerVoter,
         votingMode: data.votingMode,
+        // Discord ゲート機能用
+        discordGuildId: data.discordGuildId ?? null,
+        discordGuildName: data.discordGuildName ?? null,
       },
       select: {
         id: true,
@@ -129,7 +150,7 @@ export async function createEvent(
     console.error("Failed to create event:", error);
     return {
       success: false,
-      error: "イベントの作成に失敗しました。しばらく経ってから再度お試しください。",
+      error: t("eventCreateFailed"),
     };
   }
 }
@@ -177,6 +198,8 @@ export async function updateEvent(
   adminToken: string,
   input: UpdateEventInput
 ): Promise<UpdateEventResult> {
+  const t = await getTranslations("errors");
+
   // 1. イベントの存在確認とadminToken検証
   const event = await prisma.event.findUnique({
     where: { id: eventId },
@@ -190,7 +213,7 @@ export async function updateEvent(
   if (!event || event.adminToken !== adminToken) {
     return {
       success: false,
-      error: "イベントが見つからないか、アクセス権限がありません",
+      error: t("eventNotFoundOrNoAccess"),
     };
   }
 
@@ -207,7 +230,7 @@ export async function updateEvent(
     }
     return {
       success: false,
-      error: "入力内容に誤りがあります",
+      error: t("validation"),
       fieldErrors,
     };
   }
@@ -218,9 +241,9 @@ export async function updateEvent(
   if (data.startDate && data.endDate && data.endDate <= data.startDate) {
     return {
       success: false,
-      error: "終了日は開始日より後の日付を指定してください",
+      error: t("endDateBeforeStart"),
       fieldErrors: {
-        endDate: ["終了日は開始日より後の日付を指定してください"],
+        endDate: [t("endDateBeforeStart")],
       },
     };
   }
@@ -242,7 +265,7 @@ export async function updateEvent(
     console.error("Failed to update event:", error);
     return {
       success: false,
-      error: "イベントの更新に失敗しました",
+      error: t("eventUpdateFailed"),
     };
   }
 }
@@ -255,5 +278,253 @@ export async function hasVotes(eventId: string): Promise<boolean> {
     where: { eventId },
   });
   return count > 0;
+}
+
+// ============================================
+// ワンストップ作成機能
+// ============================================
+
+export type SubjectInput = {
+  title: string;
+  description?: string;
+  url?: string;
+};
+
+export type CreateEventWithSubjectsInput = CreateEventInput & {
+  subjects: SubjectInput[];
+};
+
+export type CreateEventWithSubjectsResult =
+  | {
+      success: true;
+      event: {
+        id: string;
+        slug: string | null;
+        title: string;
+        adminToken: string;
+        startDate: Date;
+        endDate: Date;
+        creditsPerVoter: number;
+        votingMode: string;
+        subjects: { id: string; title: string; description: string | null }[];
+      };
+    }
+  | {
+      success: false;
+      error: string;
+      fieldErrors?: Record<string, string[]>;
+    };
+
+/**
+ * イベントと投票候補を一括作成し、ロック済みで保存
+ * ワンストップ作成フロー用
+ */
+export async function createEventWithSubjects(
+  input: CreateEventWithSubjectsInput
+): Promise<CreateEventWithSubjectsResult> {
+  const t = await getTranslations("errors");
+
+  // 0. レート制限チェック
+  const headersList = await headers();
+  const clientIp = getClientIp(headersList);
+  const rateLimitResult = await checkEventCreateRateLimit(clientIp);
+
+  if (!rateLimitResult.success) {
+    const secondsUntilReset = Math.ceil((rateLimitResult.reset - Date.now()) / 1000);
+    return {
+      success: false,
+      error: t("rateLimitExceeded", { seconds: secondsUntilReset }),
+    };
+  }
+
+  // 1. 投票候補が最低1つあるかチェック
+  if (!input.subjects || input.subjects.length === 0) {
+    return {
+      success: false,
+      error: t("validation"),
+      fieldErrors: {
+        subjects: ["投票候補を最低1つ追加してください"],
+      },
+    };
+  }
+
+  // 2. 基本情報のバリデーション
+  console.log("Input for validation:", JSON.stringify(input, null, 2));
+  const parsed = createEventSchema.safeParse(input);
+  if (!parsed.success) {
+    console.log("Validation errors:", JSON.stringify(parsed.error.issues, null, 2));
+    const fieldErrors: Record<string, string[]> = {};
+    for (const issue of parsed.error.issues) {
+      const field = issue.path[0]?.toString() ?? "unknown";
+      if (!fieldErrors[field]) {
+        fieldErrors[field] = [];
+      }
+      fieldErrors[field].push(issue.message);
+    }
+    return {
+      success: false,
+      error: t("validation"),
+      fieldErrors,
+    };
+  }
+
+  const data = parsed.data;
+
+  // 3. 日付の妥当性チェック
+  if (data.endDate <= data.startDate) {
+    return {
+      success: false,
+      error: t("endDateBeforeStart"),
+      fieldErrors: {
+        endDate: [t("endDateBeforeStart")],
+      },
+    };
+  }
+
+  // 4. slugの処理
+  let slug: string | null = null;
+  if (data.slug) {
+    const sanitized = sanitizeSlug(data.slug);
+    const existing = await prisma.event.findUnique({
+      where: { slug: sanitized },
+      select: { id: true },
+    });
+    if (existing) {
+      return {
+        success: false,
+        error: t("slugAlreadyUsed"),
+        fieldErrors: {
+          slug: [t("slugAlreadyUsed")],
+        },
+      };
+    }
+    slug = sanitized;
+  } else {
+    let attempts = 0;
+    while (attempts < 5) {
+      const generated = generateSlug();
+      const existing = await prisma.event.findUnique({
+        where: { slug: generated },
+        select: { id: true },
+      });
+      if (!existing) {
+        slug = generated;
+        break;
+      }
+      attempts++;
+    }
+  }
+
+  // 5. トランザクションでイベントと投票候補を一括作成
+  try {
+    const event = await prisma.$transaction(async (tx) => {
+      // イベント作成（ロック済み）
+      const createdEvent = await tx.event.create({
+        data: {
+          title: data.title,
+          description: data.description ?? null,
+          slug,
+          startDate: data.startDate,
+          endDate: data.endDate,
+          creditsPerVoter: data.creditsPerVoter,
+          votingMode: data.votingMode,
+          isLocked: true, // 公開時点でロック
+          // Discord ゲート機能用
+          discordGuildId: data.discordGuildId ?? null,
+          discordGuildName: data.discordGuildName ?? null,
+        },
+        select: {
+          id: true,
+          slug: true,
+          title: true,
+          adminToken: true,
+          startDate: true,
+          endDate: true,
+          creditsPerVoter: true,
+          votingMode: true,
+        },
+      });
+
+      // 投票候補を一括作成
+      const subjectData = input.subjects.map((subject, index) => ({
+        eventId: createdEvent.id,
+        title: subject.title,
+        description: subject.description ?? null,
+        url: subject.url ?? null,
+        order: index,
+      }));
+
+      await tx.subject.createMany({
+        data: subjectData,
+      });
+
+      // 作成した投票候補を取得
+      const subjects = await tx.subject.findMany({
+        where: { eventId: createdEvent.id },
+        select: { id: true, title: true, description: true },
+        orderBy: { order: "asc" },
+      });
+
+      return { ...createdEvent, subjects };
+    });
+
+    return {
+      success: true,
+      event,
+    };
+  } catch (error) {
+    console.error("Failed to create event with subjects:", error);
+    return {
+      success: false,
+      error: t("eventCreateFailed"),
+    };
+  }
+}
+
+/**
+ * イベントを公開（ロック）する
+ * 一度公開すると投票候補・クレジット・認証方式は変更不可
+ */
+export async function publishEvent(
+  eventId: string,
+  adminToken: string
+): Promise<{ success: true } | { success: false; error: string }> {
+  const t = await getTranslations("errors");
+
+  // 1. イベントの存在確認とadminToken検証
+  const event = await prisma.event.findUnique({
+    where: { id: eventId },
+    select: {
+      adminToken: true,
+      isLocked: true,
+      subjects: { select: { id: true } },
+    },
+  });
+
+  if (!event || event.adminToken !== adminToken) {
+    return { success: false, error: t("eventNotFoundOrNoAccess") };
+  }
+
+  // 2. 既にロック済み
+  if (event.isLocked) {
+    return { success: true }; // 既に公開済みなのでエラーにしない
+  }
+
+  // 3. 投票候補が最低1つあるかチェック
+  if (event.subjects.length === 0) {
+    return { success: false, error: t("validation") };
+  }
+
+  // 4. ロック実行
+  try {
+    await prisma.event.update({
+      where: { id: eventId },
+      data: { isLocked: true },
+    });
+    return { success: true };
+  } catch (error) {
+    console.error("Failed to publish event:", error);
+    return { success: false, error: t("eventPublishFailed") };
+  }
 }
 
