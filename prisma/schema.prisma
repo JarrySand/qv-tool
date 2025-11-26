@@ -1,0 +1,178 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ========================================
+// NextAuth.js 必須モデル
+// ========================================
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+// ========================================
+// ユーザー (Social Auth 投票者のみ)
+// ========================================
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String?   @unique
+  emailVerified DateTime?
+  image         String?
+  accounts      Account[]
+  sessions      Session[]
+
+  // 投票履歴 (Social Authの場合)
+  votes Vote[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// ========================================
+// 投票イベント
+// ========================================
+
+model Event {
+  id              String   @id @default(cuid())
+  slug            String?  @unique // URL用の短縮識別子 (オプション)
+  title           String
+  description     String?  @db.Text
+  startDate       DateTime
+  endDate         DateTime
+  creditsPerVoter Int      @default(100)
+  votingMode      String   // "individual", "google", "line"
+  adminToken      String   @unique @default(uuid()) // 管理用トークン（認証不要のため、このトークンで編集権限を制御）
+
+  // リレーション
+  subjects     Subject[]
+  votes        Vote[]
+  accessTokens AccessToken[] // 個別投票用のトークン管理
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([slug])
+  @@index([adminToken])
+}
+
+// ========================================
+// 投票対象 (選択肢)
+// ========================================
+
+model Subject {
+  id          String  @id @default(cuid())
+  eventId     String
+  title       String
+  description String? @db.Text
+  url         String? // 参考URL
+  imageUrl    String? // 画像URL
+  order       Int     @default(0) // 表示順
+
+  event       Event        @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  voteDetails VoteDetail[]
+
+  @@index([eventId])
+}
+
+// ========================================
+// 投票トークン (個別投票モード用)
+// ========================================
+
+model AccessToken {
+  id      String  @id @default(cuid())
+  token   String  @unique @default(uuid()) // URLに含まれるキー
+  eventId String
+  isUsed  Boolean @default(false)
+
+  event Event @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  vote  Vote? // 1つのトークンは1つの投票に紐づく
+
+  createdAt DateTime @default(now())
+
+  @@index([eventId])
+  @@index([token])
+}
+
+// ========================================
+// 投票アクション (「誰が」「どのイベントに」投票したか)
+// ========================================
+
+model Vote {
+  id      String @id @default(cuid())
+  eventId String
+
+  // 認証タイプに応じた紐付け
+  userId        String? // Social Authの場合
+  accessTokenId String? @unique // Individual Authの場合
+
+  user        User?        @relation(fields: [userId], references: [id])
+  accessToken AccessToken? @relation(fields: [accessTokenId], references: [id])
+  event       Event        @relation(fields: [eventId], references: [id], onDelete: Cascade)
+
+  details VoteDetail[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt // 再投票可能な場合
+
+  @@unique([eventId, userId]) // 1ユーザー1イベント1投票 (Social)
+  @@index([eventId])
+}
+
+// ========================================
+// 投票明細 (「どの対象に」「何票」入れたか)
+// ========================================
+
+model VoteDetail {
+  id        String @id @default(cuid())
+  voteId    String
+  subjectId String
+  amount    Int // 票数 (0以上の整数。マイナス投票は許可しない)
+  cost      Int // 消費クレジット (amount^2)
+
+  vote    Vote    @relation(fields: [voteId], references: [id], onDelete: Cascade)
+  subject Subject @relation(fields: [subjectId], references: [id])
+
+  @@unique([voteId, subjectId])
+  @@index([voteId])
+  @@index([subjectId])
+}

@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  app:
+    image: node:20-slim
+    volumes:
+      - ..:/workspace:cached
+    working_dir: /workspace
+    command: sleep infinity
+    environment:
+      - DATABASE_URL=postgresql://postgres:postgres@db:5432/qv_tool?schema=public
+    depends_on:
+      db:
+        condition: service_healthy
+
