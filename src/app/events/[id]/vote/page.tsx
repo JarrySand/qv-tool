@@ -2,9 +2,9 @@ import { notFound, redirect } from "next/navigation";
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 import { prisma } from "@/lib/db";
-import { auth } from "@/auth";
 import { VotingInterface } from "@/components/features/voting-interface";
 import { getExistingVote } from "@/lib/actions/vote";
+import { authenticateVoter } from "@/lib/auth/voting-auth";
 import { Button } from "@/components/ui/button";
 
 interface PageProps {
@@ -82,40 +82,33 @@ export default async function VotePage({ params, searchParams }: PageProps) {
     );
   }
 
-  // 認証チェック
-  if (event.votingMode === "individual") {
-    if (!token) {
-      return (
-        <div className="flex min-h-screen items-center justify-center p-4">
-          <div className="max-w-md text-center">
-            <h1 className="mb-4 text-2xl font-bold">
-              {t("vote.errors.authRequired")}
-            </h1>
-            <Button asChild variant="outline">
-              <Link href={`/events/${event.slug ?? event.id}`}>
-                {t("common.back")}
-              </Link>
-            </Button>
-          </div>
-        </div>
-      );
+  // 認証チェック（authenticateVoterを使用してDiscordゲート機能をサポート）
+  const authResult = await authenticateVoter(event.id, token);
+
+  if (!authResult.authenticated) {
+    // 未認証の場合
+    if (authResult.error === "ログインが必要です" || authResult.error === "Discord認証が必要です") {
+      // 未ログインの場合、サインインページへリダイレクト
+      const callbackUrl = `/events/${event.slug ?? event.id}/vote${token ? `?token=${token}` : ""}`;
+      redirect(`/auth/signin?callbackUrl=${encodeURIComponent(callbackUrl)}`);
     }
 
-    // トークンの有効性確認
-    const accessToken = await prisma.accessToken.findFirst({
-      where: {
-        eventId: event.id,
-        token,
-      },
-    });
-
-    if (!accessToken) {
+    // Discordゲートで弾かれた場合
+    if (authResult.error === "このサーバーのメンバーのみ投票可能です") {
       return (
         <div className="flex min-h-screen items-center justify-center p-4">
           <div className="max-w-md text-center">
             <h1 className="mb-4 text-2xl font-bold text-destructive">
-              {t("vote.errors.authRequired")}
+              投票できません
             </h1>
+            <p className="mb-6 text-muted-foreground">
+              {authResult.requiredGuildName 
+                ? `「${authResult.requiredGuildName}」サーバーのメンバーのみ投票可能です`
+                : "指定されたDiscordサーバーのメンバーのみ投票可能です"}
+            </p>
+            <p className="mb-6 text-sm text-muted-foreground">
+              サーバーに参加してから再度お試しください
+            </p>
             <Button asChild variant="outline">
               <Link href={`/events/${event.slug ?? event.id}`}>
                 {t("common.back")}
@@ -125,15 +118,22 @@ export default async function VotePage({ params, searchParams }: PageProps) {
         </div>
       );
     }
-  } else {
-    // Social認証チェック
-    const session = await auth();
 
-    if (!session?.user?.id) {
-      // 未ログインの場合、サインインページへリダイレクト
-      const callbackUrl = `/events/${event.slug ?? event.id}/vote`;
-      redirect(`/auth/signin?callbackUrl=${encodeURIComponent(callbackUrl)}`);
-    }
+    // その他のエラー
+    return (
+      <div className="flex min-h-screen items-center justify-center p-4">
+        <div className="max-w-md text-center">
+          <h1 className="mb-4 text-2xl font-bold text-destructive">
+            {authResult.error}
+          </h1>
+          <Button asChild variant="outline">
+            <Link href={`/events/${event.slug ?? event.id}`}>
+              {t("common.back")}
+            </Link>
+          </Button>
+        </div>
+      </div>
+    );
   }
 
   // 投票対象がない場合
