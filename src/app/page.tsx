@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/card";
 import { Plus, Vote, BarChart3, Users, ArrowRight, Sparkles } from "lucide-react";
 import { LanguageSwitcher } from "@/components/features/language-switcher";
+import { QuadraticExplainer } from "@/components/features/quadratic-explainer";
 import type { Locale } from "@/i18n/config";
 
 export default async function Home() {
@@ -32,25 +33,25 @@ export default async function Home() {
         <div className="absolute inset-0 overflow-hidden">
           {/* Large rotating square */}
           <div 
-            className="absolute -top-20 -left-20 size-80 rotate-45 border border-secondary/20 animate-[spin_30s_linear_infinite]"
+            className="absolute -top-20 -left-20 size-80 rotate-45 border border-primary/20 animate-[spin_30s_linear_infinite]"
             style={{ animationDirection: "reverse" }}
           />
           {/* Floating circles */}
-          <div className="absolute top-1/4 right-1/4 size-64 rounded-full border border-secondary/10 animate-[pulse_4s_ease-in-out_infinite]" />
-          <div className="absolute bottom-1/4 left-1/3 size-40 rounded-full bg-secondary/5 animate-[bounce_6s_ease-in-out_infinite]" />
+          <div className="absolute top-1/4 right-1/4 size-64 rounded-full border border-primary/10 animate-[pulse_4s_ease-in-out_infinite]" />
+          <div className="absolute bottom-1/4 left-1/3 size-40 rounded-full bg-primary/5 animate-[bounce_6s_ease-in-out_infinite]" />
           {/* Grid pattern */}
-          <div className="absolute inset-0 bg-[linear-gradient(to_right,transparent_0%,transparent_49%,#EDFF3808_50%,transparent_51%,transparent_100%)] bg-[size:4rem_4rem]" />
-          <div className="absolute inset-0 bg-[linear-gradient(to_bottom,transparent_0%,transparent_49%,#EDFF3808_50%,transparent_51%,transparent_100%)] bg-[size:4rem_4rem]" />
+          <div className="absolute inset-0 bg-[linear-gradient(to_right,transparent_0%,transparent_49%,#A78BFA08_50%,transparent_51%,transparent_100%)] bg-[size:4rem_4rem]" />
+          <div className="absolute inset-0 bg-[linear-gradient(to_bottom,transparent_0%,transparent_49%,#A78BFA08_50%,transparent_51%,transparent_100%)] bg-[size:4rem_4rem]" />
         </div>
 
         <div className="relative mx-auto max-w-5xl px-4 py-32 text-center">
           {/* Animated badge */}
           <div 
-            className="mb-8 inline-flex items-center gap-2 rounded-full border-2 border-secondary bg-secondary/10 px-5 py-2 text-sm font-semibold backdrop-blur-sm animate-fade-in"
+            className="mb-8 inline-flex items-center gap-2 rounded-full border-2 border-primary bg-primary/10 px-5 py-2 text-sm font-semibold backdrop-blur-sm animate-fade-in"
             style={{ animationDelay: "0.1s", animationFillMode: "backwards" }}
           >
-            <Sparkles className="size-4 text-secondary animate-[pulse_2s_ease-in-out_infinite]" />
-            <span className="bg-gradient-to-r from-foreground to-foreground/80 bg-clip-text">
+            <Sparkles className="size-4 text-primary animate-[pulse_2s_ease-in-out_infinite]" />
+            <span className="text-foreground">
               {t("badge")}
             </span>
           </div>
@@ -61,9 +62,7 @@ export default async function Home() {
             style={{ animationDelay: "0.2s", animationFillMode: "backwards" }}
           >
             <span className="block">{t("title")}</span>
-            <span 
-              className="block bg-gradient-to-r from-secondary via-yellow-300 to-secondary bg-clip-text text-transparent bg-[size:200%_100%] animate-[gradient_3s_ease_infinite]"
-            >
+            <span className="block text-primary">
               {t("titleHighlight")}
             </span>
           </h1>
@@ -83,7 +82,7 @@ export default async function Home() {
           >
             <Button 
               size="lg" 
-              className="group h-14 px-8 text-lg font-semibold transition-all duration-300 hover:scale-105 hover:shadow-[0_0_30px_rgba(237,255,56,0.3)]" 
+              className="group h-14 px-8 text-lg font-semibold transition-all duration-300 hover:scale-105 hover:shadow-[0_0_30px_rgba(167,139,250,0.4)]" 
               asChild
             >
               <Link href="/admin/create">
@@ -102,7 +101,7 @@ export default async function Home() {
             <span className="text-muted-foreground">cost</span>
             <span className="text-xl">=</span>
             <span className="text-muted-foreground">votes</span>
-            <span className="text-2xl font-bold text-secondary">²</span>
+            <span className="text-2xl font-bold text-primary">²</span>
           </div>
         </div>
       </div>
@@ -124,11 +123,11 @@ export default async function Home() {
           
           <div className="grid gap-8 md:grid-cols-3">
             {/* Feature Card 1 */}
-            <Card className="group relative overflow-hidden border-2 transition-all duration-300 hover:border-secondary hover:shadow-lg hover:shadow-secondary/10">
-              <div className="absolute inset-0 bg-gradient-to-br from-secondary/0 to-secondary/5 opacity-0 transition-opacity group-hover:opacity-100" />
+            <Card className="group relative overflow-hidden border-2 transition-all duration-300 hover:border-primary hover:shadow-lg hover:shadow-primary/10">
+              <div className="absolute inset-0 bg-gradient-to-br from-primary/0 to-primary/5 opacity-0 transition-opacity group-hover:opacity-100" />
               <CardHeader className="relative">
-                <div className="mb-4 inline-flex size-14 items-center justify-center rounded-xl bg-secondary/10 transition-transform group-hover:scale-110">
-                  <Vote className="size-7 text-secondary" />
+                <div className="mb-4 inline-flex size-14 items-center justify-center rounded-xl bg-primary/10 transition-transform group-hover:scale-110">
+                  <Vote className="size-7 text-primary" />
                 </div>
                 <CardTitle className="text-xl">{t("features.qv.title")}</CardTitle>
               </CardHeader>
@@ -140,11 +139,11 @@ export default async function Home() {
             </Card>
 
             {/* Feature Card 2 */}
-            <Card className="group relative overflow-hidden border-2 transition-all duration-300 hover:border-secondary hover:shadow-lg hover:shadow-secondary/10">
-              <div className="absolute inset-0 bg-gradient-to-br from-secondary/0 to-secondary/5 opacity-0 transition-opacity group-hover:opacity-100" />
+            <Card className="group relative overflow-hidden border-2 transition-all duration-300 hover:border-primary hover:shadow-lg hover:shadow-primary/10">
+              <div className="absolute inset-0 bg-gradient-to-br from-primary/0 to-primary/5 opacity-0 transition-opacity group-hover:opacity-100" />
               <CardHeader className="relative">
-                <div className="mb-4 inline-flex size-14 items-center justify-center rounded-xl bg-secondary/10 transition-transform group-hover:scale-110">
-                  <Users className="size-7 text-secondary" />
+                <div className="mb-4 inline-flex size-14 items-center justify-center rounded-xl bg-primary/10 transition-transform group-hover:scale-110">
+                  <Users className="size-7 text-primary" />
                 </div>
                 <CardTitle className="text-xl">{t("features.auth.title")}</CardTitle>
               </CardHeader>
@@ -156,11 +155,11 @@ export default async function Home() {
             </Card>
 
             {/* Feature Card 3 */}
-            <Card className="group relative overflow-hidden border-2 transition-all duration-300 hover:border-secondary hover:shadow-lg hover:shadow-secondary/10">
-              <div className="absolute inset-0 bg-gradient-to-br from-secondary/0 to-secondary/5 opacity-0 transition-opacity group-hover:opacity-100" />
+            <Card className="group relative overflow-hidden border-2 transition-all duration-300 hover:border-primary hover:shadow-lg hover:shadow-primary/10">
+              <div className="absolute inset-0 bg-gradient-to-br from-primary/0 to-primary/5 opacity-0 transition-opacity group-hover:opacity-100" />
               <CardHeader className="relative">
-                <div className="mb-4 inline-flex size-14 items-center justify-center rounded-xl bg-secondary/10 transition-transform group-hover:scale-110">
-                  <BarChart3 className="size-7 text-secondary" />
+                <div className="mb-4 inline-flex size-14 items-center justify-center rounded-xl bg-primary/10 transition-transform group-hover:scale-110">
+                  <BarChart3 className="size-7 text-primary" />
                 </div>
                 <CardTitle className="text-xl">{t("features.realtime.title")}</CardTitle>
               </CardHeader>
@@ -174,8 +173,27 @@ export default async function Home() {
         </div>
       </div>
 
-      {/* How it works with timeline */}
+      {/* QV Explainer Section */}
       <div className="relative py-24">
+        <div className="mx-auto max-w-2xl px-4">
+          <h2 className="mb-4 text-center text-3xl font-bold md:text-4xl">
+            {locale === "ja"
+              ? "二次投票の仕組み"
+              : "How Quadratic Voting Works"
+            }
+          </h2>
+          <p className="mx-auto mb-12 max-w-lg text-center text-muted-foreground">
+            {locale === "ja"
+              ? "インタラクティブなデモで体験してみましょう"
+              : "Experience it with an interactive demo"
+            }
+          </p>
+          <QuadraticExplainer locale={locale} />
+        </div>
+      </div>
+
+      {/* How it works with timeline */}
+      <div className="relative bg-muted/30 py-24">
         <div className="mx-auto max-w-5xl px-4">
           <h2 className="mb-4 text-center text-3xl font-bold md:text-4xl">
             {t("howItWorks.title")}
@@ -188,15 +206,12 @@ export default async function Home() {
           </p>
           
           <div className="relative">
-            {/* Timeline connector */}
-            <div className="absolute left-1/2 top-8 hidden h-[calc(100%-4rem)] w-0.5 -translate-x-1/2 bg-gradient-to-b from-secondary via-secondary/50 to-transparent md:block" />
-            
             <div className="grid gap-12 md:grid-cols-3">
               {/* Step 1 */}
               <div className="group relative text-center">
                 <div className="relative mx-auto mb-6 flex size-16 items-center justify-center">
-                  <div className="absolute inset-0 rounded-full bg-secondary/20 animate-ping [animation-duration:3s]" />
-                  <div className="relative flex size-16 items-center justify-center rounded-full border-4 border-secondary bg-background text-2xl font-black transition-transform group-hover:scale-110">
+                  <div className="absolute inset-0 rounded-full bg-primary/20 animate-ping [animation-duration:3s]" />
+                  <div className="relative flex size-16 items-center justify-center rounded-full border-4 border-primary bg-background text-2xl font-black transition-transform group-hover:scale-110">
                     1
                   </div>
                 </div>
@@ -211,8 +226,8 @@ export default async function Home() {
               {/* Step 2 */}
               <div className="group relative text-center">
                 <div className="relative mx-auto mb-6 flex size-16 items-center justify-center">
-                  <div className="absolute inset-0 rounded-full bg-secondary/20 animate-ping [animation-duration:3s] [animation-delay:1s]" />
-                  <div className="relative flex size-16 items-center justify-center rounded-full border-4 border-secondary bg-background text-2xl font-black transition-transform group-hover:scale-110">
+                  <div className="absolute inset-0 rounded-full bg-primary/20 animate-ping [animation-duration:3s] [animation-delay:1s]" />
+                  <div className="relative flex size-16 items-center justify-center rounded-full border-4 border-primary bg-background text-2xl font-black transition-transform group-hover:scale-110">
                     2
                   </div>
                 </div>
@@ -227,8 +242,8 @@ export default async function Home() {
               {/* Step 3 */}
               <div className="group relative text-center">
                 <div className="relative mx-auto mb-6 flex size-16 items-center justify-center">
-                  <div className="absolute inset-0 rounded-full bg-secondary/20 animate-ping [animation-duration:3s] [animation-delay:2s]" />
-                  <div className="relative flex size-16 items-center justify-center rounded-full border-4 border-secondary bg-background text-2xl font-black transition-transform group-hover:scale-110">
+                  <div className="absolute inset-0 rounded-full bg-primary/20 animate-ping [animation-duration:3s] [animation-delay:2s]" />
+                  <div className="relative flex size-16 items-center justify-center rounded-full border-4 border-primary bg-background text-2xl font-black transition-transform group-hover:scale-110">
                     3
                   </div>
                 </div>
@@ -263,7 +278,7 @@ export default async function Home() {
         <div className="mx-auto max-w-5xl px-4">
           <div className="flex flex-col items-center gap-4">
             <div className="flex items-center gap-2 text-xl font-bold">
-              <div className="flex size-8 items-center justify-center rounded-lg bg-secondary text-secondary-foreground font-black">
+              <div className="flex size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground font-black">
                 Q
               </div>
               <span>QV-Tool</span>

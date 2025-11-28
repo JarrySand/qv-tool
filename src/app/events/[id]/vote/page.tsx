@@ -6,6 +6,7 @@ import { VotingInterface } from "@/components/features/voting-interface";
 import { getExistingVote } from "@/lib/actions/vote";
 import { authenticateVoter } from "@/lib/auth/voting-auth";
 import { Button } from "@/components/ui/button";
+import { SignOutButton } from "@/components/features/sign-out-button";
 
 interface PageProps {
   params: Promise<{ id: string }>;
@@ -91,6 +92,38 @@ export default async function VotePage({ params, searchParams }: PageProps) {
       // 未ログインの場合、サインインページへリダイレクト
       const callbackUrl = `/events/${event.slug ?? event.id}/vote${token ? `?token=${token}` : ""}`;
       redirect(`/auth/signin?callbackUrl=${encodeURIComponent(callbackUrl)}`);
+    }
+
+    // 異なるプロバイダーでログインしている場合
+    if (authResult.error?.includes("でログインしてください")) {
+      const callbackUrl = `/events/${event.slug ?? event.id}/vote${token ? `?token=${token}` : ""}`;
+      return (
+        <div className="flex min-h-screen items-center justify-center p-4">
+          <div className="max-w-md text-center">
+            <h1 className="mb-4 text-2xl font-bold text-destructive">
+              認証方式が異なります
+            </h1>
+            <p className="mb-6 text-muted-foreground">
+              {authResult.error}
+            </p>
+            <p className="mb-6 text-sm text-muted-foreground">
+              現在のセッションからログアウトして、正しい認証方式でログインし直してください
+            </p>
+            <div className="flex flex-col gap-3">
+              <SignOutButton 
+                callbackUrl={`/auth/signin?callbackUrl=${encodeURIComponent(callbackUrl)}`}
+              >
+                ログアウトして再ログイン
+              </SignOutButton>
+              <Button asChild variant="outline">
+                <Link href={`/events/${event.slug ?? event.id}`}>
+                  イベントページに戻る
+                </Link>
+              </Button>
+            </div>
+          </div>
+        </div>
+      );
     }
 
     // Discordゲートで弾かれた場合

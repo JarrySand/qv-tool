@@ -63,6 +63,10 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       if (user) {
         token.id = user.id;
       }
+      // ログインしたプロバイダーを保存
+      if (account?.provider) {
+        token.provider = account.provider;
+      }
       // Discord認証の場合、アクセストークンを保存（ギルドメンバーシップ確認用）
       if (account?.provider === "discord" && account.access_token) {
         token.discordAccessToken = account.access_token;
@@ -73,6 +77,10 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     async session({ session, token }) {
       if (session.user && token.id) {
         session.user.id = token.id as string;
+      }
+      // ログインしたプロバイダーをセッションに追加
+      if (token.provider) {
+        session.provider = token.provider as string;
       }
       // Discord アクセストークンをセッションに追加（ギルドメンバーシップ確認用）
       if (token.discordAccessToken) {

@@ -6,6 +6,7 @@ import { getEventResults, type EventResultData } from "@/lib/actions/result";
 import { ResultsChart } from "./results-chart";
 import { StatisticsCard } from "./statistics-card";
 import { VoteDistributionChart } from "./vote-distribution-chart";
+import { VotingComparisonChart } from "./voting-comparison-chart";
 import {
   Card,
   CardContent,
@@ -57,7 +58,7 @@ export function LiveResultContainer({
     return () => clearInterval(interval);
   }, [isLive, refreshData]);
 
-  const { results, statistics, distributions } = data;
+  const { results, statistics, distributions, hiddenPreferences } = data;
   const sortedResults = [...results].sort(
     (a, b) => b.totalVotes - a.totalVotes
   );
@@ -112,6 +113,13 @@ export function LiveResultContainer({
         statistics={statistics}
         creditsPerVoter={data.event.creditsPerVoter}
         votingMode={data.event.votingMode}
+      />
+
+      {/* 一人一票 vs 二次投票 比較 */}
+      <VotingComparisonChart
+        qvResults={results.map(r => ({ id: r.id, title: r.title, totalVotes: r.totalVotes }))}
+        hiddenPreferences={hiddenPreferences}
+        totalParticipants={statistics.totalParticipants}
       />
 
       {/* メイングラフ */}

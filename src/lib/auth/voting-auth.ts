@@ -94,6 +94,21 @@ export async function authenticateVoter(
     return { authenticated: false, error: "ログインが必要です" };
   }
 
+  // 認証方式とログインプロバイダーの一致をチェック
+  const requiredProvider = event.votingMode; // "google", "line", "discord"
+  if (session.provider !== requiredProvider) {
+    // 異なるプロバイダーでログインしている場合
+    const providerNames: Record<string, string> = {
+      google: "Google",
+      line: "LINE",
+      discord: "Discord",
+    };
+    return {
+      authenticated: false,
+      error: `${providerNames[requiredProvider] || requiredProvider}でログインしてください`,
+    };
+  }
+
   // Discord認証でゲート機能が設定されている場合、ギルドメンバーシップを確認
   if (event.votingMode === "discord" && event.discordGuildId) {
     // セッションにDiscordアクセストークンがない場合

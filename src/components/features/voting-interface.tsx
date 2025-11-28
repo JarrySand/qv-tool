@@ -19,6 +19,8 @@ import {
   calculateMaxAdditionalVotes,
 } from "@/lib/utils/qv";
 import { submitVote, type SubmitVoteResult } from "@/lib/actions/vote";
+import { SquareCostVisualizer } from "./square-cost-visualizer";
+import { Loader2, Minus, Plus } from "lucide-react";
 
 interface Subject {
   id: string;
@@ -33,7 +35,6 @@ interface VotingInterfaceProps {
   subjects: Subject[];
   totalCredits: number;
   token?: string;
-  // 既存の投票データ（再投票時）
   existingVotes?: { subjectId: string; amount: number }[];
   voteId?: string;
 }
@@ -88,10 +89,8 @@ export function VotingInterface({
       const current = prev[subjectId] ?? 0;
       const newAmount = current + delta;
 
-      // 最小値チェック
       if (newAmount < 0) return prev;
 
-      // 残りクレジットのチェック（増加の場合）
       if (delta > 0) {
         const newCost = calculateCost(newAmount);
         const currentCost = calculateCost(current);
@@ -144,9 +143,9 @@ export function VotingInterface({
     setError(null);
   };
 
-  // 投票済みかどうか
   const hasAnyVotes = voteArray.some((v) => v.amount > 0);
   const isEditing = !!existingVotes;
+  const isLow = remainingCredits < totalCredits * 0.2;
 
   return (
     <div className="space-y-6">
@@ -161,9 +160,7 @@ export function VotingInterface({
               <div className="text-3xl font-bold">
                 <span
                   className={
-                    remainingCredits < totalCredits * 0.2
-                      ? "text-destructive"
-                      : "text-foreground"
+                    isLow ? "text-destructive" : "text-foreground"
                   }
                 >
                   {remainingCredits}
@@ -191,10 +188,15 @@ export function VotingInterface({
             aria-label={t("creditUsage")}
           >
             <div
-              className="h-full bg-primary transition-all duration-300"
+              className={`h-full transition-all duration-300 ${isLow ? "bg-destructive" : "bg-secondary"}`}
               style={{ width: `${(totalCost / totalCredits) * 100}%` }}
             />
           </div>
+
+          {/* ヒント */}
+          <p className="mt-2 text-xs text-muted-foreground">
+            💡 1票=1、2票=4、3票=9... コストは票数の二乗です
+          </p>
         </CardContent>
       </Card>
 
@@ -207,88 +209,92 @@ export function VotingInterface({
             currentVotes,
             remainingCredits
           );
+          const nextCost = calculateCost(currentVotes + 1);
+          const costIncrease = nextCost - cost;
+          const canIncrease = costIncrease <= remainingCredits;
 
           return (
             <Card key={subject.id} className="overflow-hidden">
-              <CardContent className="p-0">
-                <div className="flex flex-col sm:flex-row">
+              <CardContent className="p-4">
+                <div className="flex gap-4">
                   {/* 画像 */}
                   {subject.imageUrl && (
-                    <div className="relative shrink-0 sm:w-32">
+                    <div className="relative shrink-0 w-20 h-20 rounded-lg overflow-hidden bg-muted">
                       <Image
                         src={subject.imageUrl}
                         alt={subject.title}
-                        width={128}
-                        height={128}
-                        className="h-32 w-full object-cover sm:h-full"
+                        fill
+                        className="object-cover"
                         unoptimized={subject.imageUrl.startsWith("data:")}
                       />
                     </div>
                   )}
 
                   {/* コンテンツ */}
-                  <div className="flex flex-1 flex-col gap-4 p-4 sm:flex-row">
-                    <div className="min-w-0 flex-1">
-                      <h3 className="text-lg font-semibold">{subject.title}</h3>
-                      {subject.description && (
-                        <p className="mt-1 line-clamp-2 text-sm text-muted-foreground">
-                          {subject.description}
-                        </p>
-                      )}
-                      {subject.url && (
-                        <a
-                          href={subject.url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="mt-2 inline-block text-sm text-primary hover:underline"
-                        >
-                          {tCommon("next")} →
-                        </a>
-                      )}
+                  <div className="flex-1 min-w-0">
+                    <h3 className="text-lg font-semibold">{subject.title}</h3>
+                    {subject.description && (
+                      <p className="mt-1 line-clamp-2 text-sm text-muted-foreground">
+                        {subject.description}
+                      </p>
+                    )}
+                  </div>
+                </div>
+
+                {/* 投票コントロール */}
+                <div className="mt-4 flex items-center gap-4">
+                  {/* 正方形コストビジュアライザー（固定幅） */}
+                  <div className="shrink-0">
+                    <SquareCostVisualizer
+                      votes={currentVotes}
+                      size="sm"
+                      maxDisplayVotes={10}
+                      showLabel
+                      fixedSize
+                    />
+                  </div>
+
+                  {/* スペーサー */}
+                  <div className="flex-1" />
+
+                  {/* ステッパー（固定位置） */}
+                  <div className="flex items-center gap-2 shrink-0">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="icon"
+                      onClick={() => handleVoteChange(subject.id, -1)}
+                      disabled={currentVotes === 0 || isPending}
+                      className="h-11 w-11 rounded-xl"
+                      aria-label={`${subject.title}の投票を減らす`}
+                    >
+                      <Minus className="size-5" />
+                    </Button>
+
+                    <div className="w-12 text-center">
+                      <div className="text-2xl font-bold">
+                        {currentVotes}
+                      </div>
                     </div>
 
-                    {/* 投票コントロール */}
-                    <div className="flex items-center gap-4 sm:ml-auto">
-                      <div className="flex items-center gap-2">
-                        <Button
-                          type="button"
-                          variant="outline"
-                          size="icon"
-                          onClick={() => handleVoteChange(subject.id, -1)}
-                          disabled={currentVotes === 0 || isPending}
-                          aria-label={`Decrease votes for ${subject.title}`}
-                        >
-                          <span className="text-xl">−</span>
-                        </Button>
+                    <Button
+                      type="button"
+                      variant={canIncrease ? "secondary" : "outline"}
+                      size="icon"
+                      onClick={() => handleVoteChange(subject.id, 1)}
+                      disabled={!canIncrease || isPending}
+                      className="h-11 w-11 rounded-xl"
+                      aria-label={`${subject.title}の投票を増やす`}
+                    >
+                      <Plus className="size-5" />
+                    </Button>
+                  </div>
 
-                        <div className="w-16 text-center">
-                          <div className="text-2xl font-bold">
-                            {currentVotes}
-                          </div>
-                          <div className="text-xs text-muted-foreground">
-                            {t("votes")}
-                          </div>
-                        </div>
-
-                        <Button
-                          type="button"
-                          variant="outline"
-                          size="icon"
-                          onClick={() => handleVoteChange(subject.id, 1)}
-                          disabled={currentVotes >= maxVotes || isPending}
-                          aria-label={`Increase votes for ${subject.title}`}
-                        >
-                          <span className="text-xl">+</span>
-                        </Button>
-                      </div>
-
-                      {/* コスト表示 */}
-                      <div className="w-20 text-right">
-                        <div className="text-lg font-semibold">{cost}</div>
-                        <div className="text-xs text-muted-foreground">
-                          {t("cost")}
-                        </div>
-                      </div>
+                  {/* コスト表示（固定幅） */}
+                  <div className="w-16 text-right shrink-0">
+                    <div className="text-lg font-bold text-secondary">{cost}</div>
+                    <div className="text-xs text-muted-foreground">
+                      {canIncrease ? `+1→+${costIncrease}` : t("cost")}
                     </div>
                   </div>
                 </div>
@@ -338,13 +344,18 @@ export function VotingInterface({
           type="button"
           onClick={handleSubmit}
           disabled={!hasAnyVotes || isPending}
-          className="py-6 text-lg sm:flex-1"
+          className="h-14 text-lg sm:flex-1"
         >
-          {isPending
-            ? t("submitting")
-            : isEditing
-              ? t("editVote")
-              : t("submitVote")}
+          {isPending ? (
+            <>
+              <Loader2 className="size-5 animate-spin" />
+              {t("submitting")}
+            </>
+          ) : isEditing ? (
+            t("editVote")
+          ) : (
+            t("submitVote")
+          )}
         </Button>
       </div>
     </div>

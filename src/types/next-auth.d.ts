@@ -6,6 +6,8 @@ declare module "next-auth" {
     user: {
       id: string;
     } & DefaultSession["user"];
+    /** ログインに使用したプロバイダー（google, discord, line） */
+    provider?: string;
     /** Discord OAuth アクセストークン（ギルドメンバーシップ確認用） */
     discordAccessToken?: string;
   }
@@ -18,6 +20,8 @@ declare module "next-auth" {
 declare module "next-auth/jwt" {
   interface JWT extends DefaultJWT {
     id?: string;
+    /** ログインに使用したプロバイダー（google, discord, line） */
+    provider?: string;
     /** Discord OAuth アクセストークン（ギルドメンバーシップ確認用） */
     discordAccessToken?: string;
   }

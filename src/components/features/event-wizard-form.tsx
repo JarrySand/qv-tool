@@ -231,48 +231,54 @@ export function EventWizardForm() {
   };
 
   // ステップインジケーター
-  const StepIndicator = () => (
-    <div className="mb-8">
-      <div className="flex items-center justify-between">
-        {[1, 2, 3, 4].map((step) => (
-          <div key={step} className="flex items-center">
-            <div
-              className={`flex size-10 items-center justify-center rounded-full border-2 font-semibold transition-colors ${
-                step < currentStep
-                  ? "border-green-500 bg-green-500 text-white"
-                  : step === currentStep
-                    ? "border-primary bg-primary text-primary-foreground"
-                    : "border-muted-foreground/30 text-muted-foreground/50"
-              }`}
-            >
-              {step < currentStep ? <Check className="size-5" /> : step}
-            </div>
-            {step < 4 && (
+  const StepIndicator = () => {
+    const steps = [
+      { num: 1, label: t("wizard.step1") },
+      { num: 2, label: t("wizard.step2") },
+      { num: 3, label: t("wizard.step3") },
+      { num: 4, label: t("wizard.step4") },
+    ];
+
+    return (
+      <div className="mb-8">
+        <div className="relative flex justify-between">
+          {/* 背景の線 */}
+          <div className="absolute top-5 left-5 right-5 h-0.5 bg-muted-foreground/20" />
+          {/* 進捗の線 */}
+          <div
+            className="absolute top-5 left-5 h-0.5 bg-primary transition-all duration-300"
+            style={{ width: `calc(${((currentStep - 1) / (steps.length - 1)) * 100}% - 20px)` }}
+          />
+          
+          {steps.map((step) => (
+            <div key={step.num} className="relative flex flex-col items-center">
+              {/* 番号の丸 */}
               <div
-                className={`h-1 w-12 sm:w-24 ${
-                  step < currentStep ? "bg-green-500" : "bg-muted-foreground/20"
+                className={`flex size-10 items-center justify-center rounded-full border-2 font-semibold transition-colors z-10 ${
+                  step.num < currentStep
+                    ? "border-primary bg-primary text-primary-foreground"
+                    : step.num === currentStep
+                      ? "border-primary bg-primary text-primary-foreground"
+                      : "border-muted-foreground/30 bg-background text-muted-foreground/50"
                 }`}
-              />
-            )}
-          </div>
-        ))}
+              >
+                {step.num < currentStep ? <Check className="size-5" /> : step.num}
+              </div>
+              
+              {/* ラベル */}
+              <span
+                className={`mt-2 text-xs sm:text-sm text-center whitespace-nowrap ${
+                  step.num <= currentStep ? "text-foreground" : "text-muted-foreground"
+                }`}
+              >
+                {step.label}
+              </span>
+            </div>
+          ))}
+        </div>
       </div>
-      <div className="mt-2 flex justify-between text-xs sm:text-sm">
-        <span className={currentStep >= 1 ? "text-foreground" : "text-muted-foreground"}>
-          {t("wizard.step1")}
-        </span>
-        <span className={currentStep >= 2 ? "text-foreground" : "text-muted-foreground"}>
-          {t("wizard.step2")}
-        </span>
-        <span className={currentStep >= 3 ? "text-foreground" : "text-muted-foreground"}>
-          {t("wizard.step3")}
-        </span>
-        <span className={currentStep >= 4 ? "text-foreground" : "text-muted-foreground"}>
-          {t("wizard.step4")}
-        </span>
-      </div>
-    </div>
-  );
+    );
+  };
 
   // Step 1: 基本情報
   const step1Content = (

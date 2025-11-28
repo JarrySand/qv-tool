@@ -6,7 +6,7 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
+  --font-sans: var(--font-zen-maru);
   --font-mono: var(--font-geist-mono);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
@@ -45,79 +45,81 @@
 
 :root {
   --radius: 0.625rem;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  /* Primary: Black #000000 */
-  --primary: oklch(0 0 0);
-  --primary-foreground: oklch(1 0 0);
-  /* Secondary: Yellow #EDFF38 */
-  --secondary: oklch(0.94 0.19 108);
-  --secondary-foreground: oklch(0 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.45 0 0);
-  /* Accent: Lighter Yellow */
-  --accent: oklch(0.96 0.14 108);
-  --accent-foreground: oklch(0 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.88 0 0);
-  --input: oklch(0.88 0 0);
-  --ring: oklch(0 0 0);
-  /* Chart colors with QV brand accent */
-  --chart-1: oklch(0.94 0.19 108);
-  --chart-2: oklch(0.6 0.118 184.704);
-  --chart-3: oklch(0.398 0.07 227.392);
-  --chart-4: oklch(0.828 0.189 84.429);
-  --chart-5: oklch(0.769 0.188 70.08);
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0 0 0);
-  --sidebar-primary-foreground: oklch(1 0 0);
-  --sidebar-accent: oklch(0.94 0.19 108);
-  --sidebar-accent-foreground: oklch(0 0 0);
-  --sidebar-border: oklch(0.88 0 0);
-  --sidebar-ring: oklch(0 0 0);
+  /* Lavender Dream Theme */
+  --background: #FAFAFC;
+  --foreground: #374151;
+  --card: #FFFFFF;
+  --card-foreground: #374151;
+  --popover: #FFFFFF;
+  --popover-foreground: #374151;
+  /* Primary: Pastel Lavender */
+  --primary: #A78BFA;
+  --primary-foreground: #FFFFFF;
+  /* Secondary: Vibrant Lavender for accents */
+  --secondary: #8B5CF6;
+  --secondary-foreground: #FFFFFF;
+  --muted: #F3F4F6;
+  --muted-foreground: #6B7280;
+  /* Accent: Soft Lavender */
+  --accent: #DDD6FE;
+  --accent-foreground: #4C1D95;
+  --destructive: #F87171;
+  --border: #E5E7EB;
+  --input: #E5E7EB;
+  --ring: #A78BFA;
+  /* Chart colors with Lavender theme */
+  --chart-1: #A78BFA;
+  --chart-2: #8B5CF6;
+  --chart-3: #7C3AED;
+  --chart-4: #C4B5FD;
+  --chart-5: #DDD6FE;
+  --sidebar: #FAFAFC;
+  --sidebar-foreground: #374151;
+  --sidebar-primary: #A78BFA;
+  --sidebar-primary-foreground: #FFFFFF;
+  --sidebar-accent: #F5F3FF;
+  --sidebar-accent-foreground: #4C1D95;
+  --sidebar-border: #E5E7EB;
+  --sidebar-ring: #A78BFA;
 }
 
 .dark {
-  --background: oklch(0.12 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.18 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.18 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  /* Primary: Light (inverted for dark mode) */
-  --primary: oklch(0.985 0 0);
-  --primary-foreground: oklch(0 0 0);
-  /* Secondary: Yellow #EDFF38 (works well on dark) */
-  --secondary: oklch(0.94 0.19 108);
-  --secondary-foreground: oklch(0 0 0);
-  --muted: oklch(0.25 0 0);
-  --muted-foreground: oklch(0.65 0 0);
-  /* Accent: Yellow */
-  --accent: oklch(0.94 0.19 108);
-  --accent-foreground: oklch(0 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 12%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.94 0.19 108);
+  /* Lavender Dream Dark Mode */
+  --background: #1F1B2E;
+  --foreground: #E5E7EB;
+  --card: #2D2640;
+  --card-foreground: #E5E7EB;
+  --popover: #2D2640;
+  --popover-foreground: #E5E7EB;
+  /* Primary: Lavender (brighter for dark) */
+  --primary: #C4B5FD;
+  --primary-foreground: #1F1B2E;
+  /* Secondary: Dark Lavender */
+  --secondary: #3D3654;
+  --secondary-foreground: #E5E7EB;
+  --muted: #3D3654;
+  --muted-foreground: #9CA3AF;
+  /* Accent: Lavender */
+  --accent: #A78BFA;
+  --accent-foreground: #1F1B2E;
+  --destructive: #F87171;
+  --border: #4D4668;
+  --input: #4D4668;
+  --ring: #C4B5FD;
   /* Chart colors */
-  --chart-1: oklch(0.94 0.19 108);
-  --chart-2: oklch(0.696 0.17 162.48);
-  --chart-3: oklch(0.769 0.188 70.08);
-  --chart-4: oklch(0.627 0.265 303.9);
-  --chart-5: oklch(0.645 0.246 16.439);
-  --sidebar: oklch(0.16 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.94 0.19 108);
-  --sidebar-primary-foreground: oklch(0 0 0);
-  --sidebar-accent: oklch(0.25 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 12%);
-  --sidebar-ring: oklch(0.94 0.19 108);
+  --chart-1: #C4B5FD;
+  --chart-2: #A78BFA;
+  --chart-3: #8B5CF6;
+  --chart-4: #DDD6FE;
+  --chart-5: #7C3AED;
+  --sidebar: #1F1B2E;
+  --sidebar-foreground: #E5E7EB;
+  --sidebar-primary: #C4B5FD;
+  --sidebar-primary-foreground: #1F1B2E;
+  --sidebar-accent: #3D3654;
+  --sidebar-accent-foreground: #E5E7EB;
+  --sidebar-border: #4D4668;
+  --sidebar-ring: #C4B5FD;
 }
 
 @layer base {
@@ -219,7 +221,7 @@
     background: linear-gradient(
       90deg,
       transparent 0%,
-      rgba(237, 255, 56, 0.1) 50%,
+      rgba(167, 139, 250, 0.1) 50%,
       transparent 100%
     );
     background-size: 200% 100%;
@@ -239,12 +241,12 @@
 
   /* Glow effect for brand color */
   .glow-secondary {
-    box-shadow: 0 0 20px rgba(237, 255, 56, 0.3);
+    box-shadow: 0 0 20px rgba(167, 139, 250, 0.3);
   }
 
   /* Gradient text */
   .text-gradient {
-    background: linear-gradient(135deg, #EDFF38 0%, #000000 50%, #EDFF38 100%);
+    background: linear-gradient(135deg, #A78BFA 0%, #8B5CF6 50%, #A78BFA 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -271,5 +273,38 @@
     border-radius: inherit;
     border: 2px solid currentColor;
     animation: pulse-ring 2s ease-out infinite;
+  }
+}
+
+/* Safe area padding for mobile devices */
+@layer utilities {
+  .safe-area-bottom {
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+
+  .safe-area-top {
+    padding-top: env(safe-area-inset-top, 0px);
+  }
+
+  .safe-area-left {
+    padding-left: env(safe-area-inset-left, 0px);
+  }
+
+  .safe-area-right {
+    padding-right: env(safe-area-inset-right, 0px);
+  }
+
+  /* 巨大タップターゲット */
+  .h-18 {
+    height: 4.5rem; /* 72px */
+  }
+
+  .w-18 {
+    width: 4.5rem; /* 72px */
+  }
+
+  .size-18 {
+    width: 4.5rem;
+    height: 4.5rem;
   }
 }

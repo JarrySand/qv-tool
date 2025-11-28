@@ -28,6 +28,16 @@ export interface VoteDistribution {
   distribution: { votes: number; count: number }[]; // 各票数に対する人数
 }
 
+export interface HiddenPreferencesData {
+  // 一人一票の場合の結果（各投票者の1位のみ1票）
+  singleVoteResults: { subjectId: string; subjectTitle: string; votes: number }[];
+  // 2位以下の投票（＝埋もれた選好）
+  hiddenVotes: { subjectId: string; subjectTitle: string; votes: number }[];
+  // 総計
+  totalHiddenVotes: number;
+  totalQvVotes: number;
+}
+
 export interface RawVoteData {
   voteId: string;
   votedAt: string;
@@ -53,6 +63,7 @@ export interface EventResultData {
   results: SubjectResult[];
   statistics: EventStatistics;
   distributions: VoteDistribution[];
+  hiddenPreferences: HiddenPreferencesData;
 }
 
 /**
@@ -148,6 +159,65 @@ export async function getEventResults(
     };
   });
 
+  // 埋もれた選好の計算
+  // 各投票者の1位（最大票数の選択肢）を特定し、2位以下への投票を「埋もれた選好」とする
+  const singleVoteCounts = new Map<string, number>(); // 一人一票での得票
+  const hiddenVoteCounts = new Map<string, number>(); // 2位以下への投票
+
+  event.votes.forEach((vote) => {
+    // この投票者の各選択肢への票数を取得
+    const voterDetails = vote.details.filter((d) => d.amount > 0);
+    
+    if (voterDetails.length === 0) return;
+
+    // 1位を特定（最大票数の選択肢、同点の場合は最初の1つ）
+    const maxAmount = Math.max(...voterDetails.map((d) => d.amount));
+    const topSubjectId = voterDetails.find((d) => d.amount === maxAmount)?.subjectId;
+
+    voterDetails.forEach((detail) => {
+      if (detail.subjectId === topSubjectId) {
+        // 1位の選択肢 → 一人一票で1票
+        singleVoteCounts.set(
+          detail.subjectId,
+          (singleVoteCounts.get(detail.subjectId) ?? 0) + 1
+        );
+      } else {
+        // 2位以下の選択肢 → 埋もれた選好
+        hiddenVoteCounts.set(
+          detail.subjectId,
+          (hiddenVoteCounts.get(detail.subjectId) ?? 0) + detail.amount
+        );
+      }
+    });
+  });
+
+  const singleVoteResults = event.subjects
+    .map((subject) => ({
+      subjectId: subject.id,
+      subjectTitle: subject.title,
+      votes: singleVoteCounts.get(subject.id) ?? 0,
+    }))
+    .sort((a, b) => b.votes - a.votes);
+
+  const hiddenVotes = event.subjects
+    .map((subject) => ({
+      subjectId: subject.id,
+      subjectTitle: subject.title,
+      votes: hiddenVoteCounts.get(subject.id) ?? 0,
+    }))
+    .filter((h) => h.votes > 0)
+    .sort((a, b) => b.votes - a.votes);
+
+  const totalHiddenVotes = hiddenVotes.reduce((sum, h) => sum + h.votes, 0);
+  const totalQvVotes = results.reduce((sum, r) => sum + r.totalVotes, 0);
+
+  const hiddenPreferences: HiddenPreferencesData = {
+    singleVoteResults,
+    hiddenVotes,
+    totalHiddenVotes,
+    totalQvVotes,
+  };
+
   return {
     event: {
       id: event.id,
@@ -162,6 +232,7 @@ export async function getEventResults(
     results,
     statistics,
     distributions,
+    hiddenPreferences,
   };
 }
 
