@@ -1,10 +1,9 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { SquareCostVisualizer } from "@/components/features/square-cost-visualizer";
-import { Minus, Plus, Sun, Moon, Check } from "lucide-react";
+import { Minus, Plus, Check } from "lucide-react";
 
 // カラーパレット定義
 const colorPalettes = {
@@ -164,8 +163,9 @@ export default function ThemePreviewPage() {
   const palette = colorPalettes[selectedPalette];
   const typography = typographyOptions[selectedTypography];
 
-  // フォントの動的読み込み
+  // フォントの動的読み込み（ハイドレーション対応）
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- hydration pattern
     setMounted(true);
   }, []);
 
@@ -409,7 +409,7 @@ export default function ThemePreviewPage() {
               <div className="flex-1">
                 <SquareCostVisualizer
                   votes={demoVotes}
-                  maxVotes={10}
+                  maxDisplayVotes={10}
                   primaryColor={palette.colors.primary}
                   backgroundColor={palette.colors.muted}
                 />

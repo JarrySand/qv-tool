@@ -16,7 +16,6 @@ import {
   calculateCost,
   calculateTotalCost,
   calculateRemainingCredits,
-  calculateMaxAdditionalVotes,
 } from "@/lib/utils/qv";
 import { submitVote, type SubmitVoteResult } from "@/lib/actions/vote";
 import { SquareCostVisualizer } from "./square-cost-visualizer";
@@ -205,10 +204,6 @@ export function VotingInterface({
         {subjects.map((subject) => {
           const currentVotes = votes[subject.id] ?? 0;
           const cost = calculateCost(currentVotes);
-          const maxVotes = calculateMaxAdditionalVotes(
-            currentVotes,
-            remainingCredits
-          );
           const nextCost = calculateCost(currentVotes + 1);
           const costIncrease = nextCost - cost;
           const canIncrease = costIncrease <= remainingCredits;

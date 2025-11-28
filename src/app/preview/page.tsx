@@ -269,8 +269,9 @@ export default function ThemePreviewPage() {
   const typography = typographyOptions[selectedTypography];
   const letterSpacing = letterSpacingOptions[selectedLetterSpacing];
 
-  // フォントの動的読み込み
+  // フォントの動的読み込み（ハイドレーション対応）
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- hydration pattern
     setMounted(true);
   }, []);
 
@@ -691,7 +692,7 @@ export default function ThemePreviewPage() {
               <div className="flex-1">
                 <SquareCostVisualizer
                   votes={demoVotes}
-                  maxVotes={10}
+                  maxDisplayVotes={10}
                   primaryColor={palette.colors.primary}
                   backgroundColor={palette.colors.muted}
                 />

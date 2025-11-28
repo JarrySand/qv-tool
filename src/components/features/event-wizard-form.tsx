@@ -231,54 +231,52 @@ export function EventWizardForm() {
   };
 
   // ステップインジケーター
-  const StepIndicator = () => {
-    const steps = [
-      { num: 1, label: t("wizard.step1") },
-      { num: 2, label: t("wizard.step2") },
-      { num: 3, label: t("wizard.step3") },
-      { num: 4, label: t("wizard.step4") },
-    ];
+  const stepIndicatorSteps = [
+    { num: 1, label: t("wizard.step1") },
+    { num: 2, label: t("wizard.step2") },
+    { num: 3, label: t("wizard.step3") },
+    { num: 4, label: t("wizard.step4") },
+  ];
 
-    return (
-      <div className="mb-8">
-        <div className="relative flex justify-between">
-          {/* 背景の線 */}
-          <div className="absolute top-5 left-5 right-5 h-0.5 bg-muted-foreground/20" />
-          {/* 進捗の線 */}
-          <div
-            className="absolute top-5 left-5 h-0.5 bg-primary transition-all duration-300"
-            style={{ width: `calc(${((currentStep - 1) / (steps.length - 1)) * 100}% - 20px)` }}
-          />
-          
-          {steps.map((step) => (
-            <div key={step.num} className="relative flex flex-col items-center">
-              {/* 番号の丸 */}
-              <div
-                className={`flex size-10 items-center justify-center rounded-full border-2 font-semibold transition-colors z-10 ${
-                  step.num < currentStep
+  const stepIndicatorContent = (
+    <div className="mb-8">
+      <div className="relative flex justify-between">
+        {/* 背景の線 */}
+        <div className="absolute top-5 left-5 right-5 h-0.5 bg-muted-foreground/20" />
+        {/* 進捗の線 */}
+        <div
+          className="absolute top-5 left-5 h-0.5 bg-primary transition-all duration-300"
+          style={{ width: `calc(${((currentStep - 1) / (stepIndicatorSteps.length - 1)) * 100}% - 20px)` }}
+        />
+        
+        {stepIndicatorSteps.map((step) => (
+          <div key={step.num} className="relative flex flex-col items-center">
+            {/* 番号の丸 */}
+            <div
+              className={`flex size-10 items-center justify-center rounded-full border-2 font-semibold transition-colors z-10 ${
+                step.num < currentStep
+                  ? "border-primary bg-primary text-primary-foreground"
+                  : step.num === currentStep
                     ? "border-primary bg-primary text-primary-foreground"
-                    : step.num === currentStep
-                      ? "border-primary bg-primary text-primary-foreground"
-                      : "border-muted-foreground/30 bg-background text-muted-foreground/50"
-                }`}
-              >
-                {step.num < currentStep ? <Check className="size-5" /> : step.num}
-              </div>
-              
-              {/* ラベル */}
-              <span
-                className={`mt-2 text-xs sm:text-sm text-center whitespace-nowrap ${
-                  step.num <= currentStep ? "text-foreground" : "text-muted-foreground"
-                }`}
-              >
-                {step.label}
-              </span>
+                    : "border-muted-foreground/30 bg-background text-muted-foreground/50"
+              }`}
+            >
+              {step.num < currentStep ? <Check className="size-5" /> : step.num}
             </div>
-          ))}
-        </div>
+            
+            {/* ラベル */}
+            <span
+              className={`mt-2 text-xs sm:text-sm text-center whitespace-nowrap ${
+                step.num <= currentStep ? "text-foreground" : "text-muted-foreground"
+              }`}
+            >
+              {step.label}
+            </span>
+          </div>
+        ))}
       </div>
-    );
-  };
+    </div>
+  );
 
   // Step 1: 基本情報
   const step1Content = (
@@ -676,161 +674,157 @@ export function EventWizardForm() {
   );
 
   // Step 4: 完了
-  const Step4 = () => {
-    if (!createdEvent) return null;
+  const step4EventPath = createdEvent?.slug
+    ? `/events/${createdEvent.slug}`
+    : createdEvent ? `/events/${createdEvent.id}` : "";
+  const step4EventUrl = `${baseUrl}${step4EventPath}`;
+  const step4AdminUrl = createdEvent ? `${baseUrl}/admin/${createdEvent.id}?token=${createdEvent.adminToken}` : "";
 
-    const eventPath = createdEvent.slug
-      ? `/events/${createdEvent.slug}`
-      : `/events/${createdEvent.id}`;
-    const eventUrl = `${baseUrl}${eventPath}`;
-    const adminUrl = `${baseUrl}/admin/${createdEvent.id}?token=${createdEvent.adminToken}`;
-
-    return (
-      <div className="space-y-6">
-        {/* 成功メッセージ */}
-        <div className="flex items-center justify-center gap-3 py-4">
-          <div className="flex size-12 items-center justify-center rounded-full bg-green-100 text-green-600 dark:bg-green-900/30">
-            <Check className="size-6" />
-          </div>
-          <div>
-            <h2 className="text-xl font-bold">公開完了！</h2>
-            <p className="text-muted-foreground">{createdEvent.title}</p>
-          </div>
+  const step4Content = createdEvent ? (
+    <div className="space-y-6">
+      {/* 成功メッセージ */}
+      <div className="flex items-center justify-center gap-3 py-4">
+        <div className="flex size-12 items-center justify-center rounded-full bg-green-100 text-green-600 dark:bg-green-900/30">
+          <Check className="size-6" />
         </div>
-
-        {/* 管理URL警告 */}
-        <Card className="border-amber-500/50 bg-amber-50 dark:bg-amber-950/30">
-          <CardHeader className="pb-3">
-            <div className="flex items-start gap-2">
-              <AlertTriangle className="mt-0.5 size-5 text-amber-600" />
-              <div>
-                <CardTitle className="text-amber-800 dark:text-amber-200">
-                  管理用URL
-                </CardTitle>
-                <CardDescription className="text-amber-700 dark:text-amber-300">
-                  このURLは今後表示されません。必ず安全な場所に保存してください。
-                </CardDescription>
-              </div>
-            </div>
-          </CardHeader>
-          <CardContent>
-            <div className="flex gap-2">
-              <Input value={adminUrl} readOnly className="bg-white font-mono text-sm dark:bg-black" />
-              <Button
-                variant="outline"
-                onClick={() => copyToClipboard(adminUrl, "admin")}
-              >
-                {copied === "admin" ? <Check className="size-4" /> : <Copy className="size-4" />}
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* イベントURL */}
-        <Card>
-          <CardHeader>
-            <CardTitle>公開URL（参加者用）</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="flex gap-2">
-              <Input value={eventUrl} readOnly className="font-mono text-sm" />
-              <Button
-                variant="outline"
-                onClick={() => copyToClipboard(eventUrl, "event")}
-              >
-                {copied === "event" ? <Check className="size-4" /> : <Copy className="size-4" />}
-              </Button>
-              <Button variant="outline" asChild>
-                <a href={eventPath} target="_blank" rel="noopener noreferrer">
-                  <ExternalLink className="size-4" />
-                </a>
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* 個別URL方式の場合のトークン生成 */}
-        {createdEvent.votingMode === "individual" && (
-          <Card>
-            <CardHeader>
-              <CardTitle>{t("wizard.generateTokens")}</CardTitle>
-              <CardDescription>参加者に配布するURLを生成します</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              {generatedTokens.length === 0 ? (
-                <div className="flex items-center gap-4">
-                  <div className="flex items-center gap-2">
-                    <Label>{t("wizard.tokenCount")}</Label>
-                    <Input
-                      type="number"
-                      min={1}
-                      max={100}
-                      value={tokenCount}
-                      onChange={(e) => setTokenCount(parseInt(e.target.value) || 10)}
-                      className="w-24"
-                    />
-                  </div>
-                  <Button onClick={handleGenerateTokens} disabled={isGeneratingTokens}>
-                    {isGeneratingTokens ? (
-                      <Loader2 className="size-4 animate-spin" />
-                    ) : (
-                      <Plus className="size-4" />
-                    )}
-                    生成
-                  </Button>
-                </div>
-              ) : (
-                <div className="space-y-2">
-                  <p className="text-sm text-muted-foreground">
-                    {t("wizard.tokensGenerated", { count: generatedTokens.length })}
-                  </p>
-                  <div className="max-h-60 space-y-1 overflow-y-auto rounded border p-2">
-                    {generatedTokens.map((token, index) => (
-                      <div key={token} className="flex items-center gap-2 text-sm">
-                        <span className="w-6 text-muted-foreground">{index + 1}.</span>
-                        <code className="flex-1 truncate font-mono">
-                          {baseUrl}{eventPath}?token={token}
-                        </code>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="size-6"
-                          onClick={() =>
-                            copyToClipboard(
-                              `${baseUrl}${eventPath}?token=${token}`,
-                              token
-                            )
-                          }
-                        >
-                          {copied === token ? (
-                            <Check className="size-3" />
-                          ) : (
-                            <Copy className="size-3" />
-                          )}
-                        </Button>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </CardContent>
-          </Card>
-        )}
-
-        {/* ナビゲーション */}
-        <div className="flex gap-3">
-          <Button asChild>
-            <a href={`/admin/${createdEvent.id}?token=${createdEvent.adminToken}`}>
-              管理画面へ
-            </a>
-          </Button>
-          <Button variant="outline" onClick={() => router.push("/")}>
-            トップへ戻る
-          </Button>
+        <div>
+          <h2 className="text-xl font-bold">公開完了！</h2>
+          <p className="text-muted-foreground">{createdEvent.title}</p>
         </div>
       </div>
-    );
-  };
+
+      {/* 管理URL警告 */}
+      <Card className="border-amber-500/50 bg-amber-50 dark:bg-amber-950/30">
+        <CardHeader className="pb-3">
+          <div className="flex items-start gap-2">
+            <AlertTriangle className="mt-0.5 size-5 text-amber-600" />
+            <div>
+              <CardTitle className="text-amber-800 dark:text-amber-200">
+                管理用URL
+              </CardTitle>
+              <CardDescription className="text-amber-700 dark:text-amber-300">
+                このURLは今後表示されません。必ず安全な場所に保存してください。
+              </CardDescription>
+            </div>
+          </div>
+        </CardHeader>
+        <CardContent>
+          <div className="flex gap-2">
+            <Input value={step4AdminUrl} readOnly className="bg-white font-mono text-sm dark:bg-black" />
+            <Button
+              variant="outline"
+              onClick={() => copyToClipboard(step4AdminUrl, "admin")}
+            >
+              {copied === "admin" ? <Check className="size-4" /> : <Copy className="size-4" />}
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* イベントURL */}
+      <Card>
+        <CardHeader>
+          <CardTitle>公開URL（参加者用）</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="flex gap-2">
+            <Input value={step4EventUrl} readOnly className="font-mono text-sm" />
+            <Button
+              variant="outline"
+              onClick={() => copyToClipboard(step4EventUrl, "event")}
+            >
+              {copied === "event" ? <Check className="size-4" /> : <Copy className="size-4" />}
+            </Button>
+            <Button variant="outline" asChild>
+              <a href={step4EventPath} target="_blank" rel="noopener noreferrer">
+                <ExternalLink className="size-4" />
+              </a>
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* 個別URL方式の場合のトークン生成 */}
+      {createdEvent.votingMode === "individual" && (
+        <Card>
+          <CardHeader>
+            <CardTitle>{t("wizard.generateTokens")}</CardTitle>
+            <CardDescription>参加者に配布するURLを生成します</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            {generatedTokens.length === 0 ? (
+              <div className="flex items-center gap-4">
+                <div className="flex items-center gap-2">
+                  <Label>{t("wizard.tokenCount")}</Label>
+                  <Input
+                    type="number"
+                    min={1}
+                    max={100}
+                    value={tokenCount}
+                    onChange={(e) => setTokenCount(parseInt(e.target.value) || 10)}
+                    className="w-24"
+                  />
+                </div>
+                <Button onClick={handleGenerateTokens} disabled={isGeneratingTokens}>
+                  {isGeneratingTokens ? (
+                    <Loader2 className="size-4 animate-spin" />
+                  ) : (
+                    <Plus className="size-4" />
+                  )}
+                  生成
+                </Button>
+              </div>
+            ) : (
+              <div className="space-y-2">
+                <p className="text-sm text-muted-foreground">
+                  {t("wizard.tokensGenerated", { count: generatedTokens.length })}
+                </p>
+                <div className="max-h-60 space-y-1 overflow-y-auto rounded border p-2">
+                  {generatedTokens.map((token, index) => (
+                    <div key={token} className="flex items-center gap-2 text-sm">
+                      <span className="w-6 text-muted-foreground">{index + 1}.</span>
+                      <code className="flex-1 truncate font-mono">
+                        {baseUrl}{step4EventPath}?token={token}
+                      </code>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="size-6"
+                        onClick={() =>
+                          copyToClipboard(
+                            `${baseUrl}${step4EventPath}?token=${token}`,
+                            token
+                          )
+                        }
+                      >
+                        {copied === token ? (
+                          <Check className="size-3" />
+                        ) : (
+                          <Copy className="size-3" />
+                        )}
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      )}
+
+      {/* ナビゲーション */}
+      <div className="flex gap-3">
+        <Button asChild>
+          <a href={`/admin/${createdEvent.id}?token=${createdEvent.adminToken}`}>
+            管理画面へ
+          </a>
+        </Button>
+        <Button variant="outline" onClick={() => router.push("/")}>
+          トップへ戻る
+        </Button>
+      </div>
+    </div>
+  ) : null;
 
   return (
     <Card className="w-full max-w-2xl">
@@ -839,12 +833,12 @@ export function EventWizardForm() {
         <CardDescription>{t("description")}</CardDescription>
       </CardHeader>
       <CardContent>
-        <StepIndicator />
+        {stepIndicatorContent}
 
         {currentStep === 1 && step1Content}
         {currentStep === 2 && step2Content}
         {currentStep === 3 && step3Content}
-        {currentStep === 4 && <Step4 />}
+        {currentStep === 4 && step4Content}
       </CardContent>
 
       {currentStep < 4 && (
