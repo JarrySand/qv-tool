@@ -599,11 +599,13 @@ Quadratic Voting Tool (QV-Tool)
 評価レポートに基づき、以下の改善を実施しました：
 
 ### 1. Server Actionsのi18n対応
+
 - **対象ファイル**: `event.ts`, `vote.ts`, `subject.ts`, `access-token.ts`, `result.ts`
 - **内容**: すべてのエラーメッセージを翻訳キーで管理
 - **翻訳追加**: `messages/ja.json`, `messages/en.json` に `errors` セクション追加
 
 ### 2. レート制限の実装
+
 - **新規ファイル**: `src/lib/rate-limit.ts`
 - **機能**:
   - 投票送信: 1分間に5回まで
@@ -612,6 +614,7 @@ Quadratic Voting Tool (QV-Tool)
   - フォールバック: インメモリレート制限
 
 ### 3. UIの差別化
+
 - **対象ファイル**: `src/app/page.tsx`, `src/app/globals.css`
 - **追加アニメーション**:
   - フェードイン（staggered）
@@ -624,11 +627,13 @@ Quadratic Voting Tool (QV-Tool)
   - より大胆なタイポグラフィ
 
 ### 4. テストカバレッジ向上
+
 - **新規テスト**: `src/lib/actions/event.test.ts`（11テスト）
 - **新規テスト**: `src/lib/utils/token.test.ts`（20テスト）
 - **合計**: 70テスト（39 → 70）
 
 ### 5. セキュリティ強化
+
 - **新規ファイル**: `src/lib/utils/token.ts`
 - **機能**:
   - 256ビットエントロピーのセキュアトークン生成
@@ -638,6 +643,7 @@ Quadratic Voting Tool (QV-Tool)
   - 可読性重視の短縮ID生成
 
 ### 6. CSVエクスポートのi18n対応
+
 - **対象ファイル**: `src/lib/actions/result.ts`
 - **内容**: CSVヘッダーを翻訳キーで管理
 - **翻訳追加**: `messages/ja.json`, `messages/en.json` に `csv` セクション追加
@@ -650,21 +656,21 @@ Quadratic Voting Tool (QV-Tool)
 
 ### 優先度：中（UX改善）
 
-| タスク | 対象Phase | 説明 |
-|--------|-----------|------|
-| 表示順序のドラッグ&ドロップ対応 | 2.6 | 投票対象の並び替えをドラッグ&ドロップで直感的に行えるようにする |
+| タスク                          | 対象Phase | 説明                                                            |
+| ------------------------------- | --------- | --------------------------------------------------------------- |
+| 表示順序のドラッグ&ドロップ対応 | 2.6       | 投票対象の並び替えをドラッグ&ドロップで直感的に行えるようにする |
 
 ### 優先度：低（オプション機能）
 
-| タスク | 対象Phase | 説明 |
-|--------|-----------|------|
-| 時系列データの表示 | 4.3 | 投票の時系列推移をグラフで表示する分析機能 |
+| タスク             | 対象Phase | 説明                                       |
+| ------------------ | --------- | ------------------------------------------ |
+| 時系列データの表示 | 4.3       | 投票の時系列推移をグラフで表示する分析機能 |
 
 ### 優先度：低（本番環境後）
 
-| タスク | 対象Phase | 説明 |
-|--------|-----------|------|
-| Lighthouseスコアの改善 | 5.3 | 本番環境デプロイ後に実測し、必要に応じて最適化 |
+| タスク                 | 対象Phase | 説明                                           |
+| ---------------------- | --------- | ---------------------------------------------- |
+| Lighthouseスコアの改善 | 5.3       | 本番環境デプロイ後に実測し、必要に応じて最適化 |
 
 ### 対応方針
 
@@ -679,11 +685,13 @@ Quadratic Voting Tool (QV-Tool)
 ### Discord認証機能
 
 #### 概要
+
 Discord OAuth認証を追加し、Discordアカウントでの投票とサーバーゲート機能を実装。
 
 #### 実装内容
 
 **Phase A: 基本Discord認証**
+
 - NextAuth.js v5にDiscordプロバイダーを追加
 - サインインページにDiscordログインボタン追加
 - イベント作成フォームに「Discordアカウント」認証オプション追加
@@ -691,12 +699,14 @@ Discord OAuth認証を追加し、Discordアカウントでの投票とサーバ
 - 翻訳ファイル更新（日本語/英語）
 
 **Phase B: サーバーゲート機能**
+
 - Prismaスキーマ拡張（discordGuildId, discordGuildName）
 - Discord API連携モジュール作成（ギルドメンバーシップ確認）
 - 認証フロー拡張（ゲート機能チェック）
 - イベント作成フォームにサーバーID設定UI追加
 
 #### 主要ファイル
+
 - `src/auth.ts` - Discordプロバイダー追加
 - `src/lib/auth/discord-guild.ts` - 新規作成（ギルド確認API）
 - `src/lib/auth/voting-auth.ts` - ゲート機能チェック追加
@@ -707,6 +717,7 @@ Discord OAuth認証を追加し、Discordアカウントでの投票とサーバ
 - `docs/DISCORD_AUTH_PLAN.md` - 詳細計画書
 
 #### 環境変数
+
 ```env
 DISCORD_CLIENT_ID=your_discord_client_id
 DISCORD_CLIENT_SECRET=your_discord_client_secret

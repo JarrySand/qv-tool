@@ -46,80 +46,80 @@
 :root {
   --radius: 0.625rem;
   /* Lavender Dream Theme */
-  --background: #FAFAFC;
+  --background: #fafafc;
   --foreground: #374151;
-  --card: #FFFFFF;
+  --card: #ffffff;
   --card-foreground: #374151;
-  --popover: #FFFFFF;
+  --popover: #ffffff;
   --popover-foreground: #374151;
   /* Primary: Pastel Lavender */
-  --primary: #A78BFA;
-  --primary-foreground: #FFFFFF;
+  --primary: #a78bfa;
+  --primary-foreground: #ffffff;
   /* Secondary: Vibrant Lavender for accents */
-  --secondary: #8B5CF6;
-  --secondary-foreground: #FFFFFF;
-  --muted: #F3F4F6;
-  --muted-foreground: #6B7280;
+  --secondary: #8b5cf6;
+  --secondary-foreground: #ffffff;
+  --muted: #f3f4f6;
+  --muted-foreground: #6b7280;
   /* Accent: Soft Lavender */
-  --accent: #DDD6FE;
-  --accent-foreground: #4C1D95;
-  --destructive: #F87171;
-  --border: #E5E7EB;
-  --input: #E5E7EB;
-  --ring: #A78BFA;
+  --accent: #ddd6fe;
+  --accent-foreground: #4c1d95;
+  --destructive: #f87171;
+  --border: #e5e7eb;
+  --input: #e5e7eb;
+  --ring: #a78bfa;
   /* Chart colors with Lavender theme */
-  --chart-1: #A78BFA;
-  --chart-2: #8B5CF6;
-  --chart-3: #7C3AED;
-  --chart-4: #C4B5FD;
-  --chart-5: #DDD6FE;
-  --sidebar: #FAFAFC;
+  --chart-1: #a78bfa;
+  --chart-2: #8b5cf6;
+  --chart-3: #7c3aed;
+  --chart-4: #c4b5fd;
+  --chart-5: #ddd6fe;
+  --sidebar: #fafafc;
   --sidebar-foreground: #374151;
-  --sidebar-primary: #A78BFA;
-  --sidebar-primary-foreground: #FFFFFF;
-  --sidebar-accent: #F5F3FF;
-  --sidebar-accent-foreground: #4C1D95;
-  --sidebar-border: #E5E7EB;
-  --sidebar-ring: #A78BFA;
+  --sidebar-primary: #a78bfa;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #f5f3ff;
+  --sidebar-accent-foreground: #4c1d95;
+  --sidebar-border: #e5e7eb;
+  --sidebar-ring: #a78bfa;
 }
 
 .dark {
   /* Lavender Dream Dark Mode */
-  --background: #1F1B2E;
-  --foreground: #E5E7EB;
-  --card: #2D2640;
-  --card-foreground: #E5E7EB;
-  --popover: #2D2640;
-  --popover-foreground: #E5E7EB;
+  --background: #1f1b2e;
+  --foreground: #e5e7eb;
+  --card: #2d2640;
+  --card-foreground: #e5e7eb;
+  --popover: #2d2640;
+  --popover-foreground: #e5e7eb;
   /* Primary: Lavender (brighter for dark) */
-  --primary: #C4B5FD;
-  --primary-foreground: #1F1B2E;
+  --primary: #c4b5fd;
+  --primary-foreground: #1f1b2e;
   /* Secondary: Dark Lavender */
-  --secondary: #3D3654;
-  --secondary-foreground: #E5E7EB;
-  --muted: #3D3654;
-  --muted-foreground: #9CA3AF;
+  --secondary: #3d3654;
+  --secondary-foreground: #e5e7eb;
+  --muted: #3d3654;
+  --muted-foreground: #9ca3af;
   /* Accent: Lavender */
-  --accent: #A78BFA;
-  --accent-foreground: #1F1B2E;
-  --destructive: #F87171;
-  --border: #4D4668;
-  --input: #4D4668;
-  --ring: #C4B5FD;
+  --accent: #a78bfa;
+  --accent-foreground: #1f1b2e;
+  --destructive: #f87171;
+  --border: #4d4668;
+  --input: #4d4668;
+  --ring: #c4b5fd;
   /* Chart colors */
-  --chart-1: #C4B5FD;
-  --chart-2: #A78BFA;
-  --chart-3: #8B5CF6;
-  --chart-4: #DDD6FE;
-  --chart-5: #7C3AED;
-  --sidebar: #1F1B2E;
-  --sidebar-foreground: #E5E7EB;
-  --sidebar-primary: #C4B5FD;
-  --sidebar-primary-foreground: #1F1B2E;
-  --sidebar-accent: #3D3654;
-  --sidebar-accent-foreground: #E5E7EB;
-  --sidebar-border: #4D4668;
-  --sidebar-ring: #C4B5FD;
+  --chart-1: #c4b5fd;
+  --chart-2: #a78bfa;
+  --chart-3: #8b5cf6;
+  --chart-4: #ddd6fe;
+  --chart-5: #7c3aed;
+  --sidebar: #1f1b2e;
+  --sidebar-foreground: #e5e7eb;
+  --sidebar-primary: #c4b5fd;
+  --sidebar-primary-foreground: #1f1b2e;
+  --sidebar-accent: #3d3654;
+  --sidebar-accent-foreground: #e5e7eb;
+  --sidebar-border: #4d4668;
+  --sidebar-ring: #c4b5fd;
 }
 
 @layer base {
@@ -134,7 +134,7 @@
 /* Accessibility: Enhanced focus styles for keyboard navigation */
 @layer utilities {
   .focus-visible-ring {
-    @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background;
+    @apply focus-visible:ring-ring focus-visible:ring-offset-background focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none;
   }
 }
 
@@ -147,7 +147,7 @@
   select:focus-visible,
   textarea:focus-visible,
   [tabindex]:focus-visible {
-    @apply outline-none ring-2 ring-ring ring-offset-2 ring-offset-background;
+    @apply ring-ring ring-offset-background ring-2 ring-offset-2 outline-none;
   }
 
   /* Reduced motion preference */
@@ -177,7 +177,8 @@
   }
 
   @keyframes gradient {
-    0%, 100% {
+    0%,
+    100% {
       background-position: 0% 50%;
     }
     50% {
@@ -186,7 +187,8 @@
   }
 
   @keyframes float {
-    0%, 100% {
+    0%,
+    100% {
       transform: translateY(0);
     }
     50% {
@@ -228,11 +230,21 @@
   }
 
   /* Staggered fade-in animation */
-  .stagger-1 { animation-delay: 0.1s; }
-  .stagger-2 { animation-delay: 0.2s; }
-  .stagger-3 { animation-delay: 0.3s; }
-  .stagger-4 { animation-delay: 0.4s; }
-  .stagger-5 { animation-delay: 0.5s; }
+  .stagger-1 {
+    animation-delay: 0.1s;
+  }
+  .stagger-2 {
+    animation-delay: 0.2s;
+  }
+  .stagger-3 {
+    animation-delay: 0.3s;
+  }
+  .stagger-4 {
+    animation-delay: 0.4s;
+  }
+  .stagger-5 {
+    animation-delay: 0.5s;
+  }
 
   .animate-fade-in-up {
     opacity: 0;
@@ -246,7 +258,7 @@
 
   /* Gradient text */
   .text-gradient {
-    background: linear-gradient(135deg, #A78BFA 0%, #8B5CF6 50%, #A78BFA 100%);
+    background: linear-gradient(135deg, #a78bfa 0%, #8b5cf6 50%, #a78bfa 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -267,7 +279,7 @@
   }
 
   .animate-pulse-ring::before {
-    content: '';
+    content: "";
     position: absolute;
     inset: 0;
     border-radius: inherit;
