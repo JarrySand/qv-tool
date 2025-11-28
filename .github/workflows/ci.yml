@@ -62,6 +62,7 @@ jobs:
     needs: [lint-and-type-check, test]
     env:
       DATABASE_URL: "postgresql://user:password@localhost:5432/dummy?schema=public"
+      AUTH_SECRET: "ci-build-dummy-secret-not-for-production"
     steps:
       - uses: actions/checkout@v4
 
