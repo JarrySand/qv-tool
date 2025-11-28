@@ -94,7 +94,14 @@ export default async function VotePage({ params, searchParams }: PageProps) {
     ) {
       // 未ログインの場合、サインインページへリダイレクト
       const callbackUrl = `/events/${event.slug ?? event.id}/vote${token ? `?token=${token}` : ""}`;
-      redirect(`/auth/signin?callbackUrl=${encodeURIComponent(callbackUrl)}`);
+      // 必要なプロバイダーをURLパラメータに追加（Social認証の場合のみ）
+      const providerParam =
+        event.votingMode !== "individual"
+          ? `&provider=${event.votingMode}`
+          : "";
+      redirect(
+        `/auth/signin?callbackUrl=${encodeURIComponent(callbackUrl)}${providerParam}`
+      );
     }
 
     // 異なるプロバイダーでログインしている場合
