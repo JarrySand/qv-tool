@@ -46,7 +46,7 @@ export function calculateMaxAdditionalVotes(
   // 現在のコストを戻して、総利用可能クレジットを計算
   const currentCost = calculateCost(currentVotes);
   const availableCredits = remainingCredits + currentCost;
-  
+
   // 利用可能クレジットで投票可能な最大票数
   return calculateMaxVotes(availableCredits);
 }
@@ -62,7 +62,6 @@ export function canChangeVote(
   const currentCost = calculateCost(currentVotes);
   const newCost = calculateCost(newVotes);
   const costDifference = newCost - currentCost;
-  
+
   return costDifference <= remainingCredits;
 }
-

@@ -8,7 +8,14 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Plus, Vote, BarChart3, Users, ArrowRight, Sparkles } from "lucide-react";
+import {
+  Plus,
+  Vote,
+  BarChart3,
+  Users,
+  ArrowRight,
+  Sparkles,
+} from "lucide-react";
 import { LanguageSwitcher } from "@/components/features/language-switcher";
 import { QuadraticExplainer } from "@/components/features/quadratic-explainer";
 import type { Locale } from "@/i18n/config";
@@ -18,7 +25,7 @@ export default async function Home() {
   const locale = (await getLocale()) as Locale;
 
   return (
-    <main id="main-content" className="min-h-screen bg-background">
+    <main id="main-content" className="bg-background min-h-screen">
       {/* Language Switcher */}
       <div className="absolute top-4 right-4 z-50">
         <LanguageSwitcher currentLocale={locale} />
@@ -27,18 +34,18 @@ export default async function Home() {
       {/* Hero Section with animated background */}
       <div className="relative overflow-hidden">
         {/* Animated gradient background */}
-        <div className="absolute inset-0 bg-gradient-to-br from-background via-background to-secondary/10" />
-        
+        <div className="from-background via-background to-secondary/10 absolute inset-0 bg-gradient-to-br" />
+
         {/* Animated geometric shapes */}
         <div className="absolute inset-0 overflow-hidden">
           {/* Large rotating square */}
-          <div 
-            className="absolute -top-20 -left-20 size-80 rotate-45 border border-primary/20 animate-[spin_30s_linear_infinite]"
+          <div
+            className="border-primary/20 absolute -top-20 -left-20 size-80 rotate-45 animate-[spin_30s_linear_infinite] border"
             style={{ animationDirection: "reverse" }}
           />
           {/* Floating circles */}
-          <div className="absolute top-1/4 right-1/4 size-64 rounded-full border border-primary/10 animate-[pulse_4s_ease-in-out_infinite]" />
-          <div className="absolute bottom-1/4 left-1/3 size-40 rounded-full bg-primary/5 animate-[bounce_6s_ease-in-out_infinite]" />
+          <div className="border-primary/10 absolute top-1/4 right-1/4 size-64 animate-[pulse_4s_ease-in-out_infinite] rounded-full border" />
+          <div className="bg-primary/5 absolute bottom-1/4 left-1/3 size-40 animate-[bounce_6s_ease-in-out_infinite] rounded-full" />
           {/* Grid pattern */}
           <div className="absolute inset-0 bg-[linear-gradient(to_right,transparent_0%,transparent_49%,#A78BFA08_50%,transparent_51%,transparent_100%)] bg-[size:4rem_4rem]" />
           <div className="absolute inset-0 bg-[linear-gradient(to_bottom,transparent_0%,transparent_49%,#A78BFA08_50%,transparent_51%,transparent_100%)] bg-[size:4rem_4rem]" />
@@ -46,43 +53,39 @@ export default async function Home() {
 
         <div className="relative mx-auto max-w-5xl px-4 py-32 text-center">
           {/* Animated badge */}
-          <div 
-            className="mb-8 inline-flex items-center gap-2 rounded-full border-2 border-primary bg-primary/10 px-5 py-2 text-sm font-semibold backdrop-blur-sm animate-fade-in"
+          <div
+            className="border-primary bg-primary/10 animate-fade-in mb-8 inline-flex items-center gap-2 rounded-full border-2 px-5 py-2 text-sm font-semibold backdrop-blur-sm"
             style={{ animationDelay: "0.1s", animationFillMode: "backwards" }}
           >
-            <Sparkles className="size-4 text-primary animate-[pulse_2s_ease-in-out_infinite]" />
-            <span className="text-foreground">
-              {t("badge")}
-            </span>
+            <Sparkles className="text-primary size-4 animate-[pulse_2s_ease-in-out_infinite]" />
+            <span className="text-foreground">{t("badge")}</span>
           </div>
-          
+
           {/* Hero title with staggered animation */}
-          <h1 
-            className="mb-6 text-5xl font-black tracking-tighter sm:text-6xl md:text-7xl lg:text-8xl animate-fade-in"
+          <h1
+            className="animate-fade-in mb-6 text-5xl font-black tracking-tighter sm:text-6xl md:text-7xl lg:text-8xl"
             style={{ animationDelay: "0.2s", animationFillMode: "backwards" }}
           >
             <span className="block">{t("title")}</span>
-            <span className="block text-primary">
-              {t("titleHighlight")}
-            </span>
+            <span className="text-primary block">{t("titleHighlight")}</span>
           </h1>
-          
+
           {/* Description with fade in */}
-          <p 
-            className="mx-auto mb-12 max-w-2xl text-lg text-muted-foreground md:text-xl animate-fade-in"
+          <p
+            className="text-muted-foreground animate-fade-in mx-auto mb-12 max-w-2xl text-lg md:text-xl"
             style={{ animationDelay: "0.4s", animationFillMode: "backwards" }}
           >
             {t("description")}
           </p>
-          
+
           {/* CTA Button with hover effect */}
-          <div 
-            className="flex flex-wrap justify-center gap-4 animate-fade-in"
+          <div
+            className="animate-fade-in flex flex-wrap justify-center gap-4"
             style={{ animationDelay: "0.6s", animationFillMode: "backwards" }}
           >
-            <Button 
-              size="lg" 
-              className="group h-14 px-8 text-lg font-semibold transition-all duration-300 hover:scale-105 hover:shadow-[0_0_30px_rgba(167,139,250,0.4)]" 
+            <Button
+              size="lg"
+              className="group h-14 px-8 text-lg font-semibold transition-all duration-300 hover:scale-105 hover:shadow-[0_0_30px_rgba(167,139,250,0.4)]"
               asChild
             >
               <Link href="/admin/create">
@@ -92,44 +95,43 @@ export default async function Home() {
               </Link>
             </Button>
           </div>
-          
+
           {/* Decorative formula */}
-          <div 
-            className="mt-16 inline-flex items-center gap-4 rounded-2xl border bg-card/50 px-6 py-4 font-mono text-sm backdrop-blur-sm animate-fade-in"
+          <div
+            className="bg-card/50 animate-fade-in mt-16 inline-flex items-center gap-4 rounded-2xl border px-6 py-4 font-mono text-sm backdrop-blur-sm"
             style={{ animationDelay: "0.8s", animationFillMode: "backwards" }}
           >
             <span className="text-muted-foreground">cost</span>
             <span className="text-xl">=</span>
             <span className="text-muted-foreground">votes</span>
-            <span className="text-2xl font-bold text-primary">²</span>
+            <span className="text-primary text-2xl font-bold">²</span>
           </div>
         </div>
       </div>
 
       {/* Features Section */}
-      <div className="relative border-t bg-muted/30 py-24">
+      <div className="bg-muted/30 relative border-t py-24">
         <div className="mx-auto max-w-5xl px-4">
-          <h2 
-            className="mb-4 text-center text-3xl font-bold md:text-4xl"
-          >
+          <h2 className="mb-4 text-center text-3xl font-bold md:text-4xl">
             {t("features.title")}
           </h2>
-          <p className="mx-auto mb-16 max-w-2xl text-center text-muted-foreground">
-            {locale === "ja" 
+          <p className="text-muted-foreground mx-auto mb-16 max-w-2xl text-center">
+            {locale === "ja"
               ? "公平で民主的な意思決定のための最新ツール"
-              : "Modern tools for fair and democratic decision making"
-            }
+              : "Modern tools for fair and democratic decision making"}
           </p>
-          
+
           <div className="grid gap-8 md:grid-cols-3">
             {/* Feature Card 1 */}
-            <Card className="group relative overflow-hidden border-2 transition-all duration-300 hover:border-primary hover:shadow-lg hover:shadow-primary/10">
-              <div className="absolute inset-0 bg-gradient-to-br from-primary/0 to-primary/5 opacity-0 transition-opacity group-hover:opacity-100" />
+            <Card className="group hover:border-primary hover:shadow-primary/10 relative overflow-hidden border-2 transition-all duration-300 hover:shadow-lg">
+              <div className="from-primary/0 to-primary/5 absolute inset-0 bg-gradient-to-br opacity-0 transition-opacity group-hover:opacity-100" />
               <CardHeader className="relative">
-                <div className="mb-4 inline-flex size-14 items-center justify-center rounded-xl bg-primary/10 transition-transform group-hover:scale-110">
-                  <Vote className="size-7 text-primary" />
+                <div className="bg-primary/10 mb-4 inline-flex size-14 items-center justify-center rounded-xl transition-transform group-hover:scale-110">
+                  <Vote className="text-primary size-7" />
                 </div>
-                <CardTitle className="text-xl">{t("features.qv.title")}</CardTitle>
+                <CardTitle className="text-xl">
+                  {t("features.qv.title")}
+                </CardTitle>
               </CardHeader>
               <CardContent className="relative">
                 <CardDescription className="text-base leading-relaxed">
@@ -139,13 +141,15 @@ export default async function Home() {
             </Card>
 
             {/* Feature Card 2 */}
-            <Card className="group relative overflow-hidden border-2 transition-all duration-300 hover:border-primary hover:shadow-lg hover:shadow-primary/10">
-              <div className="absolute inset-0 bg-gradient-to-br from-primary/0 to-primary/5 opacity-0 transition-opacity group-hover:opacity-100" />
+            <Card className="group hover:border-primary hover:shadow-primary/10 relative overflow-hidden border-2 transition-all duration-300 hover:shadow-lg">
+              <div className="from-primary/0 to-primary/5 absolute inset-0 bg-gradient-to-br opacity-0 transition-opacity group-hover:opacity-100" />
               <CardHeader className="relative">
-                <div className="mb-4 inline-flex size-14 items-center justify-center rounded-xl bg-primary/10 transition-transform group-hover:scale-110">
-                  <Users className="size-7 text-primary" />
+                <div className="bg-primary/10 mb-4 inline-flex size-14 items-center justify-center rounded-xl transition-transform group-hover:scale-110">
+                  <Users className="text-primary size-7" />
                 </div>
-                <CardTitle className="text-xl">{t("features.auth.title")}</CardTitle>
+                <CardTitle className="text-xl">
+                  {t("features.auth.title")}
+                </CardTitle>
               </CardHeader>
               <CardContent className="relative">
                 <CardDescription className="text-base leading-relaxed">
@@ -155,13 +159,15 @@ export default async function Home() {
             </Card>
 
             {/* Feature Card 3 */}
-            <Card className="group relative overflow-hidden border-2 transition-all duration-300 hover:border-primary hover:shadow-lg hover:shadow-primary/10">
-              <div className="absolute inset-0 bg-gradient-to-br from-primary/0 to-primary/5 opacity-0 transition-opacity group-hover:opacity-100" />
+            <Card className="group hover:border-primary hover:shadow-primary/10 relative overflow-hidden border-2 transition-all duration-300 hover:shadow-lg">
+              <div className="from-primary/0 to-primary/5 absolute inset-0 bg-gradient-to-br opacity-0 transition-opacity group-hover:opacity-100" />
               <CardHeader className="relative">
-                <div className="mb-4 inline-flex size-14 items-center justify-center rounded-xl bg-primary/10 transition-transform group-hover:scale-110">
-                  <BarChart3 className="size-7 text-primary" />
+                <div className="bg-primary/10 mb-4 inline-flex size-14 items-center justify-center rounded-xl transition-transform group-hover:scale-110">
+                  <BarChart3 className="text-primary size-7" />
                 </div>
-                <CardTitle className="text-xl">{t("features.realtime.title")}</CardTitle>
+                <CardTitle className="text-xl">
+                  {t("features.realtime.title")}
+                </CardTitle>
               </CardHeader>
               <CardContent className="relative">
                 <CardDescription className="text-base leading-relaxed">
@@ -179,39 +185,36 @@ export default async function Home() {
           <h2 className="mb-4 text-center text-3xl font-bold md:text-4xl">
             {locale === "ja"
               ? "二次投票の仕組み"
-              : "How Quadratic Voting Works"
-            }
+              : "How Quadratic Voting Works"}
           </h2>
-          <p className="mx-auto mb-12 max-w-lg text-center text-muted-foreground">
+          <p className="text-muted-foreground mx-auto mb-12 max-w-lg text-center">
             {locale === "ja"
               ? "インタラクティブなデモで体験してみましょう"
-              : "Experience it with an interactive demo"
-            }
+              : "Experience it with an interactive demo"}
           </p>
           <QuadraticExplainer locale={locale} />
         </div>
       </div>
 
       {/* How it works with timeline */}
-      <div className="relative bg-muted/30 py-24">
+      <div className="bg-muted/30 relative py-24">
         <div className="mx-auto max-w-5xl px-4">
           <h2 className="mb-4 text-center text-3xl font-bold md:text-4xl">
             {t("howItWorks.title")}
           </h2>
-          <p className="mx-auto mb-16 max-w-2xl text-center text-muted-foreground">
+          <p className="text-muted-foreground mx-auto mb-16 max-w-2xl text-center">
             {locale === "ja"
               ? "3ステップで簡単に始められます"
-              : "Get started in 3 simple steps"
-            }
+              : "Get started in 3 simple steps"}
           </p>
-          
+
           <div className="relative">
             <div className="grid gap-12 md:grid-cols-3">
               {/* Step 1 */}
               <div className="group relative text-center">
                 <div className="relative mx-auto mb-6 flex size-16 items-center justify-center">
-                  <div className="absolute inset-0 rounded-full bg-primary/20 animate-ping [animation-duration:3s]" />
-                  <div className="relative flex size-16 items-center justify-center rounded-full border-4 border-primary bg-background text-2xl font-black transition-transform group-hover:scale-110">
+                  <div className="bg-primary/20 absolute inset-0 animate-ping rounded-full [animation-duration:3s]" />
+                  <div className="border-primary bg-background relative flex size-16 items-center justify-center rounded-full border-4 text-2xl font-black transition-transform group-hover:scale-110">
                     1
                   </div>
                 </div>
@@ -222,12 +225,12 @@ export default async function Home() {
                   {t("howItWorks.step1.description")}
                 </p>
               </div>
-              
+
               {/* Step 2 */}
               <div className="group relative text-center">
                 <div className="relative mx-auto mb-6 flex size-16 items-center justify-center">
-                  <div className="absolute inset-0 rounded-full bg-primary/20 animate-ping [animation-duration:3s] [animation-delay:1s]" />
-                  <div className="relative flex size-16 items-center justify-center rounded-full border-4 border-primary bg-background text-2xl font-black transition-transform group-hover:scale-110">
+                  <div className="bg-primary/20 absolute inset-0 animate-ping rounded-full [animation-delay:1s] [animation-duration:3s]" />
+                  <div className="border-primary bg-background relative flex size-16 items-center justify-center rounded-full border-4 text-2xl font-black transition-transform group-hover:scale-110">
                     2
                   </div>
                 </div>
@@ -238,12 +241,12 @@ export default async function Home() {
                   {t("howItWorks.step2.description")}
                 </p>
               </div>
-              
+
               {/* Step 3 */}
               <div className="group relative text-center">
                 <div className="relative mx-auto mb-6 flex size-16 items-center justify-center">
-                  <div className="absolute inset-0 rounded-full bg-primary/20 animate-ping [animation-duration:3s] [animation-delay:2s]" />
-                  <div className="relative flex size-16 items-center justify-center rounded-full border-4 border-primary bg-background text-2xl font-black transition-transform group-hover:scale-110">
+                  <div className="bg-primary/20 absolute inset-0 animate-ping rounded-full [animation-delay:2s] [animation-duration:3s]" />
+                  <div className="border-primary bg-background relative flex size-16 items-center justify-center rounded-full border-4 text-2xl font-black transition-transform group-hover:scale-110">
                     3
                   </div>
                 </div>
@@ -256,12 +259,12 @@ export default async function Home() {
               </div>
             </div>
           </div>
-          
+
           {/* Final CTA */}
           <div className="mt-16 text-center">
-            <Button 
-              size="lg" 
-              className="group h-14 px-10 text-lg font-semibold transition-all duration-300 hover:scale-105" 
+            <Button
+              size="lg"
+              className="group h-14 px-10 text-lg font-semibold transition-all duration-300 hover:scale-105"
               asChild
             >
               <Link href="/admin/create">
@@ -274,24 +277,24 @@ export default async function Home() {
       </div>
 
       {/* Footer */}
-      <footer className="border-t bg-muted/30 py-12">
+      <footer className="bg-muted/30 border-t py-12">
         <div className="mx-auto max-w-5xl px-4">
           <div className="flex flex-col items-center gap-4">
             <div className="flex items-center gap-2 text-xl font-bold">
-              <div className="flex size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground font-black">
+              <div className="bg-primary text-primary-foreground flex size-8 items-center justify-center rounded-lg font-black">
                 Q
               </div>
               <span>QV-Tool</span>
             </div>
-            <p className="text-center text-sm text-muted-foreground">
+            <p className="text-muted-foreground text-center text-sm">
               {t("footer.projectName")}
             </p>
-            <div className="flex items-center gap-4 text-sm text-muted-foreground">
+            <div className="text-muted-foreground flex items-center gap-4 text-sm">
               <span>{t("footer.openSource")}</span>
               <span>•</span>
               <a
                 href="https://github.com"
-                className="inline-flex items-center gap-1 transition-colors hover:text-foreground"
+                className="hover:text-foreground inline-flex items-center gap-1 transition-colors"
                 target="_blank"
                 rel="noopener noreferrer"
               >

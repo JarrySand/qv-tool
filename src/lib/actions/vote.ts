@@ -21,7 +21,9 @@ interface SubmitVoteInput {
 /**
  * 投票を送信または更新するServer Action
  */
-export async function submitVote(input: SubmitVoteInput): Promise<SubmitVoteResult> {
+export async function submitVote(
+  input: SubmitVoteInput
+): Promise<SubmitVoteResult> {
   const t = await getTranslations("errors");
   const { eventId, details, token, existingVoteId } = input;
 
@@ -31,7 +33,9 @@ export async function submitVote(input: SubmitVoteInput): Promise<SubmitVoteResu
   const rateLimitResult = await checkVoteRateLimit(clientIp);
 
   if (!rateLimitResult.success) {
-    const secondsUntilReset = Math.ceil((rateLimitResult.reset - Date.now()) / 1000);
+    const secondsUntilReset = Math.ceil(
+      (rateLimitResult.reset - Date.now()) / 1000
+    );
     return {
       success: false,
       error: t("rateLimitExceeded", { seconds: secondsUntilReset }),
@@ -92,7 +96,10 @@ export async function submitVote(input: SubmitVoteInput): Promise<SubmitVoteResu
   if (!costValidation.valid) {
     return {
       success: false,
-      error: t("creditsExceeded", { used: costValidation.totalCost, limit: event.creditsPerVoter }),
+      error: t("creditsExceeded", {
+        used: costValidation.totalCost,
+        limit: event.creditsPerVoter,
+      }),
     };
   }
 
@@ -321,4 +328,3 @@ export async function getExistingVote(
     details: vote.details,
   };
 }
-

@@ -5,7 +5,13 @@ import { Button } from "@/components/ui/button";
 
 interface SignOutButtonProps {
   callbackUrl?: string;
-  variant?: "default" | "destructive" | "outline" | "secondary" | "ghost" | "link";
+  variant?:
+    | "default"
+    | "destructive"
+    | "outline"
+    | "secondary"
+    | "ghost"
+    | "link";
   className?: string;
   children?: React.ReactNode;
 }
@@ -26,9 +32,3 @@ export function SignOutButton({
     </Button>
   );
 }
-
-
-
-
-
-

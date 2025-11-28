@@ -47,4 +47,3 @@ export default function LineProvider(options: {
     ...options,
   };
 }
-

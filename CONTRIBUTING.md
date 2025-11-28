@@ -130,4 +130,3 @@ Conventional Commitsに従います:
 ## 🙏 Thank You!
 
 Your contributions make QV-Tool better for everyone!
-

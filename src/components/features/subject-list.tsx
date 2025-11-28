@@ -6,10 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import {
-  Card,
-  CardContent,
-} from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import {
   Pencil,
   Trash2,
@@ -43,7 +40,12 @@ type Props = {
   isLocked: boolean;
 };
 
-export function SubjectList({ subjects: initialSubjects, eventId, adminToken, isLocked }: Props) {
+export function SubjectList({
+  subjects: initialSubjects,
+  eventId,
+  adminToken,
+  isLocked,
+}: Props) {
   const [subjects, setSubjects] = useState(initialSubjects);
   const [showAddForm, setShowAddForm] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -119,8 +121,8 @@ export function SubjectList({ subjects: initialSubjects, eventId, adminToken, is
 
   if (subjects.length === 0 && !showAddForm) {
     return (
-      <div className="text-center py-8">
-        <ImageIcon className="mx-auto size-12 text-muted-foreground/50 mb-4" />
+      <div className="py-8 text-center">
+        <ImageIcon className="text-muted-foreground/50 mx-auto mb-4 size-12" />
         <p className="text-muted-foreground mb-4">
           まだ投票対象が登録されていません
         </p>
@@ -137,7 +139,7 @@ export function SubjectList({ subjects: initialSubjects, eventId, adminToken, is
   return (
     <div className="space-y-4">
       {error && (
-        <div className="rounded-md border border-destructive/50 bg-destructive/10 p-3 text-sm text-destructive">
+        <div className="border-destructive/50 bg-destructive/10 text-destructive rounded-md border p-3 text-sm">
           {error}
         </div>
       )}
@@ -157,7 +159,7 @@ export function SubjectList({ subjects: initialSubjects, eventId, adminToken, is
               ) : (
                 <div className="flex items-start gap-3">
                   {!isLocked && (
-                    <GripVertical className="size-5 text-muted-foreground/50 mt-1 cursor-move" />
+                    <GripVertical className="text-muted-foreground/50 mt-1 size-5 cursor-move" />
                   )}
                   {subject.imageUrl && (
                     <Image
@@ -169,10 +171,10 @@ export function SubjectList({ subjects: initialSubjects, eventId, adminToken, is
                       unoptimized={subject.imageUrl.startsWith("data:")}
                     />
                   )}
-                  <div className="flex-1 min-w-0">
+                  <div className="min-w-0 flex-1">
                     <h3 className="font-medium">{subject.title}</h3>
                     {subject.description && (
-                      <p className="text-sm text-muted-foreground line-clamp-2">
+                      <p className="text-muted-foreground line-clamp-2 text-sm">
                         {subject.description}
                       </p>
                     )}
@@ -181,7 +183,7 @@ export function SubjectList({ subjects: initialSubjects, eventId, adminToken, is
                         href={subject.url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center gap-1 text-sm text-primary hover:underline"
+                        className="text-primary inline-flex items-center gap-1 text-sm hover:underline"
                       >
                         <ExternalLink className="size-3" />
                         リンク
@@ -249,7 +251,12 @@ type SubjectFormProps = {
   isPending: boolean;
 };
 
-function SubjectForm({ subject, onSubmit, onCancel, isPending }: SubjectFormProps) {
+function SubjectForm({
+  subject,
+  onSubmit,
+  onCancel,
+  isPending,
+}: SubjectFormProps) {
   return (
     <form action={onSubmit} className="space-y-4">
       <div className="space-y-2">
@@ -300,8 +307,13 @@ function SubjectForm({ subject, onSubmit, onCancel, isPending }: SubjectFormProp
         </div>
       </div>
 
-      <div className="flex gap-2 justify-end">
-        <Button type="button" variant="ghost" onClick={onCancel} disabled={isPending}>
+      <div className="flex justify-end gap-2">
+        <Button
+          type="button"
+          variant="ghost"
+          onClick={onCancel}
+          disabled={isPending}
+        >
           <X className="size-4" />
           キャンセル
         </Button>
@@ -319,4 +331,3 @@ function SubjectForm({ subject, onSubmit, onCancel, isPending }: SubjectFormProp
     </form>
   );
 }
-

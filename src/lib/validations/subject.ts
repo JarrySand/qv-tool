@@ -11,8 +11,16 @@ export const createSubjectSchema = z.object({
     .string()
     .max(1000, "説明は1000文字以内で入力してください")
     .optional(),
-  url: z.string().url("有効なURLを入力してください").optional().or(z.literal("")),
-  imageUrl: z.string().url("有効なURLを入力してください").optional().or(z.literal("")),
+  url: z
+    .string()
+    .url("有効なURLを入力してください")
+    .optional()
+    .or(z.literal("")),
+  imageUrl: z
+    .string()
+    .url("有効なURLを入力してください")
+    .optional()
+    .or(z.literal("")),
   order: z.number().int().min(0).default(0),
 });
 
@@ -27,11 +35,18 @@ export const updateSubjectSchema = z.object({
     .string()
     .max(1000, "説明は1000文字以内で入力してください")
     .optional(),
-  url: z.string().url("有効なURLを入力してください").optional().or(z.literal("")),
-  imageUrl: z.string().url("有効なURLを入力してください").optional().or(z.literal("")),
+  url: z
+    .string()
+    .url("有効なURLを入力してください")
+    .optional()
+    .or(z.literal("")),
+  imageUrl: z
+    .string()
+    .url("有効なURLを入力してください")
+    .optional()
+    .or(z.literal("")),
   order: z.number().int().min(0).optional(),
 });
 
 export type CreateSubjectInput = z.infer<typeof createSubjectSchema>;
 export type UpdateSubjectInput = z.infer<typeof updateSubjectSchema>;
-

@@ -24,7 +24,12 @@ type Props = {
   onUpdate: (data: Partial<EventData>) => void;
 };
 
-export function EventEditDialog({ event, adminToken, onClose, onUpdate }: Props) {
+export function EventEditDialog({
+  event,
+  adminToken,
+  onClose,
+  onUpdate,
+}: Props) {
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
 
@@ -81,9 +86,9 @@ export function EventEditDialog({ event, adminToken, onClose, onUpdate }: Props)
       />
 
       {/* ダイアログ */}
-      <div className="relative z-10 w-full max-w-lg mx-4 bg-background rounded-lg shadow-xl border">
+      <div className="bg-background relative z-10 mx-4 w-full max-w-lg rounded-lg border shadow-xl">
         {/* ヘッダー */}
-        <div className="flex items-center justify-between p-4 border-b">
+        <div className="flex items-center justify-between border-b p-4">
           <h2 className="text-lg font-semibold">イベント設定</h2>
           <Button variant="ghost" size="icon-sm" onClick={onClose}>
             <X className="size-4" />
@@ -91,9 +96,9 @@ export function EventEditDialog({ event, adminToken, onClose, onUpdate }: Props)
         </div>
 
         {/* フォーム */}
-        <form action={handleSubmit} className="p-4 space-y-4">
+        <form action={handleSubmit} className="space-y-4 p-4">
           {error && (
-            <div className="rounded-md border border-destructive/50 bg-destructive/10 p-3 text-sm text-destructive">
+            <div className="border-destructive/50 bg-destructive/10 text-destructive rounded-md border p-3 text-sm">
               {error}
             </div>
           )}
@@ -149,14 +154,19 @@ export function EventEditDialog({ event, adminToken, onClose, onUpdate }: Props)
           )}
 
           {event.hasVotes && (
-            <p className="text-sm text-muted-foreground">
+            <p className="text-muted-foreground text-sm">
               ※ 投票が開始されているため、期間の変更はできません
             </p>
           )}
 
           {/* ボタン */}
-          <div className="flex gap-2 justify-end pt-4">
-            <Button type="button" variant="ghost" onClick={onClose} disabled={isPending}>
+          <div className="flex justify-end gap-2 pt-4">
+            <Button
+              type="button"
+              variant="ghost"
+              onClick={onClose}
+              disabled={isPending}
+            >
               キャンセル
             </Button>
             <Button type="submit" disabled={isPending}>
@@ -175,4 +185,3 @@ export function EventEditDialog({ event, adminToken, onClose, onUpdate }: Props)
     </div>
   );
 }
-

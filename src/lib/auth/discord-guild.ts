@@ -22,7 +22,9 @@ export interface DiscordGuild {
  * @param accessToken Discord OAuth アクセストークン
  * @returns 所属サーバー一覧
  */
-export async function getUserGuilds(accessToken: string): Promise<DiscordGuild[]> {
+export async function getUserGuilds(
+  accessToken: string
+): Promise<DiscordGuild[]> {
   const response = await fetch(`${DISCORD_API_BASE}/users/@me/guilds`, {
     headers: {
       Authorization: `Bearer ${accessToken}`,
@@ -88,4 +90,3 @@ export async function getGuildInfo(
     return null;
   }
 }
-

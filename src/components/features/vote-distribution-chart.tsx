@@ -29,7 +29,7 @@ export function VoteDistributionChart({
 
   if (distributions.length === 0) {
     return (
-      <div className="h-64 flex items-center justify-center text-muted-foreground">
+      <div className="text-muted-foreground flex h-64 items-center justify-center">
         投票データがありません
       </div>
     );
@@ -55,7 +55,10 @@ export function VoteDistributionChart({
   }
 
   // 全員0票の場合
-  if (chartData.length === 0 || (chartData.length === 1 && chartData[0].votes === "0票")) {
+  if (
+    chartData.length === 0 ||
+    (chartData.length === 1 && chartData[0].votes === "0票")
+  ) {
     chartData.push({ votes: "0票", count: distributionMap.get(0) ?? 0 });
   }
 
@@ -68,7 +71,11 @@ export function VoteDistributionChart({
   return (
     <div className="space-y-4">
       {/* タブ切り替え */}
-      <div className="flex flex-wrap gap-2" role="tablist" aria-label="投票対象の選択">
+      <div
+        className="flex flex-wrap gap-2"
+        role="tablist"
+        aria-label="投票対象の選択"
+      >
         {distributions.map((dist, index) => (
           <Button
             key={dist.subjectId}
@@ -118,10 +125,11 @@ export function VoteDistributionChart({
                 if (active && payload && payload.length) {
                   const data = payload[0].payload;
                   return (
-                    <div className="bg-popover border rounded-lg p-3 shadow-lg">
+                    <div className="bg-popover rounded-lg border p-3 shadow-lg">
                       <p className="font-semibold">{data.votes}</p>
-                      <p className="text-sm text-muted-foreground">
-                        人数: <span className="font-medium">{data.count}人</span>
+                      <p className="text-muted-foreground text-sm">
+                        人数:{" "}
+                        <span className="font-medium">{data.count}人</span>
                       </p>
                     </div>
                   );
@@ -129,20 +137,18 @@ export function VoteDistributionChart({
                 return null;
               }}
             />
-            <Bar
-              dataKey="count"
-              fill="#3B82F6"
-              radius={[4, 4, 0, 0]}
-            />
+            <Bar dataKey="count" fill="#3B82F6" radius={[4, 4, 0, 0]} />
           </BarChart>
         </ResponsiveContainer>
       </div>
 
       {/* 選択中の項目情報 */}
-      <div className="text-center text-sm text-muted-foreground" aria-hidden="true">
+      <div
+        className="text-muted-foreground text-center text-sm"
+        aria-hidden="true"
+      >
         「{selectedDistribution.subjectTitle}」への投票分布
       </div>
     </div>
   );
 }
-

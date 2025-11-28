@@ -18,6 +18,7 @@
 ## 🔒 セキュリティ（推奨）
 
 ### Neonパスワード変更
+
 チャットでパスワードを共有したため、変更を推奨します。
 
 1. https://console.neon.tech にアクセス
@@ -55,9 +56,9 @@ https://qv-tool.vercel.app/api/auth/callback/discord
 
 https://vercel.com/sunas-projects-d1e1e545/qv-tool/settings/environment-variables
 
-| Name | Value |
-|------|-------|
-| `DISCORD_CLIENT_ID` | （コピーしたClient ID） |
+| Name                    | Value                       |
+| ----------------------- | --------------------------- |
+| `DISCORD_CLIENT_ID`     | （コピーしたClient ID）     |
 | `DISCORD_CLIENT_SECRET` | （コピーしたClient Secret） |
 
 ### 5. 再デプロイ
@@ -160,17 +161,17 @@ QV-Tool（Quadratic Voting Tool）をデプロイしました！
 
 ### Vercel（本番）
 
-| 変数名 | 設定状況 |
-|--------|----------|
-| `DATABASE_URL` | ✅ 設定済み |
-| `NEXTAUTH_URL` | ✅ 設定済み |
-| `NEXTAUTH_SECRET` | ✅ 設定済み |
-| `DISCORD_CLIENT_ID` | ⬜ 未設定 |
-| `DISCORD_CLIENT_SECRET` | ⬜ 未設定 |
-| `GOOGLE_CLIENT_ID` | ⬜ 未設定 |
-| `GOOGLE_CLIENT_SECRET` | ⬜ 未設定 |
-| `LINE_CHANNEL_ID` | ⬜ 未設定 |
-| `LINE_CHANNEL_SECRET` | ⬜ 未設定 |
+| 変数名                  | 設定状況    |
+| ----------------------- | ----------- |
+| `DATABASE_URL`          | ✅ 設定済み |
+| `NEXTAUTH_URL`          | ✅ 設定済み |
+| `NEXTAUTH_SECRET`       | ✅ 設定済み |
+| `DISCORD_CLIENT_ID`     | ⬜ 未設定   |
+| `DISCORD_CLIENT_SECRET` | ⬜ 未設定   |
+| `GOOGLE_CLIENT_ID`      | ⬜ 未設定   |
+| `GOOGLE_CLIENT_SECRET`  | ⬜ 未設定   |
+| `LINE_CHANNEL_ID`       | ⬜ 未設定   |
+| `LINE_CHANNEL_SECRET`   | ⬜ 未設定   |
 
 ---
 
@@ -182,4 +183,3 @@ QV-Tool（Quadratic Voting Tool）をデプロイしました！
 - [Discord Developer Portal](https://discord.com/developers/applications)
 - [デプロイ手順書](./DEPLOY.md)
 - [Discord認証計画書](./DISCORD_AUTH_PLAN.md)
-

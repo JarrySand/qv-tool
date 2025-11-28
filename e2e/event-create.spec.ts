@@ -13,7 +13,9 @@ test.describe("イベント作成フロー", () => {
     await expect(page.getByLabel(/クレジット|Credits/i)).toBeVisible();
 
     // 送信ボタンが存在する
-    await expect(page.getByRole("button", { name: /イベントを作成|Create Event/i })).toBeVisible();
+    await expect(
+      page.getByRole("button", { name: /イベントを作成|Create Event/i })
+    ).toBeVisible();
   });
 
   test("バリデーションエラーが表示される", async ({ page }) => {
@@ -23,7 +25,9 @@ test.describe("イベント作成フロー", () => {
     await titleInput.clear();
 
     // フォームを送信
-    const submitButton = page.getByRole("button", { name: /イベントを作成|Create Event/i });
+    const submitButton = page.getByRole("button", {
+      name: /イベントを作成|Create Event/i,
+    });
     await submitButton.click();
 
     // ブラウザのHTML5バリデーションメッセージが表示される（required属性）
@@ -35,13 +39,17 @@ test.describe("イベント作成フロー", () => {
     await page.getByLabel(/タイトル|Title/i).fill("テストイベント E2E");
 
     // 説明を入力
-    await page.getByLabel(/説明|Description/i).fill("E2Eテスト用のイベントです");
+    await page
+      .getByLabel(/説明|Description/i)
+      .fill("E2Eテスト用のイベントです");
 
     // クレジット数を設定
     await page.getByLabel(/クレジット|Credits/i).fill("50");
 
     // フォームを送信
-    await page.getByRole("button", { name: /イベントを作成|Create Event/i }).click();
+    await page
+      .getByRole("button", { name: /イベントを作成|Create Event/i })
+      .click();
 
     // 作成完了ページにリダイレクトされる
     await expect(page).toHaveURL(/\/admin\/created\?id=/);
@@ -58,4 +66,3 @@ test.describe("イベント作成フロー", () => {
     await expect(page).toHaveURL("/");
   });
 });
-

@@ -3,10 +3,7 @@ import { z } from "zod";
 // 投票詳細スキーマ
 const voteDetailSchema = z.object({
   subjectId: z.string().cuid(),
-  amount: z
-    .number()
-    .int()
-    .min(0, "票数は0以上で入力してください"),
+  amount: z.number().int().min(0, "票数は0以上で入力してください"),
 });
 
 // 投票送信スキーマ
@@ -32,4 +29,3 @@ export const validateVoteCost = (
 
 export type SubmitVoteInput = z.infer<typeof submitVoteSchema>;
 export type VoteDetailInput = z.infer<typeof voteDetailSchema>;
-

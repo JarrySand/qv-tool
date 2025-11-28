@@ -11,14 +11,18 @@ test.describe("ホームページ", () => {
     await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
 
     // イベント作成ボタンが表示される
-    await expect(page.getByRole("link", { name: /イベントを作成|Create Event/i })).toBeVisible();
+    await expect(
+      page.getByRole("link", { name: /イベントを作成|Create Event/i })
+    ).toBeVisible();
   });
 
   test("言語切り替えが機能する", async ({ page }) => {
     await page.goto("/");
 
     // 言語スイッチャーを探す
-    const languageSwitcher = page.getByRole("combobox", { name: /言語|language/i });
+    const languageSwitcher = page.getByRole("combobox", {
+      name: /言語|language/i,
+    });
 
     if (await languageSwitcher.isVisible()) {
       // 言語を切り替え
@@ -37,13 +41,19 @@ test.describe("ホームページ", () => {
     await page.goto("/");
 
     // イベント作成リンクをクリック
-    await page.getByRole("link", { name: /イベントを作成|Create Event/i }).click();
+    await page
+      .getByRole("link", { name: /イベントを作成|Create Event/i })
+      .click();
 
     // URLが変わったことを確認
     await expect(page).toHaveURL(/\/admin\/create/);
 
     // フォームが表示される
-    await expect(page.getByRole("heading", { name: /新しい投票イベント|Create a New Voting/i })).toBeVisible();
+    await expect(
+      page.getByRole("heading", {
+        name: /新しい投票イベント|Create a New Voting/i,
+      })
+    ).toBeVisible();
   });
 
   test("特徴セクションが表示される", async ({ page }) => {
@@ -58,13 +68,14 @@ test.describe("ホームページ", () => {
     await page.goto("/");
 
     // スキップリンクの存在確認（sr-onlyクラスで隠れている）
-    const skipLink = page.getByRole("link", { name: /メインコンテンツへスキップ|Skip to main content/i });
-    
+    const skipLink = page.getByRole("link", {
+      name: /メインコンテンツへスキップ|Skip to main content/i,
+    });
+
     // キーボードフォーカスでスキップリンクを表示
     await page.keyboard.press("Tab");
-    
+
     // フォーカスがスキップリンクに当たる（sr-onlyからfocus:not-sr-onlyに変わる）
     // 実装によってはこのテストをスキップ
   });
 });
-

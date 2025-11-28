@@ -35,11 +35,11 @@ export default async function SignInPage({ searchParams }: PageProps) {
   const error = params.error;
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-background p-4">
+    <main className="bg-background flex min-h-screen items-center justify-center p-4">
       <div className="w-full max-w-md">
         <Link
           href="/"
-          className="mb-6 inline-flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
+          className="text-muted-foreground hover:text-foreground mb-6 inline-flex items-center gap-2 text-sm transition-colors"
         >
           <ArrowLeft className="size-4" />
           {t("common.back")}
@@ -52,7 +52,7 @@ export default async function SignInPage({ searchParams }: PageProps) {
           </CardHeader>
           <CardContent className="space-y-4">
             {error && (
-              <div className="rounded-md border border-destructive/50 bg-destructive/10 p-3 text-center text-sm text-destructive">
+              <div className="border-destructive/50 bg-destructive/10 text-destructive rounded-md border p-3 text-center text-sm">
                 {t("auth.error.default")}
               </div>
             )}
@@ -137,11 +137,13 @@ export default async function SignInPage({ searchParams }: PageProps) {
               </form>
             )}
 
-            {!process.env.GOOGLE_CLIENT_ID && !process.env.LINE_CLIENT_ID && !process.env.DISCORD_CLIENT_ID && (
-              <p className="text-center text-sm text-muted-foreground">
-                {t("auth.error.configuration")}
-              </p>
-            )}
+            {!process.env.GOOGLE_CLIENT_ID &&
+              !process.env.LINE_CLIENT_ID &&
+              !process.env.DISCORD_CLIENT_ID && (
+                <p className="text-muted-foreground text-center text-sm">
+                  {t("auth.error.configuration")}
+                </p>
+              )}
           </CardContent>
         </Card>
       </div>

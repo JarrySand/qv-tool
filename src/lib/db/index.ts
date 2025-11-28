@@ -8,9 +8,11 @@ const globalForPrisma = globalThis as unknown as {
 };
 
 // PostgreSQLコネクションプールを作成
-const pool = globalForPrisma.pool ?? new Pool({
-  connectionString: process.env.DATABASE_URL,
-});
+const pool =
+  globalForPrisma.pool ??
+  new Pool({
+    connectionString: process.env.DATABASE_URL,
+  });
 
 // Prismaアダプターを作成
 const adapter = new PrismaPg(pool);
@@ -31,4 +33,3 @@ if (process.env.NODE_ENV !== "production") {
 }
 
 export default prisma;
-

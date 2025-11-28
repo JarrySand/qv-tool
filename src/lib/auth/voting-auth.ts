@@ -208,7 +208,9 @@ export async function getEventAuthRequirement(eventId: string): Promise<{
     found: true,
     votingMode: event.votingMode,
     requiresToken: event.votingMode === "individual",
-    requiresSocialAuth: event.votingMode === "google" || event.votingMode === "line" || event.votingMode === "discord",
+    requiresSocialAuth:
+      event.votingMode === "google" ||
+      event.votingMode === "line" ||
+      event.votingMode === "discord",
   };
 }
-

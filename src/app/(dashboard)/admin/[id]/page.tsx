@@ -45,7 +45,7 @@ export default async function EventAdminPage({
 
   // 投票開始済みかどうか
   const hasVotes = event.votes.length > 0;
-  
+
   // ロック済みかどうか（公開済み or 投票開始済み）
   const isLocked = event.isLocked || hasVotes;
 
@@ -61,7 +61,7 @@ export default async function EventAdminPage({
   }
 
   return (
-    <main id="main-content" className="min-h-screen bg-background">
+    <main id="main-content" className="bg-background min-h-screen">
       <EventAdminContent
         event={{
           ...event,
@@ -74,4 +74,3 @@ export default async function EventAdminPage({
     </main>
   );
 }
-

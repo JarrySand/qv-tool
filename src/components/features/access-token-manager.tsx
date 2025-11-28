@@ -28,7 +28,11 @@ type Props = {
   adminToken: string;
 };
 
-export function AccessTokenManager({ tokens: initialTokens, eventId, adminToken }: Props) {
+export function AccessTokenManager({
+  tokens: initialTokens,
+  eventId,
+  adminToken,
+}: Props) {
   const [tokens, setTokens] = useState(initialTokens);
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
@@ -43,7 +47,11 @@ export function AccessTokenManager({ tokens: initialTokens, eventId, adminToken 
   const handleGenerate = async () => {
     setError(null);
     startTransition(async () => {
-      const result = await generateAccessTokens(eventId, adminToken, generateCount);
+      const result = await generateAccessTokens(
+        eventId,
+        adminToken,
+        generateCount
+      );
       if (result.success) {
         setTokens((prev) => [...result.tokens, ...prev]);
       } else {
@@ -77,7 +85,9 @@ export function AccessTokenManager({ tokens: initialTokens, eventId, adminToken 
       ...rows.map((row) => row.map((cell) => `"${cell}"`).join(",")),
     ].join("\n");
 
-    const blob = new Blob(["\uFEFF" + csvContent], { type: "text/csv;charset=utf-8" });
+    const blob = new Blob(["\uFEFF" + csvContent], {
+      type: "text/csv;charset=utf-8",
+    });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
@@ -89,24 +99,24 @@ export function AccessTokenManager({ tokens: initialTokens, eventId, adminToken 
   return (
     <div className="space-y-4">
       {error && (
-        <div className="rounded-md border border-destructive/50 bg-destructive/10 p-3 text-sm text-destructive">
+        <div className="border-destructive/50 bg-destructive/10 text-destructive rounded-md border p-3 text-sm">
           {error}
         </div>
       )}
 
       {/* 統計 */}
-      <div className="grid grid-cols-3 gap-4 p-4 bg-muted/50 rounded-lg">
+      <div className="bg-muted/50 grid grid-cols-3 gap-4 rounded-lg p-4">
         <div className="text-center">
           <p className="text-2xl font-bold">{tokens.length}</p>
-          <p className="text-sm text-muted-foreground">総トークン数</p>
+          <p className="text-muted-foreground text-sm">総トークン数</p>
         </div>
         <div className="text-center">
           <p className="text-2xl font-bold text-green-600">{usedCount}</p>
-          <p className="text-sm text-muted-foreground">使用済み</p>
+          <p className="text-muted-foreground text-sm">使用済み</p>
         </div>
         <div className="text-center">
           <p className="text-2xl font-bold text-blue-600">{unusedCount}</p>
-          <p className="text-sm text-muted-foreground">未使用</p>
+          <p className="text-muted-foreground text-sm">未使用</p>
         </div>
       </div>
 
@@ -145,16 +155,16 @@ export function AccessTokenManager({ tokens: initialTokens, eventId, adminToken 
 
       {/* トークン一覧 */}
       {tokens.length > 0 && (
-        <div className="border rounded-lg divide-y max-h-96 overflow-y-auto">
+        <div className="max-h-96 divide-y overflow-y-auto rounded-lg border">
           {tokens.map((token) => (
             <div
               key={token.id}
-              className="flex items-center gap-3 p-3 text-sm hover:bg-muted/50"
+              className="hover:bg-muted/50 flex items-center gap-3 p-3 text-sm"
             >
               {token.isUsed ? (
-                <CheckCircle className="size-4 text-green-600 shrink-0" />
+                <CheckCircle className="size-4 shrink-0 text-green-600" />
               ) : (
-                <Circle className="size-4 text-muted-foreground shrink-0" />
+                <Circle className="text-muted-foreground size-4 shrink-0" />
               )}
               <code className="flex-1 truncate font-mono text-xs">
                 {token.token}
@@ -176,7 +186,7 @@ export function AccessTokenManager({ tokens: initialTokens, eventId, adminToken 
       )}
 
       {tokens.length === 0 && (
-        <div className="text-center py-8 text-muted-foreground">
+        <div className="text-muted-foreground py-8 text-center">
           <p>まだトークンが生成されていません</p>
           <p className="text-sm">上のボタンからトークンを生成してください</p>
         </div>
@@ -184,4 +194,3 @@ export function AccessTokenManager({ tokens: initialTokens, eventId, adminToken 
     </div>
   );
 }
-

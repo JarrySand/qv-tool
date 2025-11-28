@@ -36,7 +36,10 @@ export function generateSecureAccessToken(): string {
  * @param minBits 最小ビット数（デフォルト: 128）
  * @returns エントロピーが十分かどうか
  */
-export function validateTokenEntropy(token: string, minBits: number = 128): boolean {
+export function validateTokenEntropy(
+  token: string,
+  minBits: number = 128
+): boolean {
   // Base64 URL-safeは6ビット/文字
   const estimatedBits = token.length * 6;
   return estimatedBits >= minBits;

@@ -28,7 +28,12 @@ vi.mock("next/headers", () => ({
 
 // レート制限のモック
 vi.mock("@/lib/rate-limit", () => ({
-  checkEventCreateRateLimit: vi.fn(() => ({ success: true, limit: 10, remaining: 9, reset: Date.now() + 3600000 })),
+  checkEventCreateRateLimit: vi.fn(() => ({
+    success: true,
+    limit: 10,
+    remaining: 9,
+    reset: Date.now() + 3600000,
+  })),
   getClientIp: vi.fn(() => "127.0.0.1"),
 }));
 

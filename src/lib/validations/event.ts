@@ -16,7 +16,10 @@ export const createEventSchema = z.object({
       z.literal(undefined),
       z
         .string()
-        .regex(/^[a-z0-9-]+$/, "スラッグは小文字英数字とハイフンのみ使用できます")
+        .regex(
+          /^[a-z0-9-]+$/,
+          "スラッグは小文字英数字とハイフンのみ使用できます"
+        )
         .min(3, "スラッグは3文字以上で入力してください")
         .max(50, "スラッグは50文字以内で入力してください"),
     ])
@@ -38,9 +41,7 @@ export const createEventSchema = z.object({
     .union([
       z.literal(""),
       z.literal(undefined),
-      z
-        .string()
-        .regex(/^\d{17,19}$/, "DiscordサーバーIDは17-19桁の数値です"),
+      z.string().regex(/^\d{17,19}$/, "DiscordサーバーIDは17-19桁の数値です"),
     ])
     .optional()
     .transform((val) => (val === "" ? undefined : val)),
@@ -68,4 +69,3 @@ export const updateEventSchema = z.object({
 
 export type CreateEventInput = z.infer<typeof createEventSchema>;
 export type UpdateEventInput = z.infer<typeof updateEventSchema>;
-

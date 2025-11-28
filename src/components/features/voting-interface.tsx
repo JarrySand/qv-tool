@@ -149,28 +149,26 @@ export function VotingInterface({
   return (
     <div className="space-y-6">
       {/* クレジット表示 */}
-      <Card className="sticky top-4 z-10 bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/80">
+      <Card className="bg-card/95 supports-[backdrop-filter]:bg-card/80 sticky top-4 z-10 backdrop-blur">
         <CardContent className="py-4">
           <div className="flex items-center justify-between">
             <div>
-              <div className="text-sm text-muted-foreground">
+              <div className="text-muted-foreground text-sm">
                 {t("remainingCredits")}
               </div>
               <div className="text-3xl font-bold">
                 <span
-                  className={
-                    isLow ? "text-destructive" : "text-foreground"
-                  }
+                  className={isLow ? "text-destructive" : "text-foreground"}
                 >
                   {remainingCredits}
                 </span>
-                <span className="ml-1 text-lg text-muted-foreground">
+                <span className="text-muted-foreground ml-1 text-lg">
                   / {totalCredits}
                 </span>
               </div>
             </div>
             <div className="text-right">
-              <div className="text-sm text-muted-foreground">
+              <div className="text-muted-foreground text-sm">
                 {t("totalCost")}
               </div>
               <div className="text-xl font-semibold">{totalCost}</div>
@@ -179,7 +177,7 @@ export function VotingInterface({
 
           {/* プログレスバー */}
           <div
-            className="mt-3 h-2 overflow-hidden rounded-full bg-muted"
+            className="bg-muted mt-3 h-2 overflow-hidden rounded-full"
             role="progressbar"
             aria-valuenow={totalCost}
             aria-valuemin={0}
@@ -193,7 +191,7 @@ export function VotingInterface({
           </div>
 
           {/* ヒント */}
-          <p className="mt-2 text-xs text-muted-foreground">
+          <p className="text-muted-foreground mt-2 text-xs">
             💡 1票=1、2票=4、3票=9... コストは票数の二乗です
           </p>
         </CardContent>
@@ -214,7 +212,7 @@ export function VotingInterface({
                 <div className="flex gap-4">
                   {/* 画像 */}
                   {subject.imageUrl && (
-                    <div className="relative shrink-0 w-20 h-20 rounded-lg overflow-hidden bg-muted">
+                    <div className="bg-muted relative h-20 w-20 shrink-0 overflow-hidden rounded-lg">
                       <Image
                         src={subject.imageUrl}
                         alt={subject.title}
@@ -226,10 +224,10 @@ export function VotingInterface({
                   )}
 
                   {/* コンテンツ */}
-                  <div className="flex-1 min-w-0">
+                  <div className="min-w-0 flex-1">
                     <h3 className="text-lg font-semibold">{subject.title}</h3>
                     {subject.description && (
-                      <p className="mt-1 line-clamp-2 text-sm text-muted-foreground">
+                      <p className="text-muted-foreground mt-1 line-clamp-2 text-sm">
                         {subject.description}
                       </p>
                     )}
@@ -253,7 +251,7 @@ export function VotingInterface({
                   <div className="flex-1" />
 
                   {/* ステッパー（固定位置） */}
-                  <div className="flex items-center gap-2 shrink-0">
+                  <div className="flex shrink-0 items-center gap-2">
                     <Button
                       type="button"
                       variant="outline"
@@ -267,9 +265,7 @@ export function VotingInterface({
                     </Button>
 
                     <div className="w-12 text-center">
-                      <div className="text-2xl font-bold">
-                        {currentVotes}
-                      </div>
+                      <div className="text-2xl font-bold">{currentVotes}</div>
                     </div>
 
                     <Button
@@ -286,9 +282,11 @@ export function VotingInterface({
                   </div>
 
                   {/* コスト表示（固定幅） */}
-                  <div className="w-16 text-right shrink-0">
-                    <div className="text-lg font-bold text-secondary">{cost}</div>
-                    <div className="text-xs text-muted-foreground">
+                  <div className="w-16 shrink-0 text-right">
+                    <div className="text-secondary text-lg font-bold">
+                      {cost}
+                    </div>
+                    <div className="text-muted-foreground text-xs">
                       {canIncrease ? `+1→+${costIncrease}` : t("cost")}
                     </div>
                   </div>
@@ -302,13 +300,12 @@ export function VotingInterface({
       {/* QVの説明 */}
       <Card>
         <CardHeader>
-          <CardTitle className="text-base">
-            📊 Quadratic Voting
-          </CardTitle>
+          <CardTitle className="text-base">📊 Quadratic Voting</CardTitle>
         </CardHeader>
         <CardContent>
           <CardDescription className="text-sm leading-relaxed">
-            1 {t("votes")} = 1 credit, 2 {t("votes")} = 4 credits, 3 {t("votes")} = 9 credits...
+            1 {t("votes")} = 1 credit, 2 {t("votes")} = 4 credits, 3{" "}
+            {t("votes")} = 9 credits...
           </CardDescription>
         </CardContent>
       </Card>
@@ -318,7 +315,7 @@ export function VotingInterface({
         <div
           role="alert"
           aria-live="assertive"
-          className="rounded-lg border border-destructive/20 bg-destructive/10 p-4 text-sm text-destructive"
+          className="border-destructive/20 bg-destructive/10 text-destructive rounded-lg border p-4 text-sm"
         >
           {error}
         </div>

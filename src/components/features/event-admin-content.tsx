@@ -89,27 +89,31 @@ export function EventAdminContent({ event, adminToken }: Props) {
     }
   };
 
-  const votingModeLabel = {
-    individual: "個別URL方式",
-    google: "Googleアカウント",
-    line: "LINEアカウント",
-  }[currentEvent.votingMode] ?? currentEvent.votingMode;
+  const votingModeLabel =
+    {
+      individual: "個別URL方式",
+      google: "Googleアカウント",
+      line: "LINEアカウント",
+    }[currentEvent.votingMode] ?? currentEvent.votingMode;
 
   const statusBadge = {
     upcoming: {
       icon: Clock,
       label: "開始前",
-      className: "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300",
+      className:
+        "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300",
     },
     active: {
       icon: CheckCircle,
       label: "開催中",
-      className: "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300",
+      className:
+        "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300",
     },
     ended: {
       icon: AlertCircle,
       label: "終了",
-      className: "bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-300",
+      className:
+        "bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-300",
     },
   }[currentEvent.status];
 
@@ -127,7 +131,7 @@ export function EventAdminContent({ event, adminToken }: Props) {
         <div>
           <Link
             href="/"
-            className="mb-4 inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
+            className="text-muted-foreground hover:text-foreground mb-4 inline-flex items-center gap-2 text-sm transition-colors"
           >
             <ArrowLeft className="size-4" />
             トップへ戻る
@@ -142,7 +146,9 @@ export function EventAdminContent({ event, adminToken }: Props) {
             </span>
           </div>
           {currentEvent.description && (
-            <p className="mt-2 text-muted-foreground">{currentEvent.description}</p>
+            <p className="text-muted-foreground mt-2">
+              {currentEvent.description}
+            </p>
           )}
         </div>
         <Button variant="outline" onClick={() => setShowEditDialog(true)}>
@@ -155,10 +161,12 @@ export function EventAdminContent({ event, adminToken }: Props) {
       {currentEvent.isLocked && (
         <div className="mb-6 rounded-lg border border-amber-500/50 bg-amber-50 p-4 dark:bg-amber-950/30">
           <div className="flex items-start gap-2">
-            <AlertCircle className="size-5 text-amber-600 mt-0.5" />
+            <AlertCircle className="mt-0.5 size-5 text-amber-600" />
             <div>
               <p className="font-medium text-amber-800 dark:text-amber-200">
-                {currentEvent.hasVotes ? "投票が開始されています" : "イベントは公開済みです"}
+                {currentEvent.hasVotes
+                  ? "投票が開始されています"
+                  : "イベントは公開済みです"}
               </p>
               <p className="text-sm text-amber-700 dark:text-amber-300">
                 投票対象やクレジット数の変更はできません。タイトルや説明文のみ編集可能です。
@@ -208,32 +216,36 @@ export function EventAdminContent({ event, adminToken }: Props) {
           </div>
 
           {/* 詳細情報 */}
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 pt-4 border-t">
+          <div className="grid gap-4 border-t pt-4 sm:grid-cols-2 lg:grid-cols-4">
             <div>
-              <p className="text-sm text-muted-foreground">開始日時</p>
+              <p className="text-muted-foreground text-sm">開始日時</p>
               <p className="font-medium">
                 {new Date(currentEvent.startDate).toLocaleString("ja-JP")}
               </p>
             </div>
             <div>
-              <p className="text-sm text-muted-foreground">終了日時</p>
+              <p className="text-muted-foreground text-sm">終了日時</p>
               <p className="font-medium">
                 {new Date(currentEvent.endDate).toLocaleString("ja-JP")}
               </p>
             </div>
             <div>
-              <p className="text-sm text-muted-foreground">クレジット数</p>
-              <p className="font-medium">{currentEvent.creditsPerVoter} クレジット/人</p>
+              <p className="text-muted-foreground text-sm">クレジット数</p>
+              <p className="font-medium">
+                {currentEvent.creditsPerVoter} クレジット/人
+              </p>
             </div>
             <div>
-              <p className="text-sm text-muted-foreground">認証方式</p>
+              <p className="text-muted-foreground text-sm">認証方式</p>
               <p className="font-medium">{votingModeLabel}</p>
             </div>
           </div>
         </CardContent>
         <CardFooter>
           <Button variant="outline" asChild>
-            <Link href={`/events/${currentEvent.slug ?? currentEvent.id}/result`}>
+            <Link
+              href={`/events/${currentEvent.slug ?? currentEvent.id}/result`}
+            >
               <BarChart3 className="size-4" />
               結果を見る
             </Link>
@@ -306,4 +318,3 @@ export function EventAdminContent({ event, adminToken }: Props) {
     </div>
   );
 }
-

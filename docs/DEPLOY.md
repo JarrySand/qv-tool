@@ -67,21 +67,21 @@ Vercel Dashboard → Project → Settings → Environment Variables で以下を
 
 ### 必須
 
-| 変数名 | 説明 | 例 |
-|--------|------|-----|
-| `DATABASE_URL` | PostgreSQL 接続文字列 | `postgresql://user:pass@host:5432/db` |
-| `NEXTAUTH_URL` | アプリケーションの URL | `https://your-app.vercel.app` |
-| `NEXTAUTH_SECRET` | NextAuth のシークレット | `openssl rand -base64 32` で生成 |
+| 変数名            | 説明                    | 例                                    |
+| ----------------- | ----------------------- | ------------------------------------- |
+| `DATABASE_URL`    | PostgreSQL 接続文字列   | `postgresql://user:pass@host:5432/db` |
+| `NEXTAUTH_URL`    | アプリケーションの URL  | `https://your-app.vercel.app`         |
+| `NEXTAUTH_SECRET` | NextAuth のシークレット | `openssl rand -base64 32` で生成      |
 
 ### OAuth プロバイダー（任意）
 
-| 変数名 | 説明 |
-|--------|------|
-| `GOOGLE_CLIENT_ID` | Google OAuth クライアント ID |
-| `GOOGLE_CLIENT_SECRET` | Google OAuth クライアントシークレット |
-| `LINE_CHANNEL_ID` | LINE Login チャネル ID |
-| `LINE_CHANNEL_SECRET` | LINE Login チャネルシークレット |
-| `DISCORD_CLIENT_ID` | Discord OAuth クライアント ID |
+| 変数名                  | 説明                                   |
+| ----------------------- | -------------------------------------- |
+| `GOOGLE_CLIENT_ID`      | Google OAuth クライアント ID           |
+| `GOOGLE_CLIENT_SECRET`  | Google OAuth クライアントシークレット  |
+| `LINE_CHANNEL_ID`       | LINE Login チャネル ID                 |
+| `LINE_CHANNEL_SECRET`   | LINE Login チャネルシークレット        |
+| `DISCORD_CLIENT_ID`     | Discord OAuth クライアント ID          |
 | `DISCORD_CLIENT_SECRET` | Discord OAuth クライアントシークレット |
 
 ### シークレット生成
@@ -210,6 +210,7 @@ PrismaClientInitializationError: Can't reach database server
 ```
 
 **解決策**:
+
 - `DATABASE_URL` が正しく設定されているか確認
 - データベースがパブリックアクセスを許可しているか確認
 - Vercel の IP がファイアウォールで許可されているか確認
@@ -221,6 +222,7 @@ Error: OAuthCallback error
 ```
 
 **解決策**:
+
 - `NEXTAUTH_URL` が正しく設定されているか確認
 - OAuth プロバイダーの Redirect URI が正しいか確認
 - `NEXTAUTH_SECRET` が設定されているか確認
@@ -232,6 +234,7 @@ Build failed
 ```
 
 **解決策**:
+
 - ローカルで `npm run build` が成功するか確認
 - `npm run lint` と `npm run type-check` でエラーがないか確認
 
@@ -283,9 +286,9 @@ npm install @upstash/redis @upstash/ratelimit
 
 #### 3. 環境変数の設定
 
-| 変数名 | 説明 |
-|--------|------|
-| `UPSTASH_REDIS_REST_URL` | Upstash REST API URL |
+| 変数名                     | 説明                      |
+| -------------------------- | ------------------------- |
+| `UPSTASH_REDIS_REST_URL`   | Upstash REST API URL      |
 | `UPSTASH_REDIS_REST_TOKEN` | Upstash REST API トークン |
 
 #### 4. レート制限の実装例
@@ -352,4 +355,3 @@ Vercel KV は Upstash Redis をベースにした統合サービスです。
 ---
 
 **最終更新**: 2025年11月26日
-

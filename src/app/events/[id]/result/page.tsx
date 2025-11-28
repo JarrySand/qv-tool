@@ -49,15 +49,16 @@ export default async function ResultPage({ params, searchParams }: PageProps) {
   };
 
   const statusClasses = {
-    upcoming:
-      "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200",
-    active:
-      "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200",
+    upcoming: "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200",
+    active: "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200",
     ended: "bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-200",
   };
 
   return (
-    <main id="main-content" className="min-h-screen bg-gradient-to-b from-background to-muted/30">
+    <main
+      id="main-content"
+      className="from-background to-muted/30 min-h-screen bg-gradient-to-b"
+    >
       <div className="container mx-auto max-w-6xl px-4 py-8">
         {/* ヘッダー */}
         <div className="mb-8">
@@ -69,8 +70,8 @@ export default async function ResultPage({ params, searchParams }: PageProps) {
             </span>
           </div>
           <h1 className="mb-2 text-3xl font-bold md:text-4xl">{event.title}</h1>
-          <p className="text-lg text-muted-foreground">{t("results.title")}</p>
-          <div className="mt-2 text-sm text-muted-foreground">
+          <p className="text-muted-foreground text-lg">{t("results.title")}</p>
+          <div className="text-muted-foreground mt-2 text-sm">
             {t("event.info.period")}: {event.startDate.toLocaleDateString()} 〜{" "}
             {event.endDate.toLocaleDateString()}
           </div>

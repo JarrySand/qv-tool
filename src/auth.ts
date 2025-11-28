@@ -49,7 +49,10 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   adapter: PrismaAdapter(prisma),
   providers,
   // シークレットキー（本番環境では必ず環境変数で設定）
-  secret: process.env.AUTH_SECRET ?? process.env.NEXTAUTH_SECRET ?? "dev-secret-key-change-in-production",
+  secret:
+    process.env.AUTH_SECRET ??
+    process.env.NEXTAUTH_SECRET ??
+    "dev-secret-key-change-in-production",
   session: {
     strategy: "jwt",
   },
@@ -106,4 +109,3 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   // デバッグモード（開発環境のみ）
   debug: process.env.NODE_ENV === "development",
 });
-

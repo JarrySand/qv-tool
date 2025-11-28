@@ -39,11 +39,10 @@ export default async function EventCreatedPage({ searchParams }: PageProps) {
   }
 
   return (
-    <main className="min-h-screen bg-background">
+    <main className="bg-background min-h-screen">
       <div className="mx-auto max-w-4xl px-4 py-8">
         <EventCreatedContent event={event} />
       </div>
     </main>
   );
 }
-

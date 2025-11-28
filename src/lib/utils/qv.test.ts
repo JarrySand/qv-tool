@@ -60,7 +60,7 @@ describe("QV計算ユーティリティ", () => {
     it("追加可能な最大票数を計算", () => {
       // 残り75クレジット、現在0票 → √75 ≈ 8票まで可能
       expect(calculateMaxAdditionalVotes(0, 75)).toBe(8);
-      
+
       // 残り75クレジット、現在2票（コスト4） → √(75+4) = √79 ≈ 8票まで可能
       expect(calculateMaxAdditionalVotes(2, 75)).toBe(8);
     });
@@ -70,13 +70,12 @@ describe("QV計算ユーティリティ", () => {
     it("クレジット内なら投票変更可能", () => {
       // 残り75、0→5票: コスト0→25、差分25 ≤ 75
       expect(canChangeVote(0, 5, 75)).toBe(true);
-      
+
       // 残り75、0→9票: コスト0→81、差分81 > 75
       expect(canChangeVote(0, 9, 75)).toBe(false);
-      
+
       // 残り10、5→4票: コスト25→16、差分-9（減少）
       expect(canChangeVote(5, 4, 10)).toBe(true);
     });
   });
 });
-

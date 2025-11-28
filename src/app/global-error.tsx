@@ -49,7 +49,7 @@ export default function GlobalError({ error, reset }: GlobalErrorProps) {
                 Try Again
               </button>
               <button
-                onClick={() => window.location.href = "/"}
+                onClick={() => (window.location.href = "/")}
                 className="rounded-md border border-gray-300 bg-white px-6 py-3 text-gray-900 hover:bg-gray-50"
               >
                 Go Home
@@ -61,4 +61,3 @@ export default function GlobalError({ error, reset }: GlobalErrorProps) {
     </html>
   );
 }
-

@@ -43,7 +43,9 @@ export async function createEvent(
   const rateLimitResult = await checkEventCreateRateLimit(clientIp);
 
   if (!rateLimitResult.success) {
-    const secondsUntilReset = Math.ceil((rateLimitResult.reset - Date.now()) / 1000);
+    const secondsUntilReset = Math.ceil(
+      (rateLimitResult.reset - Date.now()) / 1000
+    );
     return {
       success: false,
       error: t("rateLimitExceeded", { seconds: secondsUntilReset }),
@@ -254,7 +256,9 @@ export async function updateEvent(
       where: { id: eventId },
       data: {
         ...(data.title && { title: data.title }),
-        ...(data.description !== undefined && { description: data.description }),
+        ...(data.description !== undefined && {
+          description: data.description,
+        }),
         ...(data.startDate && { startDate: data.startDate }),
         ...(data.endDate && { endDate: data.endDate }),
       },
@@ -330,7 +334,9 @@ export async function createEventWithSubjects(
   const rateLimitResult = await checkEventCreateRateLimit(clientIp);
 
   if (!rateLimitResult.success) {
-    const secondsUntilReset = Math.ceil((rateLimitResult.reset - Date.now()) / 1000);
+    const secondsUntilReset = Math.ceil(
+      (rateLimitResult.reset - Date.now()) / 1000
+    );
     return {
       success: false,
       error: t("rateLimitExceeded", { seconds: secondsUntilReset }),
@@ -352,7 +358,10 @@ export async function createEventWithSubjects(
   console.log("Input for validation:", JSON.stringify(input, null, 2));
   const parsed = createEventSchema.safeParse(input);
   if (!parsed.success) {
-    console.log("Validation errors:", JSON.stringify(parsed.error.issues, null, 2));
+    console.log(
+      "Validation errors:",
+      JSON.stringify(parsed.error.issues, null, 2)
+    );
     const fieldErrors: Record<string, string[]> = {};
     for (const issue of parsed.error.issues) {
       const field = issue.path[0]?.toString() ?? "unknown";
@@ -527,4 +536,3 @@ export async function publishEvent(
     return { success: false, error: t("eventPublishFailed") };
   }
 }
-

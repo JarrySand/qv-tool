@@ -33,7 +33,7 @@ export function StatisticsCard({
       {/* 総参加者数 */}
       <Card>
         <CardHeader className="pb-2">
-          <CardTitle className="text-sm font-medium text-muted-foreground">
+          <CardTitle className="text-muted-foreground text-sm font-medium">
             {t("participants")}
           </CardTitle>
         </CardHeader>
@@ -47,7 +47,7 @@ export function StatisticsCard({
       {/* 総消費クレジット */}
       <Card>
         <CardHeader className="pb-2">
-          <CardTitle className="text-sm font-medium text-muted-foreground">
+          <CardTitle className="text-muted-foreground text-sm font-medium">
             {t("totalCreditsUsed")}
           </CardTitle>
         </CardHeader>
@@ -55,7 +55,7 @@ export function StatisticsCard({
           <div className="text-3xl font-bold">
             {statistics.totalCreditsUsed.toLocaleString()}
           </div>
-          <p className="mt-1 text-xs text-muted-foreground">
+          <p className="text-muted-foreground mt-1 text-xs">
             / {statistics.totalCreditsAvailable.toLocaleString()} (
             {utilizationRate.toFixed(1)}%)
           </p>
@@ -65,7 +65,7 @@ export function StatisticsCard({
       {/* 平均消費クレジット */}
       <Card>
         <CardHeader className="pb-2">
-          <CardTitle className="text-sm font-medium text-muted-foreground">
+          <CardTitle className="text-muted-foreground text-sm font-medium">
             {t("averageCredits")}
           </CardTitle>
         </CardHeader>
@@ -73,7 +73,7 @@ export function StatisticsCard({
           <div className="text-3xl font-bold">
             {statistics.averageCreditsUsed.toFixed(1)}
           </div>
-          <p className="mt-1 text-xs text-muted-foreground">
+          <p className="text-muted-foreground mt-1 text-xs">
             / {creditsPerVoter}
           </p>
         </CardContent>
@@ -82,7 +82,7 @@ export function StatisticsCard({
       {/* 参加率（個別投票の場合） or クレジット消費率 */}
       <Card>
         <CardHeader className="pb-2">
-          <CardTitle className="text-sm font-medium text-muted-foreground">
+          <CardTitle className="text-muted-foreground text-sm font-medium">
             {votingMode === "individual"
               ? t("participationRate")
               : t("creditUsageRate")}

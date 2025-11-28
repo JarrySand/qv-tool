@@ -43,8 +43,7 @@ export function EventCreatedContent({ event }: Props) {
   const [eventUrlCopied, setEventUrlCopied] = useState(false);
 
   // URLの生成
-  const baseUrl =
-    typeof window !== "undefined" ? window.location.origin : "";
+  const baseUrl = typeof window !== "undefined" ? window.location.origin : "";
   const eventPath = event.slug
     ? `/events/${event.slug}`
     : `/events/${event.id}`;
@@ -79,9 +78,7 @@ export function EventCreatedContent({ event }: Props) {
       <div className="flex items-center justify-center gap-3 py-8">
         <CheckCircle className="size-12 text-green-600" />
         <div>
-          <h1 className="text-2xl font-bold">
-            {t("event.created.title")}
-          </h1>
+          <h1 className="text-2xl font-bold">{t("event.created.title")}</h1>
           <p className="text-muted-foreground">{event.title}</p>
         </div>
       </div>
@@ -179,7 +176,7 @@ export function EventCreatedContent({ event }: Props) {
           {/* 詳細情報 */}
           <div className="grid gap-4 border-t pt-4 sm:grid-cols-2">
             <div>
-              <p className="text-sm text-muted-foreground">
+              <p className="text-muted-foreground text-sm">
                 {t("event.create.startDateLabel")}
               </p>
               <p className="font-medium">
@@ -187,7 +184,7 @@ export function EventCreatedContent({ event }: Props) {
               </p>
             </div>
             <div>
-              <p className="text-sm text-muted-foreground">
+              <p className="text-muted-foreground text-sm">
                 {t("event.create.endDateLabel")}
               </p>
               <p className="font-medium">
@@ -195,13 +192,13 @@ export function EventCreatedContent({ event }: Props) {
               </p>
             </div>
             <div>
-              <p className="text-sm text-muted-foreground">
+              <p className="text-muted-foreground text-sm">
                 {t("event.create.creditsLabel")}
               </p>
               <p className="font-medium">{event.creditsPerVoter}</p>
             </div>
             <div>
-              <p className="text-sm text-muted-foreground">
+              <p className="text-muted-foreground text-sm">
                 {t("event.create.authModeLabel")}
               </p>
               <p className="font-medium">{votingModeLabel}</p>
@@ -227,7 +224,7 @@ export function EventCreatedContent({ event }: Props) {
           <CardTitle>{t("event.created.nextSteps")}</CardTitle>
         </CardHeader>
         <CardContent>
-          <ol className="list-inside list-decimal space-y-2 text-muted-foreground">
+          <ol className="text-muted-foreground list-inside list-decimal space-y-2">
             <li>{t("event.created.addSubjects")}</li>
           </ol>
         </CardContent>

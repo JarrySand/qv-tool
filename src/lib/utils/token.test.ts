@@ -96,7 +96,8 @@ describe("セキュアトークン生成ユーティリティ", () => {
   describe("generateUuidToken", () => {
     it("有効なUUID v4形式を生成する", () => {
       const uuid = generateUuidToken();
-      const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/;
+      const uuidRegex =
+        /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/;
       expect(uuid).toMatch(uuidRegex);
     });
 
@@ -145,4 +146,3 @@ describe("セキュアトークン生成ユーティリティ", () => {
     });
   });
 });
-

@@ -1,4 +1,4 @@
-version: '3.8'
+version: "3.8"
 
 services:
   app:
@@ -12,4 +12,3 @@ services:
     depends_on:
       db:
         condition: service_healthy
-

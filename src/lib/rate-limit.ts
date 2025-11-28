@@ -119,7 +119,11 @@ export async function checkEventCreateRateLimit(
   identifier: string
 ): Promise<RateLimitResult> {
   if (!eventCreateRateLimiter) {
-    eventCreateRateLimiter = await createRateLimiter(10, 60 * 60 * 1000, "event");
+    eventCreateRateLimiter = await createRateLimiter(
+      10,
+      60 * 60 * 1000,
+      "event"
+    );
   }
   return eventCreateRateLimiter.limit(identifier);
 }
@@ -143,4 +147,3 @@ export function getClientIp(headersList: Headers): string {
   // フォールバック
   return "anonymous";
 }
-

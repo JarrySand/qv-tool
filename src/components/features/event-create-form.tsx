@@ -75,8 +75,14 @@ export function EventCreateForm() {
         creditsPerVoter: isNaN(creditsPerVoter) ? 100 : creditsPerVoter,
         votingMode: votingModeValue,
         // Discord ゲート機能が有効な場合のみ送信
-        discordGuildId: votingModeValue === "discord" && enableGuildGate ? discordGuildId || undefined : undefined,
-        discordGuildName: votingModeValue === "discord" && enableGuildGate ? discordGuildName || undefined : undefined,
+        discordGuildId:
+          votingModeValue === "discord" && enableGuildGate
+            ? discordGuildId || undefined
+            : undefined,
+        discordGuildName:
+          votingModeValue === "discord" && enableGuildGate
+            ? discordGuildName || undefined
+            : undefined,
       });
 
       if (result.success) {
@@ -106,7 +112,7 @@ export function EventCreateForm() {
             <div
               role="alert"
               aria-live="assertive"
-              className="rounded-md border border-destructive/50 bg-destructive/10 p-4 text-sm text-destructive"
+              className="border-destructive/50 bg-destructive/10 text-destructive rounded-md border p-4 text-sm"
             >
               {generalError}
             </div>
@@ -128,7 +134,7 @@ export function EventCreateForm() {
               aria-describedby={errors.title ? "title-error" : undefined}
             />
             {errors.title && (
-              <p id="title-error" className="text-sm text-destructive">
+              <p id="title-error" className="text-destructive text-sm">
                 {errors.title[0]}
               </p>
             )}
@@ -148,7 +154,7 @@ export function EventCreateForm() {
               aria-invalid={!!errors.description}
             />
             {errors.description && (
-              <p className="text-sm text-destructive">
+              <p className="text-destructive text-sm">
                 {errors.description[0]}
               </p>
             )}
@@ -160,7 +166,7 @@ export function EventCreateForm() {
               {t("customUrlLabel")}（{tCommon("optional")}）
             </Label>
             <div className="flex items-center gap-2">
-              <span className="text-sm text-muted-foreground">/events/</span>
+              <span className="text-muted-foreground text-sm">/events/</span>
               <Input
                 id="slug"
                 name="slug"
@@ -173,11 +179,11 @@ export function EventCreateForm() {
                 aria-invalid={!!errors.slug}
               />
             </div>
-            <p className="text-xs text-muted-foreground">
+            <p className="text-muted-foreground text-xs">
               {t("customUrlHint")}
             </p>
             {errors.slug && (
-              <p className="text-sm text-destructive">{errors.slug[0]}</p>
+              <p className="text-destructive text-sm">{errors.slug[0]}</p>
             )}
           </div>
 
@@ -185,7 +191,8 @@ export function EventCreateForm() {
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="space-y-2">
               <Label htmlFor="startDate">
-                {t("startDateLabel")} <span className="text-destructive">*</span>
+                {t("startDateLabel")}{" "}
+                <span className="text-destructive">*</span>
               </Label>
               <Input
                 id="startDate"
@@ -196,7 +203,7 @@ export function EventCreateForm() {
                 aria-invalid={!!errors.startDate}
               />
               {errors.startDate && (
-                <p className="text-sm text-destructive">
+                <p className="text-destructive text-sm">
                   {errors.startDate[0]}
                 </p>
               )}
@@ -214,7 +221,7 @@ export function EventCreateForm() {
                 aria-invalid={!!errors.endDate}
               />
               {errors.endDate && (
-                <p className="text-sm text-destructive">{errors.endDate[0]}</p>
+                <p className="text-destructive text-sm">{errors.endDate[0]}</p>
               )}
             </div>
           </div>
@@ -231,9 +238,9 @@ export function EventCreateForm() {
               defaultValue={100}
               aria-invalid={!!errors.creditsPerVoter}
             />
-            <p className="text-xs text-muted-foreground">{t("creditsHint")}</p>
+            <p className="text-muted-foreground text-xs">{t("creditsHint")}</p>
             {errors.creditsPerVoter && (
-              <p className="text-sm text-destructive">
+              <p className="text-destructive text-sm">
                 {errors.creditsPerVoter[0]}
               </p>
             )}
@@ -244,9 +251,9 @@ export function EventCreateForm() {
             <Label htmlFor="votingMode">
               {t("authModeLabel")} <span className="text-destructive">*</span>
             </Label>
-            <Select 
-              name="votingMode" 
-              defaultValue="individual" 
+            <Select
+              name="votingMode"
+              defaultValue="individual"
               required
               onValueChange={(value) => {
                 setVotingMode(value);
@@ -265,7 +272,7 @@ export function EventCreateForm() {
                     <span className="font-medium">
                       {t("authModes.individual.title")}
                     </span>
-                    <span className="text-xs text-muted-foreground">
+                    <span className="text-muted-foreground text-xs">
                       {t("authModes.individual.description")}
                     </span>
                   </div>
@@ -275,7 +282,7 @@ export function EventCreateForm() {
                     <span className="font-medium">
                       {t("authModes.google.title")}
                     </span>
-                    <span className="text-xs text-muted-foreground">
+                    <span className="text-muted-foreground text-xs">
                       {t("authModes.google.description")}
                     </span>
                   </div>
@@ -285,7 +292,7 @@ export function EventCreateForm() {
                     <span className="font-medium">
                       {t("authModes.line.title")}
                     </span>
-                    <span className="text-xs text-muted-foreground">
+                    <span className="text-muted-foreground text-xs">
                       {t("authModes.line.description")}
                     </span>
                   </div>
@@ -295,7 +302,7 @@ export function EventCreateForm() {
                     <span className="font-medium">
                       {t("authModes.discord.title")}
                     </span>
-                    <span className="text-xs text-muted-foreground">
+                    <span className="text-muted-foreground text-xs">
                       {t("authModes.discord.description")}
                     </span>
                   </div>
@@ -303,31 +310,32 @@ export function EventCreateForm() {
               </SelectContent>
             </Select>
             {errors.votingMode && (
-              <p className="text-sm text-destructive">{errors.votingMode[0]}</p>
+              <p className="text-destructive text-sm">{errors.votingMode[0]}</p>
             )}
           </div>
 
           {/* Discord サーバーゲート設定 */}
           {votingMode === "discord" && (
-            <div className="space-y-4 rounded-lg border border-border bg-muted/30 p-4">
+            <div className="border-border bg-muted/30 space-y-4 rounded-lg border p-4">
               <div className="flex items-center gap-3">
                 <input
                   type="checkbox"
                   id="enableGuildGate"
                   checked={enableGuildGate}
                   onChange={(e) => setEnableGuildGate(e.target.checked)}
-                  className="size-4 rounded border-input"
+                  className="border-input size-4 rounded"
                 />
                 <Label htmlFor="enableGuildGate" className="cursor-pointer">
                   {t("discordGate.enableLabel")}
                 </Label>
               </div>
-              
+
               {enableGuildGate && (
                 <div className="space-y-4 pl-7">
                   <div className="space-y-2">
                     <Label htmlFor="discordGuildId">
-                      {t("discordGate.guildIdLabel")} <span className="text-destructive">*</span>
+                      {t("discordGate.guildIdLabel")}{" "}
+                      <span className="text-destructive">*</span>
                     </Label>
                     <Input
                       id="discordGuildId"
@@ -338,11 +346,11 @@ export function EventCreateForm() {
                       required={enableGuildGate}
                       aria-invalid={!!errors.discordGuildId}
                     />
-                    <p className="text-xs text-muted-foreground">
+                    <p className="text-muted-foreground text-xs">
                       {t("discordGate.guildIdHint")}
                     </p>
                     {errors.discordGuildId && (
-                      <p className="text-sm text-destructive">
+                      <p className="text-destructive text-sm">
                         {errors.discordGuildId[0]}
                       </p>
                     )}
@@ -360,7 +368,7 @@ export function EventCreateForm() {
                       maxLength={100}
                       aria-invalid={!!errors.discordGuildName}
                     />
-                    <p className="text-xs text-muted-foreground">
+                    <p className="text-muted-foreground text-xs">
                       {t("discordGate.guildNameHint")}
                     </p>
                   </div>

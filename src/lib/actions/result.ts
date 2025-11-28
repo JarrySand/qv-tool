@@ -30,7 +30,11 @@ export interface VoteDistribution {
 
 export interface HiddenPreferencesData {
   // 一人一票の場合の結果（各投票者の1位のみ1票）
-  singleVoteResults: { subjectId: string; subjectTitle: string; votes: number }[];
+  singleVoteResults: {
+    subjectId: string;
+    subjectTitle: string;
+    votes: number;
+  }[];
   // 2位以下の投票（＝埋もれた選好）
   hiddenVotes: { subjectId: string; subjectTitle: string; votes: number }[];
   // 総計
@@ -167,12 +171,14 @@ export async function getEventResults(
   event.votes.forEach((vote) => {
     // この投票者の各選択肢への票数を取得
     const voterDetails = vote.details.filter((d) => d.amount > 0);
-    
+
     if (voterDetails.length === 0) return;
 
     // 1位を特定（最大票数の選択肢、同点の場合は最初の1つ）
     const maxAmount = Math.max(...voterDetails.map((d) => d.amount));
-    const topSubjectId = voterDetails.find((d) => d.amount === maxAmount)?.subjectId;
+    const topSubjectId = voterDetails.find(
+      (d) => d.amount === maxAmount
+    )?.subjectId;
 
     voterDetails.forEach((detail) => {
       if (detail.subjectId === topSubjectId) {
@@ -380,4 +386,3 @@ export async function getRawDataCsv(
 
   return [headers, ...rows].join("\n");
 }
-

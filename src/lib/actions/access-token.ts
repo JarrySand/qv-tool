@@ -97,4 +97,3 @@ export async function validateAccessToken(
 
   return { valid: true, tokenId: accessToken.id, isUsed: accessToken.isUsed };
 }
-

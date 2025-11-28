@@ -40,7 +40,10 @@ const COLORS = [
 export function ResultsChart({ results }: ResultsChartProps) {
   // グラフ用データの整形
   const chartData = results.map((result, index) => ({
-    name: result.title.length > 15 ? result.title.slice(0, 15) + "..." : result.title,
+    name:
+      result.title.length > 15
+        ? result.title.slice(0, 15) + "..."
+        : result.title,
     fullName: result.title,
     votes: result.totalVotes,
     cost: result.totalCost,
@@ -49,7 +52,7 @@ export function ResultsChart({ results }: ResultsChartProps) {
 
   if (chartData.length === 0) {
     return (
-      <div className="h-64 flex items-center justify-center text-muted-foreground">
+      <div className="text-muted-foreground flex h-64 items-center justify-center">
         投票データがありません
       </div>
     );
@@ -61,7 +64,11 @@ export function ResultsChart({ results }: ResultsChartProps) {
     .join("、");
 
   return (
-    <div className="h-80" role="img" aria-label={`投票結果グラフ: ${chartSummary}`}>
+    <div
+      className="h-80"
+      role="img"
+      aria-label={`投票結果グラフ: ${chartSummary}`}
+    >
       {/* スクリーンリーダー用の詳細データ（視覚的に非表示） */}
       <div className="sr-only">
         <h4>投票結果一覧</h4>
@@ -80,7 +87,11 @@ export function ResultsChart({ results }: ResultsChartProps) {
           margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
           aria-hidden="true"
         >
-          <CartesianGrid strokeDasharray="3 3" horizontal={true} vertical={false} />
+          <CartesianGrid
+            strokeDasharray="3 3"
+            horizontal={true}
+            vertical={false}
+          />
           <XAxis type="number" allowDecimals={false} />
           <YAxis
             type="category"
@@ -93,13 +104,15 @@ export function ResultsChart({ results }: ResultsChartProps) {
               if (active && payload && payload.length) {
                 const data = payload[0].payload;
                 return (
-                  <div className="bg-popover border rounded-lg p-3 shadow-lg">
+                  <div className="bg-popover rounded-lg border p-3 shadow-lg">
                     <p className="font-semibold">{data.fullName}</p>
-                    <p className="text-sm text-muted-foreground">
-                      得票数: <span className="font-medium">{data.votes}票</span>
+                    <p className="text-muted-foreground text-sm">
+                      得票数:{" "}
+                      <span className="font-medium">{data.votes}票</span>
                     </p>
-                    <p className="text-sm text-muted-foreground">
-                      消費クレジット: <span className="font-medium">{data.cost}</span>
+                    <p className="text-muted-foreground text-sm">
+                      消費クレジット:{" "}
+                      <span className="font-medium">{data.cost}</span>
                     </p>
                   </div>
                 );
@@ -117,4 +130,3 @@ export function ResultsChart({ results }: ResultsChartProps) {
     </div>
   );
 }
-

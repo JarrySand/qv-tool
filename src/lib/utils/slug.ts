@@ -37,4 +37,3 @@ export function generateAdminToken(): string {
     hex.slice(20, 32),
   ].join("-");
 }
-

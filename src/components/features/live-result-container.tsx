@@ -67,8 +67,8 @@ export function LiveResultContainer({
   return (
     <div className="space-y-8">
       {/* 更新情報バー */}
-      <div className="flex items-center justify-between rounded-lg bg-muted/50 p-3">
-        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+      <div className="bg-muted/50 flex items-center justify-between rounded-lg p-3">
+        <div className="text-muted-foreground flex items-center gap-2 text-sm">
           {isLive && (
             <span className="flex items-center gap-1.5">
               <span className="relative flex h-2 w-2">
@@ -117,7 +117,11 @@ export function LiveResultContainer({
 
       {/* 一人一票 vs 二次投票 比較 */}
       <VotingComparisonChart
-        qvResults={results.map(r => ({ id: r.id, title: r.title, totalVotes: r.totalVotes }))}
+        qvResults={results.map((r) => ({
+          id: r.id,
+          title: r.title,
+          totalVotes: r.totalVotes,
+        }))}
         hiddenPreferences={hiddenPreferences}
         totalParticipants={statistics.totalParticipants}
       />
@@ -144,7 +148,7 @@ export function LiveResultContainer({
             {sortedResults.map((subject, index) => (
               <div
                 key={subject.id}
-                className="flex items-center gap-4 rounded-lg border bg-card p-4"
+                className="bg-card flex items-center gap-4 rounded-lg border p-4"
               >
                 {/* 順位 */}
                 <div
@@ -176,7 +180,7 @@ export function LiveResultContainer({
                 {/* 情報 */}
                 <div className="min-w-0 flex-1">
                   <h3 className="text-lg font-semibold">{subject.title}</h3>
-                  <div className="mt-1 flex items-center gap-4 text-sm text-muted-foreground">
+                  <div className="text-muted-foreground mt-1 flex items-center gap-4 text-sm">
                     <span>
                       {subject.voterCount} {t("statistics.participants")}
                     </span>
@@ -189,16 +193,16 @@ export function LiveResultContainer({
                 {/* 票数 */}
                 <div className="shrink-0 text-right">
                   <div className="text-3xl font-bold">{subject.totalVotes}</div>
-                  <div className="text-sm text-muted-foreground">
+                  <div className="text-muted-foreground text-sm">
                     {t("votes")}
                   </div>
                 </div>
 
                 {/* プログレスバー */}
                 <div className="hidden w-32 md:block">
-                  <div className="h-2 overflow-hidden rounded-full bg-muted">
+                  <div className="bg-muted h-2 overflow-hidden rounded-full">
                     <div
-                      className="h-full bg-primary transition-all duration-500"
+                      className="bg-primary h-full transition-all duration-500"
                       style={{
                         width:
                           maxVotes > 0

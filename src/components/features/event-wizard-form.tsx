@@ -118,7 +118,10 @@ export function EventWizardForm() {
   // コピー状態
   const [copied, setCopied] = useState<string | null>(null);
 
-  const updateFormData = (field: keyof EventFormData, value: string | number) => {
+  const updateFormData = (
+    field: keyof EventFormData,
+    value: string | number
+  ) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
@@ -182,8 +185,14 @@ export function EventWizardForm() {
         endDate: new Date(formData.endDate),
         creditsPerVoter: formData.creditsPerVoter,
         votingMode: formData.votingMode,
-        discordGuildId: formData.votingMode === "discord" && enableGuildGate ? formData.discordGuildId || undefined : undefined,
-        discordGuildName: formData.votingMode === "discord" && enableGuildGate ? formData.discordGuildName || undefined : undefined,
+        discordGuildId:
+          formData.votingMode === "discord" && enableGuildGate
+            ? formData.discordGuildId || undefined
+            : undefined,
+        discordGuildName:
+          formData.votingMode === "discord" && enableGuildGate
+            ? formData.discordGuildName || undefined
+            : undefined,
         subjects,
       });
 
@@ -242,18 +251,20 @@ export function EventWizardForm() {
     <div className="mb-8">
       <div className="relative flex justify-between">
         {/* 背景の線 */}
-        <div className="absolute top-5 left-5 right-5 h-0.5 bg-muted-foreground/20" />
+        <div className="bg-muted-foreground/20 absolute top-5 right-5 left-5 h-0.5" />
         {/* 進捗の線 */}
         <div
-          className="absolute top-5 left-5 h-0.5 bg-primary transition-all duration-300"
-          style={{ width: `calc(${((currentStep - 1) / (stepIndicatorSteps.length - 1)) * 100}% - 20px)` }}
+          className="bg-primary absolute top-5 left-5 h-0.5 transition-all duration-300"
+          style={{
+            width: `calc(${((currentStep - 1) / (stepIndicatorSteps.length - 1)) * 100}% - 20px)`,
+          }}
         />
-        
+
         {stepIndicatorSteps.map((step) => (
           <div key={step.num} className="relative flex flex-col items-center">
             {/* 番号の丸 */}
             <div
-              className={`flex size-10 items-center justify-center rounded-full border-2 font-semibold transition-colors z-10 ${
+              className={`z-10 flex size-10 items-center justify-center rounded-full border-2 font-semibold transition-colors ${
                 step.num < currentStep
                   ? "border-primary bg-primary text-primary-foreground"
                   : step.num === currentStep
@@ -263,11 +274,13 @@ export function EventWizardForm() {
             >
               {step.num < currentStep ? <Check className="size-5" /> : step.num}
             </div>
-            
+
             {/* ラベル */}
             <span
-              className={`mt-2 text-xs sm:text-sm text-center whitespace-nowrap ${
-                step.num <= currentStep ? "text-foreground" : "text-muted-foreground"
+              className={`mt-2 text-center text-xs whitespace-nowrap sm:text-sm ${
+                step.num <= currentStep
+                  ? "text-foreground"
+                  : "text-muted-foreground"
               }`}
             >
               {step.label}
@@ -282,7 +295,7 @@ export function EventWizardForm() {
   const step1Content = (
     <div className="space-y-6">
       {generalError && (
-        <div className="rounded-md border border-destructive/50 bg-destructive/10 p-4 text-sm text-destructive">
+        <div className="border-destructive/50 bg-destructive/10 text-destructive rounded-md border p-4 text-sm">
           {generalError}
         </div>
       )}
@@ -298,7 +311,9 @@ export function EventWizardForm() {
           placeholder={t("titlePlaceholder")}
           maxLength={100}
         />
-        {errors.title && <p className="text-sm text-destructive">{errors.title[0]}</p>}
+        {errors.title && (
+          <p className="text-destructive text-sm">{errors.title[0]}</p>
+        )}
       </div>
 
       <div className="space-y-2">
@@ -320,7 +335,7 @@ export function EventWizardForm() {
           {t("customUrlLabel")}（{tCommon("optional")}）
         </Label>
         <div className="flex items-center gap-2">
-          <span className="text-sm text-muted-foreground">/events/</span>
+          <span className="text-muted-foreground text-sm">/events/</span>
           <Input
             id="slug"
             value={formData.slug}
@@ -332,8 +347,10 @@ export function EventWizardForm() {
             className="flex-1"
           />
         </div>
-        <p className="text-xs text-muted-foreground">{t("customUrlHint")}</p>
-        {errors.slug && <p className="text-sm text-destructive">{errors.slug[0]}</p>}
+        <p className="text-muted-foreground text-xs">{t("customUrlHint")}</p>
+        {errors.slug && (
+          <p className="text-destructive text-sm">{errors.slug[0]}</p>
+        )}
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2">
@@ -348,7 +365,7 @@ export function EventWizardForm() {
             onChange={(e) => updateFormData("startDate", e.target.value)}
           />
           {errors.startDate && (
-            <p className="text-sm text-destructive">{errors.startDate[0]}</p>
+            <p className="text-destructive text-sm">{errors.startDate[0]}</p>
           )}
         </div>
         <div className="space-y-2">
@@ -362,7 +379,7 @@ export function EventWizardForm() {
             onChange={(e) => updateFormData("endDate", e.target.value)}
           />
           {errors.endDate && (
-            <p className="text-sm text-destructive">{errors.endDate[0]}</p>
+            <p className="text-destructive text-sm">{errors.endDate[0]}</p>
           )}
         </div>
       </div>
@@ -375,9 +392,11 @@ export function EventWizardForm() {
           min={1}
           max={1000}
           value={formData.creditsPerVoter}
-          onChange={(e) => updateFormData("creditsPerVoter", parseInt(e.target.value) || 100)}
+          onChange={(e) =>
+            updateFormData("creditsPerVoter", parseInt(e.target.value) || 100)
+          }
         />
-        <p className="text-xs text-muted-foreground">{t("creditsHint")}</p>
+        <p className="text-muted-foreground text-xs">{t("creditsHint")}</p>
       </div>
 
       <div className="space-y-2">
@@ -394,16 +413,20 @@ export function EventWizardForm() {
           <SelectContent>
             <SelectItem value="individual">
               <div className="flex flex-col items-start">
-                <span className="font-medium">{t("authModes.individual.title")}</span>
-                <span className="text-xs text-muted-foreground">
+                <span className="font-medium">
+                  {t("authModes.individual.title")}
+                </span>
+                <span className="text-muted-foreground text-xs">
                   {t("authModes.individual.description")}
                 </span>
               </div>
             </SelectItem>
             <SelectItem value="google">
               <div className="flex flex-col items-start">
-                <span className="font-medium">{t("authModes.google.title")}</span>
-                <span className="text-xs text-muted-foreground">
+                <span className="font-medium">
+                  {t("authModes.google.title")}
+                </span>
+                <span className="text-muted-foreground text-xs">
                   {t("authModes.google.description")}
                 </span>
               </div>
@@ -411,15 +434,17 @@ export function EventWizardForm() {
             <SelectItem value="line">
               <div className="flex flex-col items-start">
                 <span className="font-medium">{t("authModes.line.title")}</span>
-                <span className="text-xs text-muted-foreground">
+                <span className="text-muted-foreground text-xs">
                   {t("authModes.line.description")}
                 </span>
               </div>
             </SelectItem>
             <SelectItem value="discord">
               <div className="flex flex-col items-start">
-                <span className="font-medium">{t("authModes.discord.title")}</span>
-                <span className="text-xs text-muted-foreground">
+                <span className="font-medium">
+                  {t("authModes.discord.title")}
+                </span>
+                <span className="text-muted-foreground text-xs">
                   {t("authModes.discord.description")}
                 </span>
               </div>
@@ -430,37 +455,40 @@ export function EventWizardForm() {
 
       {/* Discord サーバーゲート設定 */}
       {formData.votingMode === "discord" && (
-        <div className="space-y-4 rounded-lg border border-border bg-muted/30 p-4">
+        <div className="border-border bg-muted/30 space-y-4 rounded-lg border p-4">
           <div className="flex items-center gap-3">
             <input
               type="checkbox"
               id="enableGuildGate"
               checked={enableGuildGate}
               onChange={(e) => setEnableGuildGate(e.target.checked)}
-              className="size-4 rounded border-input"
+              className="border-input size-4 rounded"
             />
             <Label htmlFor="enableGuildGate" className="cursor-pointer">
               {t("discordGate.enableLabel")}
             </Label>
           </div>
-          
+
           {enableGuildGate && (
             <div className="space-y-4 pl-7">
               <div className="space-y-2">
                 <Label htmlFor="discordGuildId">
-                  {t("discordGate.guildIdLabel")} <span className="text-destructive">*</span>
+                  {t("discordGate.guildIdLabel")}{" "}
+                  <span className="text-destructive">*</span>
                 </Label>
                 <Input
                   id="discordGuildId"
                   value={formData.discordGuildId}
-                  onChange={(e) => updateFormData("discordGuildId", e.target.value)}
+                  onChange={(e) =>
+                    updateFormData("discordGuildId", e.target.value)
+                  }
                   placeholder={t("discordGate.guildIdPlaceholder")}
                 />
-                <p className="text-xs text-muted-foreground">
+                <p className="text-muted-foreground text-xs">
                   {t("discordGate.guildIdHint")}
                 </p>
                 {errors.discordGuildId && (
-                  <p className="text-sm text-destructive">
+                  <p className="text-destructive text-sm">
                     {errors.discordGuildId[0]}
                   </p>
                 )}
@@ -473,11 +501,13 @@ export function EventWizardForm() {
                 <Input
                   id="discordGuildName"
                   value={formData.discordGuildName}
-                  onChange={(e) => updateFormData("discordGuildName", e.target.value)}
+                  onChange={(e) =>
+                    updateFormData("discordGuildName", e.target.value)
+                  }
                   placeholder={t("discordGate.guildNamePlaceholder")}
                   maxLength={100}
                 />
-                <p className="text-xs text-muted-foreground">
+                <p className="text-muted-foreground text-xs">
                   {t("discordGate.guildNameHint")}
                 </p>
               </div>
@@ -492,7 +522,7 @@ export function EventWizardForm() {
   const step2Content = (
     <div className="space-y-6">
       {generalError && (
-        <div className="rounded-md border border-destructive/50 bg-destructive/10 p-4 text-sm text-destructive">
+        <div className="border-destructive/50 bg-destructive/10 text-destructive rounded-md border p-4 text-sm">
           {generalError}
         </div>
       )}
@@ -505,12 +535,14 @@ export function EventWizardForm() {
           {subjects.map((subject, index) => (
             <div
               key={index}
-              className="flex items-center justify-between rounded-lg border bg-card p-4"
+              className="bg-card flex items-center justify-between rounded-lg border p-4"
             >
               <div>
                 <p className="font-medium">{subject.title}</p>
                 {subject.description && (
-                  <p className="text-sm text-muted-foreground">{subject.description}</p>
+                  <p className="text-muted-foreground text-sm">
+                    {subject.description}
+                  </p>
                 )}
               </div>
               <Button
@@ -525,7 +557,7 @@ export function EventWizardForm() {
           ))}
         </div>
       ) : (
-        <div className="rounded-lg border border-dashed p-8 text-center text-muted-foreground">
+        <div className="text-muted-foreground rounded-lg border border-dashed p-8 text-center">
           {t("wizard.noSubjects")}
         </div>
       )}
@@ -557,7 +589,10 @@ export function EventWizardForm() {
             <Textarea
               value={newSubject.description}
               onChange={(e) =>
-                setNewSubject((prev) => ({ ...prev, description: e.target.value }))
+                setNewSubject((prev) => ({
+                  ...prev,
+                  description: e.target.value,
+                }))
               }
               placeholder={t("wizard.subjectDescriptionPlaceholder")}
               rows={2}
@@ -589,7 +624,7 @@ export function EventWizardForm() {
   const step3Content = (
     <div className="space-y-6">
       {generalError && (
-        <div className="rounded-md border border-destructive/50 bg-destructive/10 p-4 text-sm text-destructive">
+        <div className="border-destructive/50 bg-destructive/10 text-destructive rounded-md border p-4 text-sm">
           {generalError}
         </div>
       )}
@@ -617,33 +652,43 @@ export function EventWizardForm() {
         <CardContent className="space-y-3">
           <div className="grid gap-2 sm:grid-cols-2">
             <div>
-              <p className="text-sm text-muted-foreground">{t("titleLabel")}</p>
+              <p className="text-muted-foreground text-sm">{t("titleLabel")}</p>
               <p className="font-medium">{formData.title}</p>
             </div>
             {formData.description && (
               <div>
-                <p className="text-sm text-muted-foreground">{t("descriptionLabel")}</p>
+                <p className="text-muted-foreground text-sm">
+                  {t("descriptionLabel")}
+                </p>
                 <p>{formData.description}</p>
               </div>
             )}
           </div>
           <div className="grid gap-2 sm:grid-cols-2">
             <div>
-              <p className="text-sm text-muted-foreground">{t("startDateLabel")}</p>
+              <p className="text-muted-foreground text-sm">
+                {t("startDateLabel")}
+              </p>
               <p>{new Date(formData.startDate).toLocaleString()}</p>
             </div>
             <div>
-              <p className="text-sm text-muted-foreground">{t("endDateLabel")}</p>
+              <p className="text-muted-foreground text-sm">
+                {t("endDateLabel")}
+              </p>
               <p>{new Date(formData.endDate).toLocaleString()}</p>
             </div>
           </div>
           <div className="grid gap-2 sm:grid-cols-2">
             <div>
-              <p className="text-sm text-muted-foreground">{t("creditsLabel")}</p>
+              <p className="text-muted-foreground text-sm">
+                {t("creditsLabel")}
+              </p>
               <p>{formData.creditsPerVoter}</p>
             </div>
             <div>
-              <p className="text-sm text-muted-foreground">{t("authModeLabel")}</p>
+              <p className="text-muted-foreground text-sm">
+                {t("authModeLabel")}
+              </p>
               <p>{votingModeLabels[formData.votingMode]}</p>
             </div>
           </div>
@@ -663,7 +708,9 @@ export function EventWizardForm() {
               <div key={index} className="rounded border p-3">
                 <p className="font-medium">{subject.title}</p>
                 {subject.description && (
-                  <p className="text-sm text-muted-foreground">{subject.description}</p>
+                  <p className="text-muted-foreground text-sm">
+                    {subject.description}
+                  </p>
                 )}
               </div>
             ))}
@@ -676,9 +723,13 @@ export function EventWizardForm() {
   // Step 4: 完了
   const step4EventPath = createdEvent?.slug
     ? `/events/${createdEvent.slug}`
-    : createdEvent ? `/events/${createdEvent.id}` : "";
+    : createdEvent
+      ? `/events/${createdEvent.id}`
+      : "";
   const step4EventUrl = `${baseUrl}${step4EventPath}`;
-  const step4AdminUrl = createdEvent ? `${baseUrl}/admin/${createdEvent.id}?token=${createdEvent.adminToken}` : "";
+  const step4AdminUrl = createdEvent
+    ? `${baseUrl}/admin/${createdEvent.id}?token=${createdEvent.adminToken}`
+    : "";
 
   const step4Content = createdEvent ? (
     <div className="space-y-6">
@@ -710,12 +761,20 @@ export function EventWizardForm() {
         </CardHeader>
         <CardContent>
           <div className="flex gap-2">
-            <Input value={step4AdminUrl} readOnly className="bg-white font-mono text-sm dark:bg-black" />
+            <Input
+              value={step4AdminUrl}
+              readOnly
+              className="bg-white font-mono text-sm dark:bg-black"
+            />
             <Button
               variant="outline"
               onClick={() => copyToClipboard(step4AdminUrl, "admin")}
             >
-              {copied === "admin" ? <Check className="size-4" /> : <Copy className="size-4" />}
+              {copied === "admin" ? (
+                <Check className="size-4" />
+              ) : (
+                <Copy className="size-4" />
+              )}
             </Button>
           </div>
         </CardContent>
@@ -728,15 +787,27 @@ export function EventWizardForm() {
         </CardHeader>
         <CardContent>
           <div className="flex gap-2">
-            <Input value={step4EventUrl} readOnly className="font-mono text-sm" />
+            <Input
+              value={step4EventUrl}
+              readOnly
+              className="font-mono text-sm"
+            />
             <Button
               variant="outline"
               onClick={() => copyToClipboard(step4EventUrl, "event")}
             >
-              {copied === "event" ? <Check className="size-4" /> : <Copy className="size-4" />}
+              {copied === "event" ? (
+                <Check className="size-4" />
+              ) : (
+                <Copy className="size-4" />
+              )}
             </Button>
             <Button variant="outline" asChild>
-              <a href={step4EventPath} target="_blank" rel="noopener noreferrer">
+              <a
+                href={step4EventPath}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 <ExternalLink className="size-4" />
               </a>
             </Button>
@@ -761,11 +832,16 @@ export function EventWizardForm() {
                     min={1}
                     max={100}
                     value={tokenCount}
-                    onChange={(e) => setTokenCount(parseInt(e.target.value) || 10)}
+                    onChange={(e) =>
+                      setTokenCount(parseInt(e.target.value) || 10)
+                    }
                     className="w-24"
                   />
                 </div>
-                <Button onClick={handleGenerateTokens} disabled={isGeneratingTokens}>
+                <Button
+                  onClick={handleGenerateTokens}
+                  disabled={isGeneratingTokens}
+                >
                   {isGeneratingTokens ? (
                     <Loader2 className="size-4 animate-spin" />
                   ) : (
@@ -776,15 +852,23 @@ export function EventWizardForm() {
               </div>
             ) : (
               <div className="space-y-2">
-                <p className="text-sm text-muted-foreground">
-                  {t("wizard.tokensGenerated", { count: generatedTokens.length })}
+                <p className="text-muted-foreground text-sm">
+                  {t("wizard.tokensGenerated", {
+                    count: generatedTokens.length,
+                  })}
                 </p>
                 <div className="max-h-60 space-y-1 overflow-y-auto rounded border p-2">
                   {generatedTokens.map((token, index) => (
-                    <div key={token} className="flex items-center gap-2 text-sm">
-                      <span className="w-6 text-muted-foreground">{index + 1}.</span>
+                    <div
+                      key={token}
+                      className="flex items-center gap-2 text-sm"
+                    >
+                      <span className="text-muted-foreground w-6">
+                        {index + 1}.
+                      </span>
                       <code className="flex-1 truncate font-mono">
-                        {baseUrl}{step4EventPath}?token={token}
+                        {baseUrl}
+                        {step4EventPath}?token={token}
                       </code>
                       <Button
                         variant="ghost"
@@ -815,7 +899,9 @@ export function EventWizardForm() {
       {/* ナビゲーション */}
       <div className="flex gap-3">
         <Button asChild>
-          <a href={`/admin/${createdEvent.id}?token=${createdEvent.adminToken}`}>
+          <a
+            href={`/admin/${createdEvent.id}?token=${createdEvent.adminToken}`}
+          >
             管理画面へ
           </a>
         </Button>
@@ -877,4 +963,3 @@ export function EventWizardForm() {
     </Card>
   );
 }
-

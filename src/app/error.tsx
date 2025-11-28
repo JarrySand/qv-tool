@@ -20,16 +20,16 @@ export default function Error({ error, reset }: ErrorProps) {
   }, [error]);
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-background to-muted/30 p-4">
+    <div className="from-background to-muted/30 flex min-h-screen flex-col items-center justify-center bg-gradient-to-b p-4">
       <div className="text-center">
-        <AlertTriangle className="mx-auto size-24 text-destructive" />
+        <AlertTriangle className="text-destructive mx-auto size-24" />
         <h1 className="mt-6 text-4xl font-bold">{t("common.error")}</h1>
-        <p className="mt-2 text-lg text-muted-foreground">500</p>
-        <p className="mt-4 max-w-md text-sm text-muted-foreground">
+        <p className="text-muted-foreground mt-2 text-lg">500</p>
+        <p className="text-muted-foreground mt-4 max-w-md text-sm">
           Something went wrong. Please try again later.
         </p>
         {error.digest && (
-          <p className="mt-2 font-mono text-xs text-muted-foreground">
+          <p className="text-muted-foreground mt-2 font-mono text-xs">
             Error ID: {error.digest}
           </p>
         )}
@@ -46,4 +46,3 @@ export default function Error({ error, reset }: ErrorProps) {
     </div>
   );
 }
-

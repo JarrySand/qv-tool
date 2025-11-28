@@ -112,42 +112,48 @@ const typographyOptions = {
     description: "読みやすさを重視したモダンな組み合わせ",
     heading: "'Noto Sans JP', sans-serif",
     body: "'Noto Sans JP', sans-serif",
-    fontUrl: "https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap",
+    fontUrl:
+      "https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap",
   },
   boldStatement: {
     name: "Bold Statement",
     description: "力強い印象を与えるヘビーウェイト",
     heading: "'M PLUS Rounded 1c', sans-serif",
     body: "'M PLUS Rounded 1c', sans-serif",
-    fontUrl: "https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;500;700&display=swap",
+    fontUrl:
+      "https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;500;700&display=swap",
   },
   elegantSerif: {
     name: "Elegant Serif",
     description: "品格と伝統を感じさせる明朝体",
     heading: "'Shippori Mincho', serif",
     body: "'Noto Sans JP', sans-serif",
-    fontUrl: "https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;700&family=Noto+Sans+JP:wght@400;500&display=swap",
+    fontUrl:
+      "https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;700&family=Noto+Sans+JP:wght@400;500&display=swap",
   },
   techForward: {
     name: "Tech Forward",
     description: "テック感のあるモノスペース風",
     heading: "'IBM Plex Sans JP', sans-serif",
     body: "'IBM Plex Sans JP', sans-serif",
-    fontUrl: "https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+JP:wght@400;500;700&display=swap",
+    fontUrl:
+      "https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+JP:wght@400;500;700&display=swap",
   },
   zenMaru: {
     name: "Zen Maru",
     description: "親しみやすい丸ゴシック",
     heading: "'Zen Maru Gothic', sans-serif",
     body: "'Zen Maru Gothic', sans-serif",
-    fontUrl: "https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;500;700&display=swap",
+    fontUrl:
+      "https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;500;700&display=swap",
   },
   kosugi: {
     name: "Kosugi Maru",
     description: "かわいらしい印象の丸ゴシック",
     heading: "'Kosugi Maru', sans-serif",
     body: "'Kosugi Maru', sans-serif",
-    fontUrl: "https://fonts.googleapis.com/css2?family=Kosugi+Maru&display=swap",
+    fontUrl:
+      "https://fonts.googleapis.com/css2?family=Kosugi+Maru&display=swap",
   },
 };
 
@@ -155,8 +161,10 @@ type PaletteKey = keyof typeof colorPalettes;
 type TypographyKey = keyof typeof typographyOptions;
 
 export default function ThemePreviewPage() {
-  const [selectedPalette, setSelectedPalette] = useState<PaletteKey>("midnightGold");
-  const [selectedTypography, setSelectedTypography] = useState<TypographyKey>("classicModern");
+  const [selectedPalette, setSelectedPalette] =
+    useState<PaletteKey>("midnightGold");
+  const [selectedTypography, setSelectedTypography] =
+    useState<TypographyKey>("classicModern");
   const [demoVotes, setDemoVotes] = useState(3);
   const [mounted, setMounted] = useState(false);
 
@@ -171,47 +179,47 @@ export default function ThemePreviewPage() {
 
   useEffect(() => {
     if (!mounted) return;
-    
+
     // 既存のフォントリンクを削除
-    const existingLinks = document.querySelectorAll('link[data-theme-font]');
-    existingLinks.forEach(link => link.remove());
+    const existingLinks = document.querySelectorAll("link[data-theme-font]");
+    existingLinks.forEach((link) => link.remove());
 
     // 新しいフォントリンクを追加
-    const link = document.createElement('link');
-    link.rel = 'stylesheet';
+    const link = document.createElement("link");
+    link.rel = "stylesheet";
     link.href = typography.fontUrl;
-    link.setAttribute('data-theme-font', 'true');
+    link.setAttribute("data-theme-font", "true");
     document.head.appendChild(link);
   }, [selectedTypography, typography.fontUrl, mounted]);
 
   if (!mounted) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
+      <div className="flex min-h-screen items-center justify-center">
         <div className="animate-pulse">Loading...</div>
       </div>
     );
   }
 
   const previewStyle = {
-    '--preview-primary': palette.colors.primary,
-    '--preview-primary-foreground': palette.colors.primaryForeground,
-    '--preview-secondary': palette.colors.secondary,
-    '--preview-background': palette.colors.background,
-    '--preview-foreground': palette.colors.foreground,
-    '--preview-muted': palette.colors.muted,
-    '--preview-muted-foreground': palette.colors.mutedForeground,
-    '--preview-accent': palette.colors.accent,
-    '--preview-card': palette.colors.card,
-    '--preview-border': palette.colors.border,
+    "--preview-primary": palette.colors.primary,
+    "--preview-primary-foreground": palette.colors.primaryForeground,
+    "--preview-secondary": palette.colors.secondary,
+    "--preview-background": palette.colors.background,
+    "--preview-foreground": palette.colors.foreground,
+    "--preview-muted": palette.colors.muted,
+    "--preview-muted-foreground": palette.colors.mutedForeground,
+    "--preview-accent": palette.colors.accent,
+    "--preview-card": palette.colors.card,
+    "--preview-border": palette.colors.border,
     fontFamily: typography.body,
   } as React.CSSProperties;
 
   return (
-    <div className="container mx-auto py-8 px-4 max-w-7xl">
-      <h1 className="text-3xl font-bold mb-8">テーマプレビュー</h1>
+    <div className="container mx-auto max-w-7xl px-4 py-8">
+      <h1 className="mb-8 text-3xl font-bold">テーマプレビュー</h1>
 
       {/* コントロールパネル */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+      <div className="mb-8 grid grid-cols-1 gap-6 md:grid-cols-2">
         {/* カラーパレット選択 */}
         <Card>
           <CardHeader>
@@ -222,7 +230,7 @@ export default function ThemePreviewPage() {
               <button
                 key={key}
                 onClick={() => setSelectedPalette(key as PaletteKey)}
-                className={`w-full flex items-center gap-3 p-3 rounded-lg border transition-all ${
+                className={`flex w-full items-center gap-3 rounded-lg border p-3 transition-all ${
                   selectedPalette === key
                     ? "border-primary bg-primary/10"
                     : "border-border hover:border-primary/50"
@@ -230,23 +238,27 @@ export default function ThemePreviewPage() {
               >
                 <div className="flex gap-1">
                   <div
-                    className="w-6 h-6 rounded"
+                    className="h-6 w-6 rounded"
                     style={{ backgroundColor: pal.colors.primary }}
                   />
                   <div
-                    className="w-6 h-6 rounded"
+                    className="h-6 w-6 rounded"
                     style={{ backgroundColor: pal.colors.background }}
                   />
                   <div
-                    className="w-6 h-6 rounded"
+                    className="h-6 w-6 rounded"
                     style={{ backgroundColor: pal.colors.accent }}
                   />
                 </div>
-                <div className="text-left flex-1">
+                <div className="flex-1 text-left">
                   <div className="font-medium">{pal.name}</div>
-                  <div className="text-xs text-muted-foreground">{pal.description}</div>
+                  <div className="text-muted-foreground text-xs">
+                    {pal.description}
+                  </div>
                 </div>
-                {selectedPalette === key && <Check className="w-5 h-5 text-primary" />}
+                {selectedPalette === key && (
+                  <Check className="text-primary h-5 w-5" />
+                )}
               </button>
             ))}
           </CardContent>
@@ -262,23 +274,27 @@ export default function ThemePreviewPage() {
               <button
                 key={key}
                 onClick={() => setSelectedTypography(key as TypographyKey)}
-                className={`w-full flex items-center gap-3 p-3 rounded-lg border transition-all ${
+                className={`flex w-full items-center gap-3 rounded-lg border p-3 transition-all ${
                   selectedTypography === key
                     ? "border-primary bg-primary/10"
                     : "border-border hover:border-primary/50"
                 }`}
               >
                 <div
-                  className="text-lg font-bold min-w-[60px]"
+                  className="min-w-[60px] text-lg font-bold"
                   style={{ fontFamily: typo.heading }}
                 >
                   Aa あ
                 </div>
-                <div className="text-left flex-1">
+                <div className="flex-1 text-left">
                   <div className="font-medium">{typo.name}</div>
-                  <div className="text-xs text-muted-foreground">{typo.description}</div>
+                  <div className="text-muted-foreground text-xs">
+                    {typo.description}
+                  </div>
                 </div>
-                {selectedTypography === key && <Check className="w-5 h-5 text-primary" />}
+                {selectedTypography === key && (
+                  <Check className="text-primary h-5 w-5" />
+                )}
               </button>
             ))}
           </CardContent>
@@ -287,7 +303,7 @@ export default function ThemePreviewPage() {
 
       {/* プレビューエリア */}
       <div
-        className="rounded-xl overflow-hidden border-2"
+        className="overflow-hidden rounded-xl border-2"
         style={{
           ...previewStyle,
           backgroundColor: palette.colors.background,
@@ -296,7 +312,7 @@ export default function ThemePreviewPage() {
       >
         {/* ヘッダープレビュー */}
         <div
-          className="p-4 border-b"
+          className="border-b p-4"
           style={{
             backgroundColor: palette.colors.card,
             borderColor: palette.colors.border,
@@ -314,7 +330,7 @@ export default function ThemePreviewPage() {
             </h2>
             <div className="flex gap-2">
               <div
-                className="px-3 py-1 rounded-full text-sm"
+                className="rounded-full px-3 py-1 text-sm"
                 style={{
                   backgroundColor: palette.colors.primary,
                   color: palette.colors.primaryForeground,
@@ -327,17 +343,17 @@ export default function ThemePreviewPage() {
         </div>
 
         {/* コンテンツプレビュー */}
-        <div className="p-6 space-y-6">
+        <div className="space-y-6 p-6">
           {/* カード例 */}
           <div
-            className="rounded-lg p-4 border"
+            className="rounded-lg border p-4"
             style={{
               backgroundColor: palette.colors.card,
               borderColor: palette.colors.border,
             }}
           >
             <h3
-              className="text-lg font-semibold mb-2"
+              className="mb-2 text-lg font-semibold"
               style={{
                 color: palette.colors.foreground,
                 fontFamily: typography.heading,
@@ -346,7 +362,7 @@ export default function ThemePreviewPage() {
               イベントタイトル
             </h3>
             <p
-              className="text-sm mb-4"
+              className="mb-4 text-sm"
               style={{
                 color: palette.colors.mutedForeground,
                 fontFamily: typography.body,
@@ -356,7 +372,7 @@ export default function ThemePreviewPage() {
             </p>
             <div className="flex gap-2">
               <span
-                className="px-2 py-1 rounded text-xs"
+                className="rounded px-2 py-1 text-xs"
                 style={{
                   backgroundColor: palette.colors.muted,
                   color: palette.colors.mutedForeground,
@@ -365,7 +381,7 @@ export default function ThemePreviewPage() {
                 進行中
               </span>
               <span
-                className="px-2 py-1 rounded text-xs"
+                className="rounded px-2 py-1 text-xs"
                 style={{
                   backgroundColor: palette.colors.secondary,
                   color: palette.colors.foreground,
@@ -378,14 +394,14 @@ export default function ThemePreviewPage() {
 
           {/* 投票コントロールデモ */}
           <div
-            className="rounded-lg p-4 border"
+            className="rounded-lg border p-4"
             style={{
               backgroundColor: palette.colors.card,
               borderColor: palette.colors.border,
             }}
           >
             <h3
-              className="text-lg font-semibold mb-4"
+              className="mb-4 text-lg font-semibold"
               style={{
                 color: palette.colors.foreground,
                 fontFamily: typography.heading,
@@ -393,19 +409,19 @@ export default function ThemePreviewPage() {
             >
               投票コントロール
             </h3>
-            
+
             <div className="flex items-center gap-4">
               <button
                 onClick={() => setDemoVotes(Math.max(0, demoVotes - 1))}
-                className="w-12 h-12 rounded-full flex items-center justify-center transition-colors"
+                className="flex h-12 w-12 items-center justify-center rounded-full transition-colors"
                 style={{
                   backgroundColor: palette.colors.muted,
                   color: palette.colors.foreground,
                 }}
               >
-                <Minus className="w-6 h-6" />
+                <Minus className="h-6 w-6" />
               </button>
-              
+
               <div className="flex-1">
                 <SquareCostVisualizer
                   votes={demoVotes}
@@ -414,21 +430,21 @@ export default function ThemePreviewPage() {
                   backgroundColor={palette.colors.muted}
                 />
               </div>
-              
+
               <button
                 onClick={() => setDemoVotes(Math.min(10, demoVotes + 1))}
-                className="w-12 h-12 rounded-full flex items-center justify-center transition-colors"
+                className="flex h-12 w-12 items-center justify-center rounded-full transition-colors"
                 style={{
                   backgroundColor: palette.colors.primary,
                   color: palette.colors.primaryForeground,
                 }}
               >
-                <Plus className="w-6 h-6" />
+                <Plus className="h-6 w-6" />
               </button>
             </div>
-            
+
             <div
-              className="text-center mt-2 text-sm"
+              className="mt-2 text-center text-sm"
               style={{ color: palette.colors.mutedForeground }}
             >
               {demoVotes}票 = {demoVotes * demoVotes}コスト
@@ -438,7 +454,7 @@ export default function ThemePreviewPage() {
           {/* ボタン例 */}
           <div className="flex flex-wrap gap-3">
             <button
-              className="px-4 py-2 rounded-lg font-medium transition-opacity hover:opacity-80"
+              className="rounded-lg px-4 py-2 font-medium transition-opacity hover:opacity-80"
               style={{
                 backgroundColor: palette.colors.primary,
                 color: palette.colors.primaryForeground,
@@ -448,7 +464,7 @@ export default function ThemePreviewPage() {
               プライマリボタン
             </button>
             <button
-              className="px-4 py-2 rounded-lg font-medium transition-opacity hover:opacity-80"
+              className="rounded-lg px-4 py-2 font-medium transition-opacity hover:opacity-80"
               style={{
                 backgroundColor: palette.colors.secondary,
                 color: palette.colors.foreground,
@@ -458,7 +474,7 @@ export default function ThemePreviewPage() {
               セカンダリボタン
             </button>
             <button
-              className="px-4 py-2 rounded-lg font-medium border transition-opacity hover:opacity-80"
+              className="rounded-lg border px-4 py-2 font-medium transition-opacity hover:opacity-80"
               style={{
                 backgroundColor: "transparent",
                 color: palette.colors.foreground,
@@ -472,12 +488,15 @@ export default function ThemePreviewPage() {
 
           {/* プログレスバー例 */}
           <div className="space-y-2">
-            <div className="flex justify-between text-sm" style={{ color: palette.colors.mutedForeground }}>
+            <div
+              className="flex justify-between text-sm"
+              style={{ color: palette.colors.mutedForeground }}
+            >
               <span>残りクレジット</span>
               <span>75 / 100</span>
             </div>
             <div
-              className="h-2 rounded-full overflow-hidden"
+              className="h-2 overflow-hidden rounded-full"
               style={{ backgroundColor: palette.colors.muted }}
             >
               <div
@@ -493,8 +512,8 @@ export default function ThemePreviewPage() {
       </div>
 
       {/* 選択中のテーマ情報 */}
-      <div className="mt-8 p-4 rounded-lg bg-muted/50">
-        <h3 className="font-semibold mb-2">選択中のテーマ</h3>
+      <div className="bg-muted/50 mt-8 rounded-lg p-4">
+        <h3 className="mb-2 font-semibold">選択中のテーマ</h3>
         <div className="grid grid-cols-2 gap-4 text-sm">
           <div>
             <span className="text-muted-foreground">カラーパレット: </span>
@@ -505,11 +524,16 @@ export default function ThemePreviewPage() {
             <span className="font-medium">{typography.name}</span>
           </div>
         </div>
-        <div className="mt-4 p-3 bg-background rounded border text-xs font-mono overflow-x-auto">
-          <pre>{JSON.stringify({ palette: selectedPalette, typography: selectedTypography }, null, 2)}</pre>
+        <div className="bg-background mt-4 overflow-x-auto rounded border p-3 font-mono text-xs">
+          <pre>
+            {JSON.stringify(
+              { palette: selectedPalette, typography: selectedTypography },
+              null,
+              2
+            )}
+          </pre>
         </div>
       </div>
     </div>
   );
 }
-

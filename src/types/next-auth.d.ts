@@ -26,4 +26,3 @@ declare module "next-auth/jwt" {
     discordAccessToken?: string;
   }
 }
-

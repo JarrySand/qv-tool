@@ -54,7 +54,11 @@ export async function createSubject(
       adminToken: true,
       isLocked: true,
       votes: { select: { id: true }, take: 1 },
-      subjects: { select: { order: true }, orderBy: { order: "desc" }, take: 1 },
+      subjects: {
+        select: { order: true },
+        orderBy: { order: "desc" },
+        take: 1,
+      },
     },
   });
 
@@ -73,7 +77,10 @@ export async function createSubject(
   // 3. バリデーション
   const parsed = createSubjectSchema.safeParse(input);
   if (!parsed.success) {
-    return { success: false, error: parsed.error.issues[0]?.message ?? t("validation") };
+    return {
+      success: false,
+      error: parsed.error.issues[0]?.message ?? t("validation"),
+    };
   }
 
   // 4. 順序の決定（最後尾に追加）
@@ -136,7 +143,10 @@ export async function updateSubject(
   // 3. バリデーション
   const parsed = updateSubjectSchema.safeParse(input);
   if (!parsed.success) {
-    return { success: false, error: parsed.error.issues[0]?.message ?? t("validation") };
+    return {
+      success: false,
+      error: parsed.error.issues[0]?.message ?? t("validation"),
+    };
   }
 
   // 4. 更新
@@ -145,9 +155,13 @@ export async function updateSubject(
       where: { id: subjectId },
       data: {
         ...(parsed.data.title && { title: parsed.data.title }),
-        ...(parsed.data.description !== undefined && { description: parsed.data.description ?? null }),
+        ...(parsed.data.description !== undefined && {
+          description: parsed.data.description ?? null,
+        }),
         ...(parsed.data.url !== undefined && { url: parsed.data.url ?? null }),
-        ...(parsed.data.imageUrl !== undefined && { imageUrl: parsed.data.imageUrl ?? null }),
+        ...(parsed.data.imageUrl !== undefined && {
+          imageUrl: parsed.data.imageUrl ?? null,
+        }),
         ...(parsed.data.order !== undefined && { order: parsed.data.order }),
       },
     });
@@ -203,4 +217,3 @@ export async function deleteSubject(
     return { success: false, error: t("subjectDeleteFailed") };
   }
 }
-

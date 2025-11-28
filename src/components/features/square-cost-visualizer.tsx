@@ -34,16 +34,17 @@ export function SquareCostVisualizer({
 }: SquareCostVisualizerProps) {
   const config = sizeConfig[size];
   const cost = votes * votes;
-  
+
   // 表示する票数（大きすぎる場合は制限）
   const displayVotes = Math.min(votes, maxDisplayVotes);
   const displayCost = displayVotes * displayVotes;
   const isOverflow = votes > maxDisplayVotes;
 
   // 固定コンテナのサイズ（最大表示時のサイズ）
-  const containerSize = fixedSize 
-    ? maxDisplayVotes * config.blockSize + (maxDisplayVotes - 1) * config.gap 
-    : displayVotes * config.blockSize + Math.max(0, displayVotes - 1) * config.gap;
+  const containerSize = fixedSize
+    ? maxDisplayVotes * config.blockSize + (maxDisplayVotes - 1) * config.gap
+    : displayVotes * config.blockSize +
+      Math.max(0, displayVotes - 1) * config.gap;
 
   // ブロックの配列を生成
   const blocks = useMemo(() => {
@@ -53,7 +54,7 @@ export function SquareCostVisualizer({
   return (
     <div className={cn("flex flex-col items-center", className)}>
       {/* 固定サイズコンテナ */}
-      <div 
+      <div
         className="flex items-center justify-center"
         style={{
           width: containerSize,
@@ -63,7 +64,7 @@ export function SquareCostVisualizer({
         }}
       >
         {votes === 0 ? (
-          <div 
+          <div
             className={cn(
               "rounded border-2 border-dashed",
               !backgroundColor && "border-muted-foreground/30"
@@ -110,14 +111,14 @@ export function SquareCostVisualizer({
           <span className="text-muted-foreground">×</span>
           <span className="font-bold">{votes}</span>
           <span className="text-muted-foreground">=</span>
-          <span 
+          <span
             className={cn("font-black", !primaryColor && "text-secondary")}
             style={{ color: primaryColor || undefined }}
           >
             {cost}
           </span>
           {isOverflow && (
-            <span className="ml-1 text-muted-foreground">
+            <span className="text-muted-foreground ml-1">
               ({maxDisplayVotes}まで表示)
             </span>
           )}

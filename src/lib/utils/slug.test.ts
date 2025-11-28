@@ -55,7 +55,8 @@ describe("slugユーティリティ", () => {
     it("UUID v4形式のトークンを生成する", () => {
       const token = generateAdminToken();
       // UUID v4形式: xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx
-      const uuidRegex = /^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/;
+      const uuidRegex =
+        /^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/;
       expect(token).toMatch(uuidRegex);
     });
 
@@ -73,4 +74,3 @@ describe("slugユーティリティ", () => {
     });
   });
 });
-

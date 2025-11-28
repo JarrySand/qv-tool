@@ -33,7 +33,8 @@ export function LanguageSwitcher({
     });
   };
 
-  const ariaLabel = currentLocale === "ja" ? "言語を切り替える" : "Switch language";
+  const ariaLabel =
+    currentLocale === "ja" ? "言語を切り替える" : "Switch language";
 
   if (variant === "button") {
     const nextLocale = currentLocale === "ja" ? "en" : "ja";
@@ -72,4 +73,3 @@ export function LanguageSwitcher({
     </Select>
   );
 }
-
