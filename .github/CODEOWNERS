@@ -1,0 +1,34 @@
+# CODEOWNERS - コードオーナー設定
+#
+# このファイルは、リポジトリ内の各ディレクトリ/ファイルの
+# レビュー担当者を定義します。
+#
+# 書式: パターン @ユーザー名 または @組織名/チーム名
+# 詳細: https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+
+# デフォルトオーナー（すべてのファイル）
+* @zukas
+
+# ドキュメント
+/docs/ @zukas
+/*.md @zukas
+
+# フロントエンド
+/src/components/ @zukas
+/src/app/ @zukas
+
+# バックエンド / Server Actions
+/src/lib/actions/ @zukas
+/src/lib/auth/ @zukas
+
+# データベース
+/prisma/ @zukas
+
+# CI/CD
+/.github/ @zukas
+
+# 設定ファイル
+/package.json @zukas
+/tsconfig.json @zukas
+/next.config.ts @zukas
+

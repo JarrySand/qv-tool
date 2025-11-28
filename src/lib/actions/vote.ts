@@ -1,5 +1,14 @@
 "use server";
 
+/**
+ * 投票管理用 Server Actions
+ *
+ * 投票の送信、更新、既存投票の取得などの操作を提供します。
+ * 認証方式（個別URL / Social認証）に応じた処理を行います。
+ *
+ * @module lib/actions/vote
+ */
+
 import { headers } from "next/headers";
 import { getTranslations } from "next-intl/server";
 import { prisma } from "@/lib/db";
@@ -7,19 +16,64 @@ import { auth } from "@/auth";
 import { submitVoteSchema, validateVoteCost } from "@/lib/validations";
 import { checkVoteRateLimit, getClientIp } from "@/lib/rate-limit";
 
+/**
+ * 投票送信の結果型
+ */
 export type SubmitVoteResult =
   | { success: true; voteId: string }
   | { success: false; error: string };
 
+/**
+ * 投票送信の入力データ型
+ */
 interface SubmitVoteInput {
+  /** イベントID */
   eventId: string;
+  /** 投票詳細（候補ごとの票数） */
   details: { subjectId: string; amount: number }[];
+  /** アクセストークン（個別URL方式の場合） */
   token?: string;
+  /** 既存の投票ID（更新の場合） */
   existingVoteId?: string;
 }
 
 /**
  * 投票を送信または更新するServer Action
+ *
+ * 新規投票と既存投票の更新の両方に対応。
+ * 認証方式に応じた重複投票チェックを行います。
+ *
+ * ## 認証方式別の動作
+ * - **individual**: トークンで認証、トークンごとに1回投票可能
+ * - **google/line/discord**: セッションで認証、ユーザーごとに1回投票可能
+ *
+ * ## バリデーション
+ * - 投票期間内かチェック
+ * - 投票候補の存在確認
+ * - クレジット上限チェック（二次投票コスト計算）
+ *
+ * @param input - 投票の入力データ
+ * @returns 成功時は投票ID、失敗時はエラーメッセージ
+ *
+ * @example
+ * ```ts
+ * // 新規投票
+ * const result = await submitVote({
+ *   eventId: "clx...",
+ *   details: [
+ *     { subjectId: "clx...", amount: 3 }, // 9クレジット消費
+ *     { subjectId: "clx...", amount: 2 }, // 4クレジット消費
+ *   ],
+ *   token: "abc123", // 個別URL方式の場合
+ * });
+ *
+ * // 投票更新
+ * const updateResult = await submitVote({
+ *   eventId: "clx...",
+ *   details: [...],
+ *   existingVoteId: "clx...",
+ * });
+ * ```
  */
 export async function submitVote(
   input: SubmitVoteInput
@@ -265,7 +319,23 @@ export async function submitVote(
 }
 
 /**
- * 既存の投票データを取得
+ * 既存の投票データを取得するServer Action
+ *
+ * ユーザーの既存投票を取得します。
+ * 投票の編集機能で、現在の投票内容を表示するために使用します。
+ *
+ * @param eventId - イベントID
+ * @param token - アクセストークン（個別URL方式の場合）
+ * @returns 投票データ（存在しない場合はnull）
+ *
+ * @example
+ * ```ts
+ * const existingVote = await getExistingVote(eventId, token);
+ * if (existingVote) {
+ *   // 既存の投票内容をフォームに反映
+ *   setVotes(existingVote.details);
+ * }
+ * ```
  */
 export async function getExistingVote(
   eventId: string,

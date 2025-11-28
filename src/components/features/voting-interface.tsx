@@ -191,9 +191,7 @@ export function VotingInterface({
           </div>
 
           {/* ヒント */}
-          <p className="text-muted-foreground mt-2 text-xs">
-            💡 1票=1、2票=4、3票=9... コストは票数の二乗です
-          </p>
+          <p className="text-muted-foreground mt-2 text-xs">{t("costHint")}</p>
         </CardContent>
       </Card>
 

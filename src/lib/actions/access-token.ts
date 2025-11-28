@@ -1,8 +1,19 @@
 "use server";
 
+/**
+ * アクセストークン管理用 Server Actions
+ *
+ * 個別URL投票方式で使用するアクセストークンの生成・検証を提供します。
+ *
+ * @module lib/actions/access-token
+ */
+
 import { getTranslations } from "next-intl/server";
 import { prisma } from "@/lib/db";
 
+/**
+ * トークン生成の結果型
+ */
 type GenerateResult =
   | {
       success: true;
@@ -20,6 +31,25 @@ type GenerateResult =
 
 /**
  * 個別投票用トークンを一括生成するServer Action
+ *
+ * 指定された数のアクセストークンを生成します。
+ * 各トークンは1回のみ投票に使用可能です。
+ *
+ * @param eventId - イベントID
+ * @param adminToken - 管理用トークン
+ * @param count - 生成するトークン数（1-100）
+ * @returns 成功時は生成されたトークン配列、失敗時はエラーメッセージ
+ *
+ * @example
+ * ```ts
+ * const result = await generateAccessTokens(eventId, adminToken, 10);
+ * if (result.success) {
+ *   // トークンをCSVやURLとして配布
+ *   result.tokens.forEach(t => {
+ *     console.log(`/events/${eventId}?token=${t.token}`);
+ *   });
+ * }
+ * ```
  */
 export async function generateAccessTokens(
   eventId: string,
@@ -69,7 +99,25 @@ export async function generateAccessTokens(
 }
 
 /**
- * トークンを検証するServer Action
+ * アクセストークンを検証するServer Action
+ *
+ * トークンの存在確認と使用状況をチェックします。
+ *
+ * @param eventId - イベントID
+ * @param token - 検証するトークン
+ * @returns 有効な場合はトークン情報、無効な場合はエラー
+ *
+ * @example
+ * ```ts
+ * const result = await validateAccessToken(eventId, token);
+ * if (result.valid) {
+ *   if (result.isUsed) {
+ *     // 投票編集モード
+ *   } else {
+ *     // 新規投票モード
+ *   }
+ * }
+ * ```
  */
 export async function validateAccessToken(
   eventId: string,

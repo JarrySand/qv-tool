@@ -1,8 +1,19 @@
 "use server";
 
+/**
+ * 投票結果取得用 Server Actions
+ *
+ * イベントの投票結果、統計情報、CSVエクスポート機能を提供します。
+ *
+ * @module lib/actions/result
+ */
+
 import { getTranslations } from "next-intl/server";
 import { prisma } from "@/lib/db";
 
+/**
+ * 投票候補ごとの結果データ
+ */
 export interface SubjectResult {
   id: string;
   title: string;
@@ -71,7 +82,24 @@ export interface EventResultData {
 }
 
 /**
- * イベントの投票結果を取得
+ * イベントの投票結果を取得するServer Action
+ *
+ * イベントIDまたはスラッグで投票結果を取得します。
+ * 各候補の得票数、統計情報、投票分布、埋もれた選好データを含みます。
+ *
+ * @param eventIdOrSlug - イベントIDまたはカスタムスラッグ
+ * @returns 投票結果データ（イベントが存在しない場合はnull）
+ *
+ * @example
+ * ```ts
+ * const results = await getEventResults("my-event-slug");
+ * if (results) {
+ *   console.log(`Total participants: ${results.statistics.totalParticipants}`);
+ *   results.results.forEach(r => {
+ *     console.log(`${r.title}: ${r.totalVotes} votes`);
+ *   });
+ * }
+ * ```
  */
 export async function getEventResults(
   eventIdOrSlug: string
@@ -243,7 +271,24 @@ export async function getEventResults(
 }
 
 /**
- * ローデータ（個別投票データ）を取得
+ * 個別投票データ（ローデータ）を取得するServer Action
+ *
+ * 管理者向けに各投票の詳細データを取得します。
+ * adminToken認証が必要です。
+ *
+ * @param eventIdOrSlug - イベントIDまたはカスタムスラッグ
+ * @param adminToken - 管理用トークン
+ * @returns 投票データ配列（認証失敗時はエラー）
+ *
+ * @example
+ * ```ts
+ * const data = await getRawVoteData(eventId, adminToken);
+ * if (!("error" in data)) {
+ *   data.forEach(vote => {
+ *     console.log(`Vote ${vote.voteId} at ${vote.votedAt}`);
+ *   });
+ * }
+ * ```
  */
 export async function getRawVoteData(
   eventIdOrSlug: string,
@@ -294,7 +339,22 @@ export async function getRawVoteData(
 }
 
 /**
- * 集計データをCSV形式で取得
+ * 集計データをCSV形式で取得するServer Action
+ *
+ * 投票結果の集計をCSV形式で出力します。
+ * 順位、タイトル、得票数、消費クレジット、投票者数を含みます。
+ *
+ * @param eventIdOrSlug - イベントIDまたはカスタムスラッグ
+ * @returns CSV形式の文字列（エラー時はエラーオブジェクト）
+ *
+ * @example
+ * ```ts
+ * const csv = await getResultsCsv(eventId);
+ * if (typeof csv === "string") {
+ *   // CSVファイルとしてダウンロード
+ *   downloadFile(csv, "results.csv");
+ * }
+ * ```
  */
 export async function getResultsCsv(
   eventIdOrSlug: string
@@ -335,7 +395,23 @@ export async function getResultsCsv(
 }
 
 /**
- * ローデータをCSV形式で取得
+ * ローデータをCSV形式で取得するServer Action
+ *
+ * 管理者向けに個別投票データをCSV形式で出力します。
+ * adminToken認証が必要です。
+ *
+ * @param eventIdOrSlug - イベントIDまたはカスタムスラッグ
+ * @param adminToken - 管理用トークン
+ * @returns CSV形式の文字列（エラー時はエラーオブジェクト）
+ *
+ * @example
+ * ```ts
+ * const csv = await getRawDataCsv(eventId, adminToken);
+ * if (typeof csv === "string") {
+ *   // CSVファイルとしてダウンロード
+ *   downloadFile(csv, "raw_data.csv");
+ * }
+ * ```
  */
 export async function getRawDataCsv(
   eventIdOrSlug: string,

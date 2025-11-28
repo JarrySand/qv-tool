@@ -129,7 +129,22 @@
         "publishing": "Publishing...",
         "generateTokens": "Generate Voting Tokens",
         "tokenCount": "Number of tokens to generate",
-        "tokensGenerated": "{count} tokens generated"
+        "tokensGenerated": "{count} tokens generated",
+        "publishComplete": "Published!",
+        "adminUrl": "Admin URL",
+        "adminUrlWarning": "This URL will not be shown again. Please save it in a secure location.",
+        "publicUrl": "Public URL (for participants)",
+        "tokenDescription": "Generate URLs to distribute to participants",
+        "generate": "Generate",
+        "goToAdmin": "Go to Admin",
+        "backToTop": "Back to Top"
+      },
+      "validation": {
+        "titleRequired": "Please enter a title",
+        "startDateRequired": "Please enter a start date",
+        "endDateRequired": "Please enter an end date",
+        "endDateAfterStart": "End date must be after start date",
+        "subjectsRequired": "Please add at least one voting option"
       }
     },
     "created": {
@@ -157,6 +172,7 @@
     "remainingCredits": "Remaining Credits",
     "totalCost": "Total Cost",
     "creditUsage": "Credit usage",
+    "costHint": "💡 1 vote = 1, 2 votes = 4, 3 votes = 9... Cost is the square of votes",
     "votes": "votes",
     "cost": "Cost",
     "submitVote": "Submit Vote",
@@ -289,6 +305,7 @@
     "rateLimitExceeded": "Rate limit exceeded. Please try again in {seconds} seconds.",
     "discordAuthRequired": "Discord authentication is required",
     "discordGuildMemberOnly": "Only members of this server can vote",
-    "discordGuildMemberOnlyWithName": "Only members of \"{guildName}\" server can vote"
+    "discordGuildMemberOnlyWithName": "Only members of \"{guildName}\" server can vote",
+    "subjectsRequired": "Please add at least one voting option"
   }
 }

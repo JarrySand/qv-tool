@@ -49,10 +49,15 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   adapter: PrismaAdapter(prisma),
   providers,
   // シークレットキー（本番環境では必ず環境変数で設定）
-  secret:
-    process.env.AUTH_SECRET ??
-    process.env.NEXTAUTH_SECRET ??
-    "dev-secret-key-change-in-production",
+  secret: (() => {
+    const secret = process.env.AUTH_SECRET ?? process.env.NEXTAUTH_SECRET;
+    if (!secret && process.env.NODE_ENV === "production") {
+      throw new Error(
+        "AUTH_SECRET environment variable is required in production"
+      );
+    }
+    return secret ?? "dev-secret-key-for-local-development-only";
+  })(),
   session: {
     strategy: "jwt",
   },
@@ -103,7 +108,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   // イベントフック
   events: {
     async signIn({ user }) {
-      console.log(`User signed in: ${user.email}`);
+      if (process.env.NODE_ENV === "development") {
+        console.log(`User signed in: ${user.email}`);
+      }
     },
   },
   // デバッグモード（開発環境のみ）

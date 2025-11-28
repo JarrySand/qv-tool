@@ -1,5 +1,14 @@
 "use server";
 
+/**
+ * イベント管理用 Server Actions
+ *
+ * イベントの作成、更新、取得、公開などの操作を提供します。
+ * すべての関数はサーバーサイドで実行され、Prismaを使用してDBと通信します。
+ *
+ * @module lib/actions/event
+ */
+
 import { headers } from "next/headers";
 import { getTranslations } from "next-intl/server";
 import { prisma } from "@/lib/db";
@@ -12,6 +21,9 @@ import {
 import { generateSlug, sanitizeSlug } from "@/lib/utils/slug";
 import { checkEventCreateRateLimit, getClientIp } from "@/lib/rate-limit";
 
+/**
+ * イベント作成の結果型
+ */
 export type CreateEventResult =
   | {
       success: true;
@@ -30,7 +42,27 @@ export type CreateEventResult =
 
 /**
  * イベントを作成するServer Action
- * 認証不要：誰でもイベントを作成可能
+ *
+ * 認証不要で誰でもイベントを作成可能。
+ * レート制限、バリデーション、スラッグの自動生成を行います。
+ *
+ * @param input - イベント作成の入力データ
+ * @returns 成功時はイベント情報、失敗時はエラーメッセージ
+ *
+ * @example
+ * ```ts
+ * const result = await createEvent({
+ *   title: "新しい投票",
+ *   startDate: new Date(),
+ *   endDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+ *   creditsPerVoter: 100,
+ *   votingMode: "google",
+ * });
+ *
+ * if (result.success) {
+ *   console.log(`Created: ${result.event.id}`);
+ * }
+ * ```
  */
 export async function createEvent(
   input: CreateEventInput
@@ -158,7 +190,22 @@ export async function createEvent(
 }
 
 /**
- * イベントを取得する（adminToken認証）
+ * 管理者用にイベントを取得する
+ *
+ * adminTokenによる認証を行い、一致した場合のみイベント情報を返します。
+ * 投票候補、投票数、アクセストークンの統計情報も含みます。
+ *
+ * @param eventId - イベントID
+ * @param adminToken - 管理用トークン
+ * @returns イベント情報（認証失敗時はnull）
+ *
+ * @example
+ * ```ts
+ * const event = await getEventForAdmin(eventId, adminToken);
+ * if (!event) {
+ *   return { error: "Not found or unauthorized" };
+ * }
+ * ```
  */
 export async function getEventForAdmin(eventId: string, adminToken: string) {
   const event = await prisma.event.findUnique({
@@ -183,6 +230,9 @@ export async function getEventForAdmin(eventId: string, adminToken: string) {
   return event;
 }
 
+/**
+ * イベント更新の結果型
+ */
 export type UpdateEventResult =
   | { success: true }
   | {
@@ -193,7 +243,23 @@ export type UpdateEventResult =
 
 /**
  * イベントを更新するServer Action
- * adminTokenによる認証が必要
+ *
+ * adminTokenによる認証が必要です。
+ * タイトル、説明、開始・終了日時の更新が可能です。
+ * 投票候補、クレジット数、認証方式は公開後は変更できません。
+ *
+ * @param eventId - イベントID
+ * @param adminToken - 管理用トークン
+ * @param input - 更新データ
+ * @returns 成功/失敗の結果
+ *
+ * @example
+ * ```ts
+ * const result = await updateEvent(eventId, adminToken, {
+ *   title: "更新後のタイトル",
+ *   description: "更新後の説明",
+ * });
+ * ```
  */
 export async function updateEvent(
   eventId: string,
@@ -275,7 +341,12 @@ export async function updateEvent(
 }
 
 /**
- * イベントに投票があるかチェック（投票開始後の編集制限用）
+ * イベントに投票があるかチェックする
+ *
+ * 投票開始後の編集制限判定に使用します。
+ *
+ * @param eventId - イベントID
+ * @returns 投票が存在する場合はtrue
  */
 export async function hasVotes(eventId: string): Promise<boolean> {
   const count = await prisma.vote.count({
@@ -288,16 +359,29 @@ export async function hasVotes(eventId: string): Promise<boolean> {
 // ワンストップ作成機能
 // ============================================
 
+/**
+ * 投票候補の入力データ型
+ */
 export type SubjectInput = {
+  /** タイトル */
   title: string;
+  /** 説明 */
   description?: string;
+  /** 参照URL */
   url?: string;
 };
 
+/**
+ * イベント＋投票候補一括作成の入力データ型
+ */
 export type CreateEventWithSubjectsInput = CreateEventInput & {
+  /** 投票候補の配列 */
   subjects: SubjectInput[];
 };
 
+/**
+ * イベント＋投票候補一括作成の結果型
+ */
 export type CreateEventWithSubjectsResult =
   | {
       success: true;
@@ -320,8 +404,28 @@ export type CreateEventWithSubjectsResult =
     };
 
 /**
- * イベントと投票候補を一括作成し、ロック済みで保存
- * ワンストップ作成フロー用
+ * イベントと投票候補を一括作成するServer Action
+ *
+ * ウィザード形式のワンストップ作成フロー用。
+ * トランザクションで一括作成し、作成時点でロック状態にします。
+ *
+ * @param input - イベントと投票候補の入力データ
+ * @returns 成功時はイベント情報、失敗時はエラーメッセージ
+ *
+ * @example
+ * ```ts
+ * const result = await createEventWithSubjects({
+ *   title: "新しい投票",
+ *   startDate: new Date(),
+ *   endDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+ *   creditsPerVoter: 100,
+ *   votingMode: "individual",
+ *   subjects: [
+ *     { title: "選択肢A", description: "説明A" },
+ *     { title: "選択肢B", description: "説明B" },
+ *   ],
+ * });
+ * ```
  */
 export async function createEventWithSubjects(
   input: CreateEventWithSubjectsInput
@@ -349,19 +453,14 @@ export async function createEventWithSubjects(
       success: false,
       error: t("validation"),
       fieldErrors: {
-        subjects: ["投票候補を最低1つ追加してください"],
+        subjects: [t("subjectsRequired")],
       },
     };
   }
 
   // 2. 基本情報のバリデーション
-  console.log("Input for validation:", JSON.stringify(input, null, 2));
   const parsed = createEventSchema.safeParse(input);
   if (!parsed.success) {
-    console.log(
-      "Validation errors:",
-      JSON.stringify(parsed.error.issues, null, 2)
-    );
     const fieldErrors: Record<string, string[]> = {};
     for (const issue of parsed.error.issues) {
       const field = issue.path[0]?.toString() ?? "unknown";
@@ -491,8 +590,22 @@ export async function createEventWithSubjects(
 }
 
 /**
- * イベントを公開（ロック）する
- * 一度公開すると投票候補・クレジット・認証方式は変更不可
+ * イベントを公開（ロック）するServer Action
+ *
+ * 一度公開すると投票候補、クレジット数、認証方式は変更できません。
+ * 公開前に投票候補が最低1つ必要です。
+ *
+ * @param eventId - イベントID
+ * @param adminToken - 管理用トークン
+ * @returns 成功/失敗の結果
+ *
+ * @example
+ * ```ts
+ * const result = await publishEvent(eventId, adminToken);
+ * if (result.success) {
+ *   console.log("Event published!");
+ * }
+ * ```
  */
 export async function publishEvent(
   eventId: string,

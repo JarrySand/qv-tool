@@ -1,5 +1,5 @@
 import { getTranslations } from "next-intl/server";
-import { EventWizardForm } from "@/components/features/event-wizard-form";
+import { EventWizardForm } from "@/components/features/event-wizard";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 
