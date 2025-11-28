@@ -100,6 +100,9 @@ export default async function VotePage({ params, searchParams }: PageProps) {
     // 異なるプロバイダーでログインしている場合
     if (authResult.error?.includes("でログインしてください")) {
       const callbackUrl = `/events/${event.slug ?? event.id}/vote${token ? `?token=${token}` : ""}`;
+      // 必要なプロバイダーをURLパラメータに追加
+      const requiredProvider = event.votingMode; // "google", "line", "discord"
+      const signInUrl = `/auth/signin?callbackUrl=${encodeURIComponent(callbackUrl)}&provider=${requiredProvider}`;
       return (
         <div className="flex min-h-screen items-center justify-center p-4">
           <div className="max-w-md text-center">
@@ -111,9 +114,7 @@ export default async function VotePage({ params, searchParams }: PageProps) {
               現在のセッションからログアウトして、正しい認証方式でログインし直してください
             </p>
             <div className="flex flex-col gap-3">
-              <SignOutButton
-                callbackUrl={`/auth/signin?callbackUrl=${encodeURIComponent(callbackUrl)}`}
-              >
+              <SignOutButton callbackUrl={signInUrl}>
                 ログアウトして再ログイン
               </SignOutButton>
               <Button asChild variant="outline">
