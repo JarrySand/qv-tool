@@ -50,6 +50,20 @@ export const createEventSchema = z.object({
     .max(100, "サーバー名は100文字以内で入力してください")
     .optional()
     .transform((val) => (val === "" ? undefined : val)),
+  // Discord ロール制限機能用（discordGuildIdが設定されている場合のみ使用）
+  discordRequiredRoleId: z
+    .union([
+      z.literal(""),
+      z.literal(undefined),
+      z.string().regex(/^\d{17,19}$/, "DiscordロールIDは17-19桁の数値です"),
+    ])
+    .optional()
+    .transform((val) => (val === "" ? undefined : val)),
+  discordRequiredRoleName: z
+    .string()
+    .max(100, "ロール名は100文字以内で入力してください")
+    .optional()
+    .transform((val) => (val === "" ? undefined : val)),
 });
 
 // イベント更新スキーマ（投票開始後は一部フィールドが変更不可）

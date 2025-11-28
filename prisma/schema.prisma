@@ -88,6 +88,10 @@ model Event {
   discordGuildId   String?  // 対象DiscordサーバーのID（18桁の数値文字列）
   discordGuildName String?  // サーバー名（表示用、オプション）
 
+  // Discord ロール制限機能用
+  discordRequiredRoleId   String?  // 必須ロールのID（18桁の数値文字列）
+  discordRequiredRoleName String?  // ロール名（表示用、オプション）
+
   // リレーション
   subjects     Subject[]
   votes        Vote[]

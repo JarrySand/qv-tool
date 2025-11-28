@@ -33,6 +33,8 @@ export function Step1BasicInfo() {
     generalError,
     enableGuildGate,
     setEnableGuildGate,
+    enableRoleGate,
+    setEnableRoleGate,
   } = useEventWizard();
 
   return (
@@ -259,6 +261,74 @@ export function Step1BasicInfo() {
                 <p className="text-muted-foreground text-xs">
                   {t("discordGate.guildNameHint")}
                 </p>
+              </div>
+
+              {/* ロール制限設定 */}
+              <div className="border-border bg-muted/20 space-y-4 rounded-lg border p-4">
+                <div className="flex items-center gap-3">
+                  <input
+                    type="checkbox"
+                    id="enableRoleGate"
+                    checked={enableRoleGate}
+                    onChange={(e) => setEnableRoleGate(e.target.checked)}
+                    className="border-input size-4 rounded"
+                  />
+                  <Label htmlFor="enableRoleGate" className="cursor-pointer">
+                    {t("discordGate.roleEnableLabel")}
+                  </Label>
+                </div>
+
+                {enableRoleGate && (
+                  <div className="space-y-4 pl-7">
+                    <div className="space-y-2">
+                      <Label htmlFor="discordRequiredRoleId">
+                        {t("discordGate.roleIdLabel")}{" "}
+                        <span className="text-destructive">*</span>
+                      </Label>
+                      <Input
+                        id="discordRequiredRoleId"
+                        value={formData.discordRequiredRoleId}
+                        onChange={(e) =>
+                          updateFormData(
+                            "discordRequiredRoleId",
+                            e.target.value
+                          )
+                        }
+                        placeholder={t("discordGate.roleIdPlaceholder")}
+                      />
+                      <p className="text-muted-foreground text-xs">
+                        {t("discordGate.roleIdHint")}
+                      </p>
+                      {errors.discordRequiredRoleId && (
+                        <p className="text-destructive text-sm">
+                          {errors.discordRequiredRoleId[0]}
+                        </p>
+                      )}
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="discordRequiredRoleName">
+                        {t("discordGate.roleNameLabel")}（{tCommon("optional")}
+                        ）
+                      </Label>
+                      <Input
+                        id="discordRequiredRoleName"
+                        value={formData.discordRequiredRoleName}
+                        onChange={(e) =>
+                          updateFormData(
+                            "discordRequiredRoleName",
+                            e.target.value
+                          )
+                        }
+                        placeholder={t("discordGate.roleNamePlaceholder")}
+                        maxLength={100}
+                      />
+                      <p className="text-muted-foreground text-xs">
+                        {t("discordGate.roleNameHint")}
+                      </p>
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           )}

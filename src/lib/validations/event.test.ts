@@ -138,7 +138,12 @@ describe("イベントバリデーション", () => {
 
     describe("認証方式のバリデーション", () => {
       it("有効な認証方式を受け入れる", () => {
-        for (const votingMode of ["individual", "google", "line"] as const) {
+        for (const votingMode of [
+          "individual",
+          "google",
+          "line",
+          "discord",
+        ] as const) {
           const result = createEventSchema.safeParse({
             ...validInput,
             votingMode,
@@ -153,6 +158,125 @@ describe("イベントバリデーション", () => {
           votingMode: "invalid",
         });
         expect(result.success).toBe(false);
+      });
+    });
+
+    describe("DiscordサーバーIDのバリデーション", () => {
+      it("有効なDiscordサーバーIDを受け入れる", () => {
+        const validGuildIds = [
+          "12345678901234567", // 17桁
+          "123456789012345678", // 18桁
+          "1234567890123456789", // 19桁
+        ];
+        for (const discordGuildId of validGuildIds) {
+          const result = createEventSchema.safeParse({
+            ...validInput,
+            votingMode: "discord",
+            discordGuildId,
+          });
+          expect(result.success).toBe(true);
+        }
+      });
+
+      it("短すぎるDiscordサーバーIDを拒否する", () => {
+        const result = createEventSchema.safeParse({
+          ...validInput,
+          votingMode: "discord",
+          discordGuildId: "1234567890123456", // 16桁
+        });
+        expect(result.success).toBe(false);
+      });
+
+      it("長すぎるDiscordサーバーIDを拒否する", () => {
+        const result = createEventSchema.safeParse({
+          ...validInput,
+          votingMode: "discord",
+          discordGuildId: "12345678901234567890", // 20桁
+        });
+        expect(result.success).toBe(false);
+      });
+
+      it("数字以外を含むDiscordサーバーIDを拒否する", () => {
+        const result = createEventSchema.safeParse({
+          ...validInput,
+          votingMode: "discord",
+          discordGuildId: "12345678901234567a",
+        });
+        expect(result.success).toBe(false);
+      });
+
+      it("空文字はundefinedに変換される", () => {
+        const result = createEventSchema.safeParse({
+          ...validInput,
+          votingMode: "discord",
+          discordGuildId: "",
+        });
+        expect(result.success).toBe(true);
+        if (result.success) {
+          expect(result.data.discordGuildId).toBeUndefined();
+        }
+      });
+    });
+
+    describe("DiscordロールIDのバリデーション", () => {
+      it("有効なDiscordロールIDを受け入れる", () => {
+        const validRoleIds = [
+          "12345678901234567", // 17桁
+          "123456789012345678", // 18桁
+          "1234567890123456789", // 19桁
+        ];
+        for (const discordRequiredRoleId of validRoleIds) {
+          const result = createEventSchema.safeParse({
+            ...validInput,
+            votingMode: "discord",
+            discordGuildId: "123456789012345678",
+            discordRequiredRoleId,
+          });
+          expect(result.success).toBe(true);
+        }
+      });
+
+      it("短すぎるDiscordロールIDを拒否する", () => {
+        const result = createEventSchema.safeParse({
+          ...validInput,
+          votingMode: "discord",
+          discordGuildId: "123456789012345678",
+          discordRequiredRoleId: "1234567890123456", // 16桁
+        });
+        expect(result.success).toBe(false);
+      });
+
+      it("長すぎるDiscordロールIDを拒否する", () => {
+        const result = createEventSchema.safeParse({
+          ...validInput,
+          votingMode: "discord",
+          discordGuildId: "123456789012345678",
+          discordRequiredRoleId: "12345678901234567890", // 20桁
+        });
+        expect(result.success).toBe(false);
+      });
+
+      it("数字以外を含むDiscordロールIDを拒否する", () => {
+        const result = createEventSchema.safeParse({
+          ...validInput,
+          votingMode: "discord",
+          discordGuildId: "123456789012345678",
+          discordRequiredRoleId: "12345678901234567a",
+        });
+        expect(result.success).toBe(false);
+      });
+
+      it("空文字はundefinedに変換される", () => {
+        const result = createEventSchema.safeParse({
+          ...validInput,
+          votingMode: "discord",
+          discordGuildId: "123456789012345678",
+          discordRequiredRoleId: "",
+        });
+        expect(result.success).toBe(true);
+        if (result.success) {
+          expect(result.data.discordRequiredRoleId).toBeUndefined();
+        }
       });
     });
   });

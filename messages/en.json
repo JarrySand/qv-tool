@@ -99,7 +99,14 @@
         "guildIdHint": "Server Settings → Widget → Server ID, or enable Developer Mode and right-click → Copy ID",
         "guildNameLabel": "Server Name (for display)",
         "guildNamePlaceholder": "e.g., My Community Server",
-        "guildNameHint": "This name will be shown in error messages (optional)"
+        "guildNameHint": "This name will be shown in error messages (optional)",
+        "roleEnableLabel": "Further limit to members with a specific role",
+        "roleIdLabel": "Discord Role ID",
+        "roleIdPlaceholder": "123456789012345678",
+        "roleIdHint": "Server Settings → Roles → Right-click target role → Copy ID (requires Developer Mode)",
+        "roleNameLabel": "Role Name (for display)",
+        "roleNamePlaceholder": "e.g., Premium Members",
+        "roleNameHint": "This name will be shown in error messages (optional)"
       },
       "submitButton": "Create Event",
       "creating": "Creating...",
@@ -306,6 +313,8 @@
     "discordAuthRequired": "Discord authentication is required",
     "discordGuildMemberOnly": "Only members of this server can vote",
     "discordGuildMemberOnlyWithName": "Only members of \"{guildName}\" server can vote",
+    "discordRoleRequired": "Only members with the specified role can vote",
+    "discordRoleRequiredWithName": "Only members with \"{roleName}\" role can vote",
     "subjectsRequired": "Please add at least one voting option"
   }
 }

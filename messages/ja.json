@@ -99,7 +99,14 @@
         "guildIdHint": "サーバー設定 → ウィジェット → サーバーID、または開発者モードで右クリック → IDをコピー",
         "guildNameLabel": "サーバー名（表示用）",
         "guildNamePlaceholder": "例: My Community Server",
-        "guildNameHint": "エラー画面で表示されるサーバー名です（空欄可）"
+        "guildNameHint": "エラー画面で表示されるサーバー名です（空欄可）",
+        "roleEnableLabel": "さらに特定のロールを持っているメンバーに限定する",
+        "roleIdLabel": "DiscordロールID",
+        "roleIdPlaceholder": "123456789012345678",
+        "roleIdHint": "サーバー設定 → ロール → 対象ロールを右クリック → IDをコピー（開発者モードが必要）",
+        "roleNameLabel": "ロール名（表示用）",
+        "roleNamePlaceholder": "例: Premium Members",
+        "roleNameHint": "エラー画面で表示されるロール名です（空欄可）"
       },
       "submitButton": "イベントを作成",
       "creating": "作成中...",
@@ -296,6 +303,8 @@
     "discordAuthRequired": "Discord認証が必要です",
     "discordGuildMemberOnly": "このサーバーのメンバーのみ投票可能です",
     "discordGuildMemberOnlyWithName": "「{guildName}」サーバーのメンバーのみ投票可能です",
+    "discordRoleRequired": "指定されたロールを持つメンバーのみ投票可能です",
+    "discordRoleRequiredWithName": "「{roleName}」ロールを持つメンバーのみ投票可能です",
     "subjectsRequired": "投票候補を最低1つ追加してください"
   },
   "csv": {

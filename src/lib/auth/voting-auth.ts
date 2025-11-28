@@ -1,6 +1,6 @@
 import { auth } from "@/auth";
 import { prisma } from "@/lib/db";
-import { isGuildMember } from "@/lib/auth/discord-guild";
+import { isGuildMember, hasGuildRole } from "@/lib/auth/discord-guild";
 
 export type VotingAuthResult =
   | {
@@ -21,6 +21,8 @@ export type VotingAuthResult =
       error: string;
       /** Discord ゲート機能: 必要なサーバー名（エラー表示用） */
       requiredGuildName?: string;
+      /** Discord ロール制限機能: 必要なロール名（エラー表示用） */
+      requiredRoleName?: string;
     };
 
 /**
@@ -42,6 +44,8 @@ export async function authenticateVoter(
       endDate: true,
       discordGuildId: true,
       discordGuildName: true,
+      discordRequiredRoleId: true,
+      discordRequiredRoleName: true,
     },
   });
 
@@ -132,6 +136,24 @@ export async function authenticateVoter(
         error: "このサーバーのメンバーのみ投票可能です",
         requiredGuildName: event.discordGuildName ?? undefined,
       };
+    }
+
+    // ロール制限が設定されている場合、ロールを確認
+    if (event.discordRequiredRoleId) {
+      const hasRole = await hasGuildRole(
+        session.discordAccessToken,
+        event.discordGuildId,
+        event.discordRequiredRoleId
+      );
+
+      if (!hasRole) {
+        return {
+          authenticated: false,
+          error: "指定されたロールを持つメンバーのみ投票可能です",
+          requiredGuildName: event.discordGuildName ?? undefined,
+          requiredRoleName: event.discordRequiredRoleName ?? undefined,
+        };
+      }
     }
   }
 

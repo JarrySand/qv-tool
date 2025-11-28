@@ -76,6 +76,8 @@ export function EventWizardProvider({ children }: EventWizardProviderProps) {
     votingMode: "individual",
     discordGuildId: "",
     discordGuildName: "",
+    discordRequiredRoleId: "",
+    discordRequiredRoleName: "",
   });
 
   // 投票候補
@@ -86,6 +88,9 @@ export function EventWizardProvider({ children }: EventWizardProviderProps) {
 
   // Discord ゲート設定
   const [enableGuildGate, setEnableGuildGate] = useState(false);
+
+  // Discord ロール制限設定
+  const [enableRoleGate, setEnableRoleGate] = useState(false);
 
   /**
    * フォームデータを更新する
@@ -170,6 +175,14 @@ export function EventWizardProvider({ children }: EventWizardProviderProps) {
           formData.votingMode === "discord" && enableGuildGate
             ? formData.discordGuildName || undefined
             : undefined,
+        discordRequiredRoleId:
+          formData.votingMode === "discord" && enableGuildGate && enableRoleGate
+            ? formData.discordRequiredRoleId || undefined
+            : undefined,
+        discordRequiredRoleName:
+          formData.votingMode === "discord" && enableGuildGate && enableRoleGate
+            ? formData.discordRequiredRoleName || undefined
+            : undefined,
         subjects,
       });
 
@@ -200,6 +213,8 @@ export function EventWizardProvider({ children }: EventWizardProviderProps) {
     setCreatedEvent,
     enableGuildGate,
     setEnableGuildGate,
+    enableRoleGate,
+    setEnableRoleGate,
     isPending,
     goToNextStep,
     goToPrevStep,

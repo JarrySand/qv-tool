@@ -33,6 +33,10 @@ export interface EventFormData {
   discordGuildId: string;
   /** Discord サーバー名（表示用） */
   discordGuildName: string;
+  /** Discord 必須ロールID（ロール制限機能用） */
+  discordRequiredRoleId: string;
+  /** Discord 必須ロール名（表示用） */
+  discordRequiredRoleName: string;
 }
 
 /**
@@ -103,6 +107,10 @@ export interface EventWizardContextType {
   // Discord ゲート設定
   enableGuildGate: boolean;
   setEnableGuildGate: React.Dispatch<React.SetStateAction<boolean>>;
+
+  // Discord ロール制限設定
+  enableRoleGate: boolean;
+  setEnableRoleGate: React.Dispatch<React.SetStateAction<boolean>>;
 
   // トランジション状態
   isPending: boolean;

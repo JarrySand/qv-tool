@@ -167,6 +167,9 @@ export async function createEvent(
         // Discord ゲート機能用
         discordGuildId: data.discordGuildId ?? null,
         discordGuildName: data.discordGuildName ?? null,
+        // Discord ロール制限機能用
+        discordRequiredRoleId: data.discordRequiredRoleId ?? null,
+        discordRequiredRoleName: data.discordRequiredRoleName ?? null,
       },
       select: {
         id: true,
@@ -540,6 +543,9 @@ export async function createEventWithSubjects(
           // Discord ゲート機能用
           discordGuildId: data.discordGuildId ?? null,
           discordGuildName: data.discordGuildName ?? null,
+          // Discord ロール制限機能用
+          discordRequiredRoleId: data.discordRequiredRoleId ?? null,
+          discordRequiredRoleName: data.discordRequiredRoleName ?? null,
         },
         select: {
           id: true,

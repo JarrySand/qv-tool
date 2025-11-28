@@ -37,8 +37,10 @@ if (process.env.DISCORD_CLIENT_ID && process.env.DISCORD_CLIENT_SECRET) {
       clientSecret: process.env.DISCORD_CLIENT_SECRET,
       authorization: {
         params: {
-          // identify: ユーザー情報, email: メールアドレス, guilds: サーバー一覧（ゲート機能用）
-          scope: "identify email guilds",
+          // identify: ユーザー情報, email: メールアドレス
+          // guilds: サーバー一覧（ゲート機能用）
+          // guilds.members.read: サーバー内のロール情報取得（ロール制限機能用）
+          scope: "identify email guilds guilds.members.read",
         },
       },
     })
