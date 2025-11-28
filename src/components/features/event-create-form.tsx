@@ -83,6 +83,9 @@ export function EventCreateForm() {
           votingModeValue === "discord" && enableGuildGate
             ? discordGuildName || undefined
             : undefined,
+        // ロール制限はこのフォームでは未対応（ウィザードを使用してください）
+        discordRequiredRoleId: undefined,
+        discordRequiredRoleName: undefined,
       });
 
       if (result.success) {
