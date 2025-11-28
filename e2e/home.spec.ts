@@ -72,6 +72,9 @@ test.describe("ホームページ", () => {
       name: /メインコンテンツへスキップ|Skip to main content/i,
     });
 
+    // スキップリンクが存在することを確認
+    await expect(skipLink).toBeAttached();
+
     // キーボードフォーカスでスキップリンクを表示
     await page.keyboard.press("Tab");
 
