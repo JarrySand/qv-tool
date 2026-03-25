@@ -206,7 +206,7 @@
       "step1Title": "投票コストのしくみ",
       "step1Description": "QVでは、同じ選択肢に多く投票するほどコストが急増します。コスト = 票数の二乗です。",
       "step2Title": "クレジットを配分しよう",
-      "step2Description": "あなたには {credits} クレジットが与えられています。複数の選択肢にバランスよく配分するのがコツです。",
+      "step2Description": "あなたには {credits} クレジットが与えられています。自分の好みに応じて分配していきましょう。",
       "step2Example": "例えば 100 クレジットの場合：",
       "step2OptionA": "選択肢A（強く推したい）",
       "step2OptionB": "選択肢B（まあまあ推したい）",

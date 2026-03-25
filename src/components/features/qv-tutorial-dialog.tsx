@@ -142,23 +142,23 @@ export function QvTutorialDialog({
                 <div>
                   <div>{t("step2OptionA")}</div>
                   <div className="text-muted-foreground font-mono text-xs">
-                    3票 → 9 {t("credits")}
+                    6票 → 36 {t("credits")}
                   </div>
                 </div>
                 <div>
                   <div>{t("step2OptionB")}</div>
                   <div className="text-muted-foreground font-mono text-xs">
-                    2票 → 4 {t("credits")}
+                    5票 → 25 {t("credits")}
                   </div>
                 </div>
                 <div>
                   <div>{t("step2OptionC")}</div>
                   <div className="text-muted-foreground font-mono text-xs">
-                    1票 → 1 {t("credits")}
+                    4票 → 16 {t("credits")}
                   </div>
                 </div>
                 <div className="border-t pt-2 font-semibold">
-                  {t("step2Total")}: 14 {t("credits")}
+                  {t("step2Total")}: 77 / 100 {t("credits")}
                 </div>
               </div>
             </div>

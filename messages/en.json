@@ -206,7 +206,7 @@
       "step1Title": "How Voting Cost Works",
       "step1Description": "In QV, the more votes you give to the same option, the more it costs. Cost = votes squared.",
       "step2Title": "Distribute Your Credits",
-      "step2Description": "You have {credits} credits. The key is to distribute them wisely across options.",
+      "step2Description": "You have {credits} credits. Distribute them according to your preferences.",
       "step2Example": "For example, with 100 credits:",
       "step2OptionA": "Option A (strongly support)",
       "step2OptionB": "Option B (moderately support)",
