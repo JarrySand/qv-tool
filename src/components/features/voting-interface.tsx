@@ -19,7 +19,14 @@ import {
 } from "@/lib/utils/qv";
 import { submitVote, type SubmitVoteResult } from "@/lib/actions/vote";
 import { SquareCostVisualizer } from "./square-cost-visualizer";
-import { Loader2, Minus, Plus } from "lucide-react";
+import {
+  ChevronDown,
+  ChevronUp,
+  ExternalLink,
+  Loader2,
+  Minus,
+  Plus,
+} from "lucide-react";
 
 interface Subject {
   id: string;
@@ -68,6 +75,9 @@ export function VotingInterface({
   });
 
   const [error, setError] = useState<string | null>(null);
+  const [expandedDescriptions, setExpandedDescriptions] = useState<
+    Record<string, boolean>
+  >({});
 
   // 投票データの配列形式
   const voteArray = useMemo(
@@ -239,9 +249,52 @@ export function VotingInterface({
                       {subject.title}
                     </h3>
                     {subject.description && (
-                      <p className="text-muted-foreground mt-1 line-clamp-2 text-sm break-all">
-                        {subject.description}
-                      </p>
+                      <>
+                        <p
+                          className={`text-muted-foreground mt-1 text-sm break-all ${
+                            expandedDescriptions[subject.id]
+                              ? "whitespace-pre-wrap"
+                              : "line-clamp-2"
+                          }`}
+                        >
+                          {subject.description}
+                        </p>
+                        {subject.description.length > 80 && (
+                          <button
+                            type="button"
+                            className="text-primary mt-1 flex items-center gap-0.5 text-xs hover:underline"
+                            onClick={() =>
+                              setExpandedDescriptions((prev) => ({
+                                ...prev,
+                                [subject.id]: !prev[subject.id],
+                              }))
+                            }
+                          >
+                            {expandedDescriptions[subject.id] ? (
+                              <>
+                                閉じる
+                                <ChevronUp className="size-3" />
+                              </>
+                            ) : (
+                              <>
+                                もっと見る
+                                <ChevronDown className="size-3" />
+                              </>
+                            )}
+                          </button>
+                        )}
+                      </>
+                    )}
+                    {subject.url && (
+                      <a
+                        href={subject.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-primary mt-1 inline-flex items-center gap-1 text-sm hover:underline"
+                      >
+                        <ExternalLink className="size-3" />
+                        詳細リンク
+                      </a>
                     )}
                   </div>
                 </div>
