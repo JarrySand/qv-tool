@@ -186,7 +186,7 @@ export default async function EventPage({ params, searchParams }: PageProps) {
                 }) => (
                   <div
                     key={subject.id}
-                    className="bg-card hover:bg-accent/5 flex gap-4 rounded-lg border p-4 transition-colors"
+                    className="bg-card hover:bg-accent/5 flex gap-4 overflow-hidden rounded-lg border p-4 transition-colors"
                   >
                     {subject.imageUrl && (
                       <div className="relative shrink-0">
@@ -201,11 +201,11 @@ export default async function EventPage({ params, searchParams }: PageProps) {
                       </div>
                     )}
                     <div className="min-w-0 flex-1 overflow-hidden">
-                      <h3 className="font-semibold break-words">
+                      <h3 className="font-semibold break-all">
                         {subject.title}
                       </h3>
                       {subject.description && (
-                        <p className="text-muted-foreground mt-1 line-clamp-2 text-sm break-words">
+                        <p className="text-muted-foreground mt-1 line-clamp-2 text-sm break-all">
                           {subject.description}
                         </p>
                       )}
