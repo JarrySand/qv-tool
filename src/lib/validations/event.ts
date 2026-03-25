@@ -64,6 +64,12 @@ export const createEventSchema = z.object({
     .max(100, "ロール名は100文字以内で入力してください")
     .optional()
     .transform((val) => (val === "" ? undefined : val)),
+  // 投票終了時メッセージ（URLを含むカスタムメッセージ）
+  endMessage: z
+    .string()
+    .max(1000, "投票終了メッセージは1000文字以内で入力してください")
+    .optional()
+    .transform((val) => (val === "" ? undefined : val)),
 });
 
 // イベント更新スキーマ（投票開始後は一部フィールドが変更不可）
@@ -79,6 +85,11 @@ export const updateEventSchema = z.object({
     .optional(),
   startDate: z.coerce.date().optional(),
   endDate: z.coerce.date().optional(),
+  endMessage: z
+    .string()
+    .max(1000, "投票終了メッセージは1000文字以内で入力してください")
+    .optional()
+    .transform((val) => (val === "" ? undefined : val)),
 });
 
 export type CreateEventInput = z.infer<typeof createEventSchema>;

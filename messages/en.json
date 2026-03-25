@@ -108,6 +108,9 @@
         "roleNamePlaceholder": "e.g., Premium Members",
         "roleNameHint": "This name will be shown in error messages (optional)"
       },
+      "endMessageLabel": "Voting End Message",
+      "endMessagePlaceholder": "e.g., Thank you for voting! Check the results here: https://...",
+      "endMessageHint": "This message will be displayed after voting ends. URLs will be shown as clickable links.",
       "submitButton": "Create Event",
       "creating": "Creating...",
       "wizard": {
@@ -192,6 +195,28 @@
       "message": "Thank you for voting.",
       "viewResults": "View Results",
       "changeVote": "Change Vote"
+    },
+    "tutorial": {
+      "askTitle": "Is this your first time with QV?",
+      "askDescription": "We'll briefly explain how Quadratic Voting works.",
+      "yes": "Yes, show me",
+      "no": "No, start voting",
+      "credit": "credit",
+      "credits": "credits",
+      "step1Title": "How Voting Cost Works",
+      "step1Description": "In QV, the more votes you give to the same option, the more it costs. Cost = votes squared.",
+      "step2Title": "Distribute Your Credits",
+      "step2Description": "You have {credits} credits. The key is to distribute them wisely across options.",
+      "step2Example": "For example, with 100 credits:",
+      "step2OptionA": "Option A (strongly support)",
+      "step2OptionB": "Option B (moderately support)",
+      "step2OptionC": "Option C (slightly support)",
+      "step2Total": "Total",
+      "step3Title": "How to Vote",
+      "step3Tip1": "Distribute your votes based on how important each option is to you",
+      "step3Tip2": "Your remaining credits are always shown at the top",
+      "step3Tip3": "You can change your vote anytime during the voting period",
+      "startVoting": "Start Voting"
     },
     "errors": {
       "notActive": "This event is not currently in the voting period",

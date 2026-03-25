@@ -78,6 +78,7 @@ export function EventWizardProvider({ children }: EventWizardProviderProps) {
     discordGuildName: "",
     discordRequiredRoleId: "",
     discordRequiredRoleName: "",
+    endMessage: "",
   });
 
   // 投票候補
@@ -183,6 +184,7 @@ export function EventWizardProvider({ children }: EventWizardProviderProps) {
           formData.votingMode === "discord" && enableGuildGate && enableRoleGate
             ? formData.discordRequiredRoleName || undefined
             : undefined,
+        endMessage: formData.endMessage || undefined,
         subjects,
       });
 

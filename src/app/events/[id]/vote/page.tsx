@@ -2,11 +2,13 @@ import { notFound, redirect } from "next/navigation";
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 import { prisma } from "@/lib/db";
+import { LinkifyText } from "@/components/ui/linkify-text";
 import { VotingInterface } from "@/components/features/voting-interface";
 import { getExistingVote } from "@/lib/actions/vote";
 import { authenticateVoter } from "@/lib/auth/voting-auth";
 import { Button } from "@/components/ui/button";
 import { SignOutButton } from "@/components/features/sign-out-button";
+import { QvTutorialDialog } from "@/components/features/qv-tutorial-dialog";
 
 interface PageProps {
   params: Promise<{ id: string }>;
@@ -66,6 +68,13 @@ export default async function VotePage({ params, searchParams }: PageProps) {
           <p className="text-muted-foreground mb-6">
             {event.endDate.toLocaleDateString()}
           </p>
+          {event.endMessage && (
+            <div className="mb-6 rounded-lg border border-blue-200 bg-blue-50/50 p-4 text-left dark:border-blue-800 dark:bg-blue-950/30">
+              <p className="whitespace-pre-wrap">
+                <LinkifyText text={event.endMessage} />
+              </p>
+            </div>
+          )}
           <div className="flex flex-col justify-center gap-4 sm:flex-row">
             <Button asChild variant="outline">
               <Link href={`/events/${event.slug ?? event.id}`}>
@@ -218,6 +227,11 @@ export default async function VotePage({ params, searchParams }: PageProps) {
             </p>
           )}
         </div>
+
+        {/* チュートリアル（初回訪問 & 新規投票時のみ） */}
+        {!existingVote && (
+          <QvTutorialDialog totalCredits={event.creditsPerVoter} />
+        )}
 
         {/* 投票インターフェース */}
         <VotingInterface

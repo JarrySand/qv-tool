@@ -50,6 +50,7 @@ type EventData = {
   slug: string | null;
   title: string;
   description: string | null;
+  endMessage: string | null;
   adminToken: string;
   startDate: Date;
   endDate: Date;

@@ -12,6 +12,7 @@ type EventData = {
   id: string;
   title: string;
   description: string | null;
+  endMessage: string | null;
   startDate: Date;
   endDate: Date;
   hasVotes: boolean;
@@ -48,6 +49,7 @@ export function EventEditDialog({
     const input = {
       title: formData.get("title") as string,
       description: (formData.get("description") as string) || undefined,
+      endMessage: (formData.get("endMessage") as string) || undefined,
       ...(!event.hasVotes && {
         startDate: new Date(formData.get("startDate") as string),
         endDate: new Date(formData.get("endDate") as string),
@@ -60,6 +62,7 @@ export function EventEditDialog({
         onUpdate({
           title: input.title,
           description: input.description ?? null,
+          endMessage: input.endMessage ?? null,
           ...(input.startDate && { startDate: input.startDate }),
           ...(input.endDate && { endDate: input.endDate }),
         });
@@ -127,6 +130,24 @@ export function EventEditDialog({
               maxLength={2000}
               rows={4}
             />
+          </div>
+
+          {/* 投票終了時メッセージ */}
+          <div className="space-y-2">
+            <Label htmlFor="edit-endMessage">
+              投票終了時メッセージ（任意）
+            </Label>
+            <Textarea
+              id="edit-endMessage"
+              name="endMessage"
+              defaultValue={event.endMessage ?? ""}
+              maxLength={1000}
+              rows={3}
+              placeholder="投票終了後に表示するメッセージ（URLも入力可能）"
+            />
+            <p className="text-muted-foreground text-xs">
+              URLを含めるとクリック可能なリンクとして表示されます
+            </p>
           </div>
 
           {/* 期間（投票開始後は編集不可） */}

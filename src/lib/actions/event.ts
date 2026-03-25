@@ -170,6 +170,8 @@ export async function createEvent(
         // Discord ロール制限機能用
         discordRequiredRoleId: data.discordRequiredRoleId ?? null,
         discordRequiredRoleName: data.discordRequiredRoleName ?? null,
+        // 投票終了時メッセージ
+        endMessage: data.endMessage ?? null,
       },
       select: {
         id: true,
@@ -327,6 +329,9 @@ export async function updateEvent(
         ...(data.title && { title: data.title }),
         ...(data.description !== undefined && {
           description: data.description,
+        }),
+        ...(data.endMessage !== undefined && {
+          endMessage: data.endMessage || null,
         }),
         ...(data.startDate && { startDate: data.startDate }),
         ...(data.endDate && { endDate: data.endDate }),
@@ -546,6 +551,8 @@ export async function createEventWithSubjects(
           // Discord ロール制限機能用
           discordRequiredRoleId: data.discordRequiredRoleId ?? null,
           discordRequiredRoleName: data.discordRequiredRoleName ?? null,
+          // 投票終了時メッセージ
+          endMessage: data.endMessage ?? null,
         },
         select: {
           id: true,

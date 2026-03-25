@@ -149,6 +149,22 @@ export function Step1BasicInfo() {
         <p className="text-muted-foreground text-xs">{t("creditsHint")}</p>
       </div>
 
+      {/* 投票終了時メッセージ */}
+      <div className="space-y-2">
+        <Label htmlFor="endMessage">
+          {t("endMessageLabel")}（{tCommon("optional")}）
+        </Label>
+        <Textarea
+          id="endMessage"
+          value={formData.endMessage}
+          onChange={(e) => updateFormData("endMessage", e.target.value)}
+          placeholder={t("endMessagePlaceholder")}
+          maxLength={1000}
+          rows={3}
+        />
+        <p className="text-muted-foreground text-xs">{t("endMessageHint")}</p>
+      </div>
+
       {/* 認証方式 */}
       <div className="space-y-2">
         <Label htmlFor="votingMode">

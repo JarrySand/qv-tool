@@ -108,6 +108,9 @@
         "roleNamePlaceholder": "例: Premium Members",
         "roleNameHint": "エラー画面で表示されるロール名です（空欄可）"
       },
+      "endMessageLabel": "投票終了時メッセージ",
+      "endMessagePlaceholder": "例: 投票ありがとうございました！結果はこちらから確認できます: https://...",
+      "endMessageHint": "投票終了後に表示されるメッセージです。URLを含めるとクリック可能なリンクとして表示されます。",
       "submitButton": "イベントを作成",
       "creating": "作成中...",
       "wizard": {
@@ -192,6 +195,28 @@
       "message": "ご投票ありがとうございました。",
       "viewResults": "結果を見る",
       "changeVote": "投票を変更する"
+    },
+    "tutorial": {
+      "askTitle": "QV投票は初めてですか？",
+      "askDescription": "Quadratic Voting（二次投票）の仕組みを簡単にご説明します。",
+      "yes": "はい、説明を見る",
+      "no": "いいえ、すぐ投票する",
+      "credit": "クレジット",
+      "credits": "クレジット",
+      "step1Title": "投票コストのしくみ",
+      "step1Description": "QVでは、同じ選択肢に多く投票するほどコストが急増します。コスト = 票数の二乗です。",
+      "step2Title": "クレジットを配分しよう",
+      "step2Description": "あなたには {credits} クレジットが与えられています。複数の選択肢にバランスよく配分するのがコツです。",
+      "step2Example": "例えば 100 クレジットの場合：",
+      "step2OptionA": "選択肢A（強く推したい）",
+      "step2OptionB": "選択肢B（まあまあ推したい）",
+      "step2OptionC": "選択肢C（少し推したい）",
+      "step2Total": "合計",
+      "step3Title": "投票の進め方",
+      "step3Tip1": "重要度に応じて票を振り分けてみましょう",
+      "step3Tip2": "残りクレジットは上部に常に表示されます",
+      "step3Tip3": "投票後も期間内であれば何度でも変更できます",
+      "startVoting": "投票を始める"
     },
     "errors": {
       "notActive": "このイベントは現在投票期間外です",

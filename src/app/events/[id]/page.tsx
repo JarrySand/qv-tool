@@ -4,6 +4,7 @@ import Image from "next/image";
 import { getTranslations } from "next-intl/server";
 import { prisma } from "@/lib/db";
 import { auth } from "@/auth";
+import { LinkifyText } from "@/components/ui/linkify-text";
 import {
   Card,
   CardContent,
@@ -165,7 +166,7 @@ export default async function EventPage({ params, searchParams }: PageProps) {
         </Card>
 
         {/* 投票対象一覧 */}
-        <Card className="mb-8">
+        <Card className="mb-8 overflow-hidden">
           <CardHeader>
             <CardTitle className="text-lg">
               {t("event.info.subjects")}
@@ -226,6 +227,17 @@ export default async function EventPage({ params, searchParams }: PageProps) {
             </div>
           </CardContent>
         </Card>
+
+        {/* 投票終了時カスタムメッセージ */}
+        {status === "ended" && event.endMessage && (
+          <Card className="mb-8 border-blue-200 bg-blue-50/50 dark:border-blue-800 dark:bg-blue-950/30">
+            <CardContent className="py-4">
+              <p className="whitespace-pre-wrap">
+                <LinkifyText text={event.endMessage} />
+              </p>
+            </CardContent>
+          </Card>
+        )}
 
         {/* アクションボタン */}
         <div className="flex flex-col justify-center gap-4 sm:flex-row">

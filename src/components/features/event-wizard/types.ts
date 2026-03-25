@@ -37,6 +37,8 @@ export interface EventFormData {
   discordRequiredRoleId: string;
   /** Discord 必須ロール名（表示用） */
   discordRequiredRoleName: string;
+  /** 投票終了時メッセージ（URLを含むカスタムメッセージ） */
+  endMessage: string;
 }
 
 /**

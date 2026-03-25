@@ -92,6 +92,9 @@ model Event {
   discordRequiredRoleId   String?  // 必須ロールのID（18桁の数値文字列）
   discordRequiredRoleName String?  // ロール名（表示用、オプション）
 
+  // 投票終了時メッセージ（カスタマイズ可能、URLも含められる）
+  endMessage String? @db.Text
+
   // リレーション
   subjects     Subject[]
   votes        Vote[]

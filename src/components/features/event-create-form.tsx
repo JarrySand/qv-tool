@@ -86,6 +86,7 @@ export function EventCreateForm() {
         // ロール制限はこのフォームでは未対応（ウィザードを使用してください）
         discordRequiredRoleId: undefined,
         discordRequiredRoleName: undefined,
+        endMessage: undefined,
       });
 
       if (result.success) {
