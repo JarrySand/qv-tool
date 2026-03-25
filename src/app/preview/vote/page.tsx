@@ -151,10 +151,13 @@ export default function VotePreviewPage() {
             </p>
 
             <div className="flex flex-col gap-3">
-              <Button onClick={() => setSubmittedVotes(null)}>
-                投票画面に戻る
+              <Button asChild>
+                <Link href="/preview/result">結果を見る</Link>
               </Button>
-              <Button asChild variant="outline">
+              <Button onClick={() => setSubmittedVotes(null)} variant="outline">
+                投票を変更する
+              </Button>
+              <Button asChild variant="ghost">
                 <Link href="/preview">プレビュー一覧に戻る</Link>
               </Button>
             </div>

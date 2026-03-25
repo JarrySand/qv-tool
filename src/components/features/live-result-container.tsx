@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import { useTranslations } from "next-intl";
 import { getEventResults, type EventResultData } from "@/lib/actions/result";
 import { ResultsChart } from "./results-chart";
@@ -32,8 +32,16 @@ export function LiveResultContainer({
   const t = useTranslations("results");
   const tCommon = useTranslations("common");
   const [data, setData] = useState(initialData);
-  const [lastUpdated, setLastUpdated] = useState(new Date());
+  const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const mounted = useRef(false);
+
+  useEffect(() => {
+    if (!mounted.current) {
+      mounted.current = true;
+      setLastUpdated(new Date());
+    }
+  }, []);
 
   const refreshData = useCallback(async () => {
     setIsRefreshing(true);
@@ -78,9 +86,11 @@ export function LiveResultContainer({
               {t("liveUpdating")}
             </span>
           )}
-          <span className="hidden sm:inline">
-            {lastUpdated.toLocaleTimeString()}
-          </span>
+          {lastUpdated && (
+            <span className="hidden sm:inline">
+              {lastUpdated.toLocaleTimeString()}
+            </span>
+          )}
         </div>
         <Button
           variant="ghost"
