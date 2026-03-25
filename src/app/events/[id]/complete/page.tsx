@@ -10,6 +10,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { LinkifyText } from "@/components/ui/linkify-text";
 
 interface PageProps {
   params: Promise<{ id: string }>;
@@ -33,6 +34,7 @@ export default async function CompletePage({
       id: true,
       slug: true,
       title: true,
+      endMessage: true,
     },
   });
 
@@ -67,6 +69,11 @@ export default async function CompletePage({
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
+          {event.endMessage && (
+            <div className="bg-muted text-muted-foreground rounded-lg p-4 text-left text-sm whitespace-pre-wrap">
+              <LinkifyText text={event.endMessage} />
+            </div>
+          )}
           <div className="flex flex-col gap-3">
             <Button asChild>
               <Link href={`/events/${eventUrl}/result`}>

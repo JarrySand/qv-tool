@@ -36,6 +36,10 @@ interface VotingInterfaceProps {
   token?: string;
   existingVotes?: { subjectId: string; amount: number }[];
   voteId?: string;
+  onSubmit?: (
+    details: { subjectId: string; amount: number }[]
+  ) => Promise<SubmitVoteResult>;
+  onSuccess?: () => void;
 }
 
 export function VotingInterface({
@@ -45,6 +49,8 @@ export function VotingInterface({
   token,
   existingVotes,
   voteId,
+  onSubmit,
+  onSuccess,
 }: VotingInterfaceProps) {
   const t = useTranslations("vote");
   const tCommon = useTranslations("common");
@@ -116,15 +122,21 @@ export function VotingInterface({
         return;
       }
 
-      const result: SubmitVoteResult = await submitVote({
-        eventId,
-        details,
-        token,
-        existingVoteId: voteId,
-      });
+      const result: SubmitVoteResult = onSubmit
+        ? await onSubmit(details)
+        : await submitVote({
+            eventId,
+            details,
+            token,
+            existingVoteId: voteId,
+          });
 
       if (result.success) {
-        router.push(`/events/${eventId}/complete`);
+        if (onSuccess) {
+          onSuccess();
+        } else {
+          router.push(`/events/${eventId}/complete`);
+        }
       } else {
         setError(result.error);
       }
@@ -223,9 +235,11 @@ export function VotingInterface({
 
                   {/* コンテンツ */}
                   <div className="min-w-0 flex-1">
-                    <h3 className="text-lg font-semibold">{subject.title}</h3>
+                    <h3 className="text-lg font-semibold break-all">
+                      {subject.title}
+                    </h3>
                     {subject.description && (
-                      <p className="text-muted-foreground mt-1 line-clamp-2 text-sm">
+                      <p className="text-muted-foreground mt-1 line-clamp-2 text-sm break-all">
                         {subject.description}
                       </p>
                     )}
