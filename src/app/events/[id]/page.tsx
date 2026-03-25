@@ -200,10 +200,12 @@ export default async function EventPage({ params, searchParams }: PageProps) {
                         />
                       </div>
                     )}
-                    <div className="min-w-0 flex-1">
-                      <h3 className="font-semibold">{subject.title}</h3>
+                    <div className="min-w-0 flex-1 overflow-hidden">
+                      <h3 className="font-semibold break-words">
+                        {subject.title}
+                      </h3>
                       {subject.description && (
-                        <p className="text-muted-foreground mt-1 line-clamp-2 text-sm">
+                        <p className="text-muted-foreground mt-1 line-clamp-2 text-sm break-words">
                           {subject.description}
                         </p>
                       )}
@@ -214,7 +216,7 @@ export default async function EventPage({ params, searchParams }: PageProps) {
                           rel="noopener noreferrer"
                           className="text-primary mt-1 inline-block text-sm hover:underline"
                         >
-                          {t("common.next")} →
+                          詳細URL →
                         </a>
                       )}
                     </div>
