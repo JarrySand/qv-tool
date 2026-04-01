@@ -40,10 +40,10 @@ export function VotingComparisonChart({
   return (
     <Card className="overflow-hidden">
       <CardHeader className="bg-muted/30">
-        <CardTitle className="flex items-center gap-2 text-lg">
+        <CardTitle className="flex items-center gap-2 text-base sm:text-lg">
           📊 もし一人一票だったら？
         </CardTitle>
-        <p className="text-muted-foreground text-sm">
+        <p className="text-muted-foreground text-xs sm:text-sm">
           一人一票では「1位」しか投票できませんが、二次投票では2位以下の選好も反映されます
         </p>
       </CardHeader>
@@ -52,25 +52,28 @@ export function VotingComparisonChart({
         <div className="grid gap-4 sm:gap-6 md:grid-cols-2">
           {/* 一人一票 */}
           <div>
-            <div className="mb-4 flex items-center justify-between">
-              <h3 className="text-muted-foreground font-semibold">
+            <div className="mb-3 flex items-center justify-between sm:mb-4">
+              <h3 className="text-muted-foreground text-sm font-semibold sm:text-base">
                 一人一票の場合
               </h3>
-              <span className="text-muted-foreground text-sm">
+              <span className="text-muted-foreground text-xs sm:text-sm">
                 総票数: {totalParticipants}
               </span>
             </div>
             <div className="space-y-3">
               {singleVoteResults.map((result, index) => (
                 <div key={result.subjectId}>
-                  <div className="mb-1 flex items-center justify-between text-sm">
+                  <div className="mb-1 flex items-center justify-between gap-2 text-sm">
                     <span
-                      className={cn("truncate", index === 0 && "font-semibold")}
+                      className={cn(
+                        "min-w-0 truncate",
+                        index === 0 && "font-semibold"
+                      )}
                     >
                       {index === 0 && "👑 "}
                       {result.subjectTitle}
                     </span>
-                    <span className="ml-2 shrink-0 font-medium">
+                    <span className="shrink-0 font-medium">
                       {result.votes}票
                     </span>
                   </div>
@@ -89,23 +92,28 @@ export function VotingComparisonChart({
 
           {/* 二次投票（QV） */}
           <div>
-            <div className="mb-4 flex items-center justify-between">
-              <h3 className="text-secondary font-semibold">二次投票の結果</h3>
-              <span className="text-muted-foreground text-sm">
+            <div className="mb-3 flex items-center justify-between sm:mb-4">
+              <h3 className="text-secondary text-sm font-semibold sm:text-base">
+                二次投票の結果
+              </h3>
+              <span className="text-muted-foreground text-xs sm:text-sm">
                 総票数: {totalQvVotes}
               </span>
             </div>
             <div className="space-y-3">
               {sortedQvResults.map((result, index) => (
                 <div key={result.id}>
-                  <div className="mb-1 flex items-center justify-between text-sm">
+                  <div className="mb-1 flex items-center justify-between gap-2 text-sm">
                     <span
-                      className={cn("truncate", index === 0 && "font-semibold")}
+                      className={cn(
+                        "min-w-0 truncate",
+                        index === 0 && "font-semibold"
+                      )}
                     >
                       {index === 0 && "👑 "}
                       {result.title}
                     </span>
-                    <span className="ml-2 shrink-0 font-medium">
+                    <span className="shrink-0 font-medium">
                       {result.totalVotes}票
                     </span>
                   </div>
