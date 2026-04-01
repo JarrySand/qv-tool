@@ -51,7 +51,7 @@ export function VotingComparisonChart({
         {/* 比較チャート */}
         <div className="grid gap-4 sm:gap-6 md:grid-cols-2">
           {/* 一人一票 */}
-          <div>
+          <div className="min-w-0">
             <div className="mb-3 flex items-center justify-between sm:mb-4">
               <h3 className="text-muted-foreground text-sm font-semibold sm:text-base">
                 一人一票の場合
@@ -91,7 +91,7 @@ export function VotingComparisonChart({
           </div>
 
           {/* 二次投票（QV） */}
-          <div>
+          <div className="min-w-0">
             <div className="mb-3 flex items-center justify-between sm:mb-4">
               <h3 className="text-secondary text-sm font-semibold sm:text-base">
                 二次投票の結果
