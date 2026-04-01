@@ -72,7 +72,7 @@ export function VoteDistributionChart({
     <div className="space-y-4">
       {/* タブ切り替え */}
       <div
-        className="flex flex-wrap gap-2"
+        className="flex gap-2 overflow-x-auto pb-2"
         role="tablist"
         aria-label="投票対象の選択"
       >
@@ -86,9 +86,11 @@ export function VoteDistributionChart({
             aria-selected={selectedIndex === index}
             aria-controls={`distribution-panel-${index}`}
           >
-            {dist.subjectTitle.length > 12
-              ? dist.subjectTitle.slice(0, 12) + "..."
-              : dist.subjectTitle}
+            <span className="whitespace-nowrap">
+              {dist.subjectTitle.length > 8
+                ? dist.subjectTitle.slice(0, 8) + "…"
+                : dist.subjectTitle}
+            </span>
           </Button>
         ))}
       </div>
@@ -98,7 +100,7 @@ export function VoteDistributionChart({
         id={`distribution-panel-${selectedIndex}`}
         role="tabpanel"
         aria-label={`「${selectedDistribution.subjectTitle}」への投票分布グラフ: ${distributionSummary || "データなし"}`}
-        className="h-64"
+        className="h-48 sm:h-64"
       >
         {/* スクリーンリーダー用の詳細データ */}
         <div className="sr-only">
@@ -114,7 +116,7 @@ export function VoteDistributionChart({
         <ResponsiveContainer width="100%" height="100%">
           <BarChart
             data={chartData}
-            margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+            margin={{ top: 10, right: 16, left: 0, bottom: 5 }}
             aria-hidden="true"
           >
             <CartesianGrid strokeDasharray="3 3" vertical={false} />

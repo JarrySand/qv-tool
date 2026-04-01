@@ -29,7 +29,7 @@ export function StatisticsCard({
       : 0;
 
   return (
-    <div className="mb-8 grid grid-cols-2 gap-4 md:grid-cols-4">
+    <div className="mb-4 grid grid-cols-2 gap-2 sm:mb-8 sm:gap-4 md:grid-cols-4">
       {/* 総参加者数 */}
       <Card>
         <CardHeader className="pb-2">
@@ -38,7 +38,7 @@ export function StatisticsCard({
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="text-3xl font-bold">
+          <div className="text-2xl font-bold sm:text-3xl">
             {statistics.totalParticipants}
           </div>
         </CardContent>
@@ -52,7 +52,7 @@ export function StatisticsCard({
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="text-3xl font-bold">
+          <div className="text-2xl font-bold sm:text-3xl">
             {statistics.totalCreditsUsed.toLocaleString()}
           </div>
           <p className="text-muted-foreground mt-1 text-xs">
@@ -70,7 +70,7 @@ export function StatisticsCard({
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="text-3xl font-bold">
+          <div className="text-2xl font-bold sm:text-3xl">
             {statistics.averageCreditsUsed.toFixed(1)}
           </div>
           <p className="text-muted-foreground mt-1 text-xs">
@@ -89,7 +89,7 @@ export function StatisticsCard({
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="text-3xl font-bold">
+          <div className="text-2xl font-bold sm:text-3xl">
             {votingMode === "individual"
               ? statistics.participationRate.toFixed(1)
               : utilizationRate.toFixed(1)}

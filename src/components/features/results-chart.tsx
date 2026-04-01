@@ -41,9 +41,7 @@ export function ResultsChart({ results }: ResultsChartProps) {
   // グラフ用データの整形
   const chartData = results.map((result, index) => ({
     name:
-      result.title.length > 15
-        ? result.title.slice(0, 15) + "..."
-        : result.title,
+      result.title.length > 8 ? result.title.slice(0, 8) + "…" : result.title,
     fullName: result.title,
     votes: result.totalVotes,
     cost: result.totalCost,
@@ -65,7 +63,7 @@ export function ResultsChart({ results }: ResultsChartProps) {
 
   return (
     <div
-      className="h-80"
+      className="h-64 sm:h-80"
       role="img"
       aria-label={`投票結果グラフ: ${chartSummary}`}
     >
@@ -84,7 +82,7 @@ export function ResultsChart({ results }: ResultsChartProps) {
         <BarChart
           data={chartData}
           layout="vertical"
-          margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+          margin={{ top: 10, right: 16, left: 0, bottom: 5 }}
           aria-hidden="true"
         >
           <CartesianGrid
@@ -96,8 +94,8 @@ export function ResultsChart({ results }: ResultsChartProps) {
           <YAxis
             type="category"
             dataKey="name"
-            width={120}
-            tick={{ fontSize: 12 }}
+            width={80}
+            tick={{ fontSize: 11 }}
           />
           <Tooltip
             content={({ active, payload }) => {

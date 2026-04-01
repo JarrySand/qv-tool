@@ -49,7 +49,7 @@ export function VotingComparisonChart({
       </CardHeader>
       <CardContent className="pt-6">
         {/* 比較チャート */}
-        <div className="grid gap-6 md:grid-cols-2">
+        <div className="grid gap-4 sm:gap-6 md:grid-cols-2">
           {/* 一人一票 */}
           <div>
             <div className="mb-4 flex items-center justify-between">
@@ -125,18 +125,18 @@ export function VotingComparisonChart({
 
         {/* 埋もれた選好 */}
         {totalHiddenVotes > 0 && (
-          <div className="from-secondary/10 to-accent/10 mt-6 rounded-xl bg-gradient-to-r p-4">
-            <div className="flex items-center justify-between">
+          <div className="from-secondary/10 to-accent/10 mt-4 rounded-xl bg-gradient-to-r p-3 sm:mt-6 sm:p-4">
+            <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
               <div>
-                <p className="text-muted-foreground text-sm">
+                <p className="text-muted-foreground text-xs sm:text-sm">
                   一人一票では埋もれていた選好
                 </p>
-                <p className="text-secondary text-2xl font-black">
+                <p className="text-secondary text-xl font-black sm:text-2xl">
                   {totalHiddenVotes}票 / {totalQvVotes}票
                 </p>
               </div>
-              <div className="text-right">
-                <p className="text-muted-foreground text-sm">
+              <div className="sm:text-right">
+                <p className="text-muted-foreground text-xs sm:text-sm">
                   埋もれていた割合
                 </p>
                 <p className="text-secondary text-lg font-bold">
@@ -170,21 +170,23 @@ export function VotingComparisonChart({
                 return (
                   <div
                     key={subject.subjectId}
-                    className="bg-muted/50 flex items-center justify-between rounded-lg px-3 py-2 text-sm"
+                    className="bg-muted/50 rounded-lg px-3 py-2 text-sm"
                   >
-                    <span className="truncate">{subject.subjectTitle}</span>
-                    <span className="ml-2 shrink-0">
+                    <div className="mb-1 truncate font-medium">
+                      {subject.subjectTitle}
+                    </div>
+                    <div className="flex flex-wrap items-center gap-x-1 text-xs sm:text-sm">
                       <span className="text-muted-foreground">
                         1位: {singleResult?.votes ?? 0}票
                       </span>
-                      <span className="text-muted-foreground mx-1">+</span>
+                      <span className="text-muted-foreground">+</span>
                       <span className="text-secondary font-semibold">
                         2位以下: {subject.votes}票
                       </span>
-                      <span className="text-muted-foreground ml-1 text-xs">
+                      <span className="text-muted-foreground">
                         = {qvResult?.totalVotes ?? 0}票
                       </span>
-                    </span>
+                    </div>
                   </div>
                 );
               })}

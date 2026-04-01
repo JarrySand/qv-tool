@@ -59,9 +59,9 @@ export default async function ResultPage({ params, searchParams }: PageProps) {
       id="main-content"
       className="from-background to-muted/30 min-h-screen bg-gradient-to-b"
     >
-      <div className="container mx-auto max-w-6xl px-4 py-8">
+      <div className="container mx-auto max-w-6xl px-3 py-4 sm:px-4 sm:py-8">
         {/* ヘッダー */}
-        <div className="mb-8">
+        <div className="mb-6 sm:mb-8">
           <div className="mb-4 flex items-center gap-3">
             <span
               className={`inline-flex items-center rounded-full px-3 py-1 text-sm font-medium ${statusClasses[status]}`}

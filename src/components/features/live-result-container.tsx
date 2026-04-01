@@ -73,7 +73,7 @@ export function LiveResultContainer({
   const maxVotes = Math.max(...results.map((r) => r.totalVotes), 0);
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-4 sm:space-y-8">
       {/* 更新情報バー */}
       <div className="bg-muted/50 flex items-center justify-between rounded-lg p-3">
         <div className="text-muted-foreground flex items-center gap-2 text-sm">
