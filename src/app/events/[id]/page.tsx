@@ -246,7 +246,7 @@ export default async function EventPage({ params, searchParams }: PageProps) {
             {status === "active" && event.votingMode !== "individual" && (
               <Button asChild variant="outline">
                 <Link
-                  href={`/auth/signin?callbackUrl=${encodeURIComponent(`/events/${event.slug ?? event.id}`)}`}
+                  href={`/auth/signin?callbackUrl=${encodeURIComponent(`/events/${event.slug ?? event.id}`)}&provider=${event.votingMode}`}
                 >
                   {t("auth.signIn")}
                 </Link>
