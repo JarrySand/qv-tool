@@ -96,9 +96,10 @@ model Event {
   endMessage String? @db.Text
 
   // リレーション
-  subjects     Subject[]
-  votes        Vote[]
-  accessTokens AccessToken[] // 個別投票用のトークン管理
+  subjects        Subject[]
+  votes           Vote[]
+  accessTokens    AccessToken[] // 個別投票用のトークン管理
+  surveyResponses SurveyResponse[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -161,7 +162,8 @@ model Vote {
   accessToken AccessToken? @relation(fields: [accessTokenId], references: [id])
   event       Event        @relation(fields: [eventId], references: [id], onDelete: Cascade)
 
-  details VoteDetail[]
+  details        VoteDetail[]
+  surveyResponse SurveyResponse?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt // 再投票可能な場合
@@ -187,4 +189,36 @@ model VoteDetail {
   @@unique([voteId, subjectId])
   @@index([voteId])
   @@index([subjectId])
+}
+
+// ========================================
+// 投票後アンケート回答
+// ========================================
+
+model SurveyResponse {
+  id      String @id @default(cuid())
+  eventId String
+  voteId  String? @unique // 投票と1:1で紐づけ（任意）
+
+  // Q1: 困った点（複数選択、カンマ区切りで保存）
+  q1Difficulties String? // "login,credit_allocation,ui,confirm_method,none,other"
+
+  // Q1 その他（自由記述）
+  q1Other String? @db.Text
+
+  // Q2: クレジット配分の満足度（1-5）
+  q2CreditSatisfaction Int?
+
+  // Q3: QV vs 一人一票の比較（1-5）
+  q3QvPreference Int?
+
+  // Q4: 改善点（自由記述）
+  q4Feedback String? @db.Text
+
+  event Event @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  vote  Vote?  @relation(fields: [voteId], references: [id], onDelete: SetNull)
+
+  createdAt DateTime @default(now())
+
+  @@index([eventId])
 }

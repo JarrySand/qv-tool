@@ -145,7 +145,10 @@ export function VotingInterface({
         if (onSuccess) {
           onSuccess();
         } else {
-          router.push(`/events/${eventId}/complete`);
+          const params = new URLSearchParams();
+          if (token) params.set("token", token);
+          params.set("voteId", result.voteId);
+          router.push(`/events/${eventId}/complete?${params.toString()}`);
         }
       } else {
         setError(result.error);

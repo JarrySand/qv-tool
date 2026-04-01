@@ -36,6 +36,18 @@ export default async function EventAdminPage({
         select: { id: true, token: true, isUsed: true, createdAt: true },
         orderBy: { createdAt: "desc" },
       },
+      surveyResponses: {
+        select: {
+          id: true,
+          q1Difficulties: true,
+          q1Other: true,
+          q2CreditSatisfaction: true,
+          q3QvPreference: true,
+          q4Feedback: true,
+          createdAt: true,
+        },
+        orderBy: { createdAt: "desc" },
+      },
     },
   });
 

@@ -218,6 +218,36 @@
       "step3Tip3": "You can change your vote anytime during the voting period",
       "startVoting": "Start Voting"
     },
+    "survey": {
+      "title": "Voting Experience Survey",
+      "description": "Help us improve this tool (optional)",
+      "q1Label": "Q1. Did you have any difficulties with the voting tool? (select all that apply)",
+      "q1Options": {
+        "login": "Login / Account creation",
+        "credit_allocation": "Credit allocation",
+        "ui": "Screen readability",
+        "confirm_method": "How to confirm your vote",
+        "none": "No issues",
+        "other": "Other"
+      },
+      "q1OtherPlaceholder": "Please tell us more...",
+      "q2Label": "Q2. Were you able to reflect your preferences through credit allocation?",
+      "q3Label": "Q3. Compared to one-person-one-vote, did you feel QV better expressed your intentions?",
+      "scaleLabels": {
+        "1": "Strongly disagree",
+        "2": "Disagree",
+        "3": "Neutral",
+        "4": "Agree",
+        "5": "Strongly agree"
+      },
+      "q4Label": "Q4. Any suggestions for improving the voting tool or experience?",
+      "q4Placeholder": "Share your thoughts...",
+      "submit": "Submit Survey",
+      "submitting": "Submitting...",
+      "submitted": "Thank you for your feedback!",
+      "skip": "Skip",
+      "error": "Failed to submit. Please try again."
+    },
     "errors": {
       "notActive": "This event is not currently in the voting period",
       "noCredits": "Insufficient credits",

@@ -11,10 +11,11 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { LinkifyText } from "@/components/ui/linkify-text";
+import { PostVoteSurvey } from "@/components/features/post-vote-survey";
 
 interface PageProps {
   params: Promise<{ id: string }>;
-  searchParams: Promise<{ token?: string }>;
+  searchParams: Promise<{ token?: string; voteId?: string }>;
 }
 
 export default async function CompletePage({
@@ -22,7 +23,7 @@ export default async function CompletePage({
   searchParams,
 }: PageProps) {
   const { id } = await params;
-  const { token } = await searchParams;
+  const { token, voteId } = await searchParams;
   const t = await getTranslations();
 
   // イベント情報を取得
@@ -74,6 +75,8 @@ export default async function CompletePage({
               <LinkifyText text={event.endMessage} />
             </div>
           )}
+          <PostVoteSurvey eventId={event.id} voteId={voteId} />
+
           <div className="flex flex-col gap-3">
             <Button asChild>
               <Link href={`/events/${eventUrl}/result`}>

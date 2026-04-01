@@ -29,6 +29,7 @@ import {
 import { SubjectList } from "./subject-list";
 import { EventEditDialog } from "./event-edit-dialog";
 import { AccessTokenManager } from "./access-token-manager";
+import { SurveyResultsSection } from "./survey-results-section";
 
 type Subject = {
   id: string;
@@ -46,6 +47,16 @@ type AccessToken = {
   createdAt: Date;
 };
 
+type SurveyResponse = {
+  id: string;
+  q1Difficulties: string | null;
+  q1Other: string | null;
+  q2CreditSatisfaction: number | null;
+  q3QvPreference: number | null;
+  q4Feedback: string | null;
+  createdAt: Date;
+};
+
 type EventData = {
   id: string;
   slug: string | null;
@@ -59,6 +70,7 @@ type EventData = {
   votingMode: string;
   subjects: Subject[];
   accessTokens: AccessToken[];
+  surveyResponses: SurveyResponse[];
   hasVotes: boolean;
   isLocked: boolean;
   status: "upcoming" | "active" | "ended";
@@ -343,6 +355,11 @@ export function EventAdminContent({ event, adminToken }: Props) {
           </CardContent>
         </Card>
       )}
+
+      {/* アンケート結果 */}
+      <div className="mt-6">
+        <SurveyResultsSection responses={currentEvent.surveyResponses} />
+      </div>
 
       {/* 編集ダイアログ */}
       {showEditDialog && (
