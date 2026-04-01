@@ -125,10 +125,23 @@ export async function authenticateVoter(
     }
 
     // ギルドメンバーシップを確認
-    const isMember = await isGuildMember(
-      session.discordAccessToken,
-      event.discordGuildId
-    );
+    let isMember: boolean;
+    try {
+      isMember = await isGuildMember(
+        session.discordAccessToken,
+        event.discordGuildId
+      );
+    } catch (error) {
+      // トークン期限切れの場合、再ログインを促す
+      if (error instanceof Error && error.message === "DISCORD_TOKEN_EXPIRED") {
+        return {
+          authenticated: false,
+          error: "Discord認証の有効期限が切れました。再度ログインしてください",
+          requiredGuildName: event.discordGuildName ?? undefined,
+        };
+      }
+      throw error;
+    }
 
     if (!isMember) {
       return {

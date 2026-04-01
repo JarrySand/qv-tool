@@ -24,5 +24,9 @@ declare module "next-auth/jwt" {
     provider?: string;
     /** Discord OAuth アクセストークン（ギルドメンバーシップ確認用） */
     discordAccessToken?: string;
+    /** Discord OAuth アクセストークンの有効期限（Unix秒） */
+    discordAccessTokenExpiresAt?: number;
+    /** Discord OAuth リフレッシュトークン */
+    discordRefreshToken?: string;
   }
 }

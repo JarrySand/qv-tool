@@ -146,6 +146,10 @@ export async function getUserGuilds(
     }
   );
 
+  if (response.status === 401) {
+    throw new Error("DISCORD_TOKEN_EXPIRED");
+  }
+
   if (!response.ok) {
     const error = await response.text();
     console.error("Failed to fetch user guilds:", error);
@@ -174,6 +178,10 @@ export async function isGuildMember(
     const guilds = await getUserGuilds(accessToken);
     return guilds.some((guild) => guild.id === guildId);
   } catch (error) {
+    // トークン期限切れの場合は再スローして呼び出し元で処理させる
+    if (error instanceof Error && error.message === "DISCORD_TOKEN_EXPIRED") {
+      throw error;
+    }
     console.error("Error checking guild membership:", error);
     return false;
   }

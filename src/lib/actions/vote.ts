@@ -12,6 +12,9 @@
 import { headers } from "next/headers";
 import { getTranslations } from "next-intl/server";
 import { prisma } from "@/lib/db";
+type TransactionClient = Parameters<
+  Parameters<typeof prisma.$transaction>[0]
+>[0];
 import { auth } from "@/auth";
 import { submitVoteSchema, validateVoteCost } from "@/lib/validations";
 import { checkVoteRateLimit, getClientIp } from "@/lib/rate-limit";
@@ -138,7 +141,9 @@ export async function submitVote(
   }
 
   // 4. 投票対象の存在確認
-  const validSubjectIds = new Set(event.subjects.map((s) => s.id));
+  const validSubjectIds = new Set(
+    event.subjects.map((s: { id: string }) => s.id)
+  );
   for (const detail of details) {
     if (!validSubjectIds.has(detail.subjectId)) {
       return { success: false, error: t("invalidSubject") };
@@ -258,7 +263,7 @@ export async function submitVote(
       }
 
       // トランザクションで更新
-      await prisma.$transaction(async (tx) => {
+      await prisma.$transaction(async (tx: TransactionClient) => {
         // 既存の詳細を削除
         await tx.voteDetail.deleteMany({
           where: { voteId: existingVoteId },
@@ -282,7 +287,7 @@ export async function submitVote(
       return { success: true, voteId: existingVoteId };
     } else {
       // 新規作成
-      const vote = await prisma.$transaction(async (tx) => {
+      const vote = await prisma.$transaction(async (tx: TransactionClient) => {
         // 投票を作成
         const newVote = await tx.vote.create({
           data: {

@@ -3,8 +3,84 @@ import { PrismaAdapter } from "@auth/prisma-adapter";
 import Google from "next-auth/providers/google";
 import Discord from "next-auth/providers/discord";
 import type { Provider } from "next-auth/providers";
+import type { JWT } from "next-auth/jwt";
 import { prisma } from "@/lib/db";
 import LineProvider from "@/lib/auth/line-provider";
+
+/**
+ * Discord OAuthトークンをリフレッシュする
+ * 期限切れのアクセストークンを新しいものに更新する
+ */
+async function refreshDiscordToken(token: JWT): Promise<JWT> {
+  if (!token.discordRefreshToken) {
+    // リフレッシュトークンがない場合、DBから取得を試みる
+    if (token.id) {
+      const account = await prisma.account.findFirst({
+        where: { userId: token.id as string, provider: "discord" },
+        select: { refresh_token: true },
+      });
+      if (!account?.refresh_token) {
+        // リフレッシュ不可能 → トークンをクリアして再認証を促す
+        token.discordAccessToken = undefined;
+        token.discordAccessTokenExpiresAt = undefined;
+        return token;
+      }
+      token.discordRefreshToken = account.refresh_token;
+    } else {
+      token.discordAccessToken = undefined;
+      return token;
+    }
+  }
+
+  try {
+    const response = await fetch("https://discord.com/api/v10/oauth2/token", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: new URLSearchParams({
+        grant_type: "refresh_token",
+        refresh_token: token.discordRefreshToken!,
+        client_id: process.env.DISCORD_CLIENT_ID!,
+        client_secret: process.env.DISCORD_CLIENT_SECRET!,
+      }),
+    });
+
+    if (!response.ok) {
+      console.error("Failed to refresh Discord token:", await response.text());
+      // リフレッシュ失敗 → トークンをクリアして再認証を促す
+      token.discordAccessToken = undefined;
+      token.discordAccessTokenExpiresAt = undefined;
+      token.discordRefreshToken = undefined;
+      return token;
+    }
+
+    const data = await response.json();
+
+    // JWTのトークンを更新
+    token.discordAccessToken = data.access_token;
+    token.discordAccessTokenExpiresAt =
+      Math.floor(Date.now() / 1000) + data.expires_in;
+    token.discordRefreshToken = data.refresh_token ?? token.discordRefreshToken;
+
+    // DBのAccountレコードも更新
+    if (token.id) {
+      await prisma.account.updateMany({
+        where: { userId: token.id as string, provider: "discord" },
+        data: {
+          access_token: data.access_token,
+          expires_at: Math.floor(Date.now() / 1000) + data.expires_in,
+          refresh_token: data.refresh_token ?? token.discordRefreshToken,
+        },
+      });
+    }
+
+    return token;
+  } catch (error) {
+    console.error("Error refreshing Discord token:", error);
+    token.discordAccessToken = undefined;
+    token.discordAccessTokenExpiresAt = undefined;
+    return token;
+  }
+}
 
 // プロバイダー設定
 const providers: Provider[] = [];
@@ -77,10 +153,26 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       if (account?.provider) {
         token.provider = account.provider;
       }
-      // Discord認証の場合、アクセストークンを保存（ギルドメンバーシップ確認用）
+      // Discord認証の場合、アクセストークン・リフレッシュトークン・有効期限を保存
       if (account?.provider === "discord" && account.access_token) {
         token.discordAccessToken = account.access_token;
+        token.discordAccessTokenExpiresAt = account.expires_at;
+        token.discordRefreshToken = account.refresh_token ?? undefined;
       }
+
+      // Discord トークンの有効期限チェック → 期限切れならリフレッシュ
+      if (
+        token.provider === "discord" &&
+        token.discordAccessToken &&
+        token.discordAccessTokenExpiresAt
+      ) {
+        const now = Math.floor(Date.now() / 1000);
+        // 5分前にリフレッシュ（余裕を持たせる）
+        if (token.discordAccessTokenExpiresAt - now < 300) {
+          return refreshDiscordToken(token);
+        }
+      }
+
       return token;
     },
     // セッションコールバック: セッションにユーザーIDを追加
