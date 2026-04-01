@@ -24,6 +24,7 @@ import {
   AlertCircle,
   Clock,
   CheckCircle,
+  Download,
 } from "lucide-react";
 import { SubjectList } from "./subject-list";
 import { EventEditDialog } from "./event-edit-dialog";
@@ -70,6 +71,7 @@ type Props = {
 
 export function EventAdminContent({ event, adminToken }: Props) {
   const [eventUrlCopied, setEventUrlCopied] = useState(false);
+  const [jsonUrlCopied, setJsonUrlCopied] = useState(false);
   const [showEditDialog, setShowEditDialog] = useState(false);
   const [currentEvent, setCurrentEvent] = useState(event);
 
@@ -80,11 +82,23 @@ export function EventAdminContent({ event, adminToken }: Props) {
     : `/events/${currentEvent.id}`;
   const eventUrl = `${baseUrl}${eventPath}`;
 
+  const jsonExportUrl = `${baseUrl}/api/events/${currentEvent.id}/export?adminToken=${adminToken}`;
+
   const copyToClipboard = async (text: string) => {
     try {
       await navigator.clipboard.writeText(text);
       setEventUrlCopied(true);
       setTimeout(() => setEventUrlCopied(false), 2000);
+    } catch (error) {
+      console.error("Failed to copy:", error);
+    }
+  };
+
+  const copyJsonUrl = async () => {
+    try {
+      await navigator.clipboard.writeText(jsonExportUrl);
+      setJsonUrlCopied(true);
+      setTimeout(() => setJsonUrlCopied(false), 2000);
     } catch (error) {
       console.error("Failed to copy:", error);
     }
@@ -242,7 +256,7 @@ export function EventAdminContent({ event, adminToken }: Props) {
             </div>
           </div>
         </CardContent>
-        <CardFooter>
+        <CardFooter className="flex flex-col items-start gap-4 sm:flex-row sm:items-center">
           <Button variant="outline" asChild>
             <Link
               href={`/events/${currentEvent.slug ?? currentEvent.id}/result`}
@@ -251,6 +265,29 @@ export function EventAdminContent({ event, adminToken }: Props) {
               結果を見る
             </Link>
           </Button>
+
+          {/* JSONエクスポートURL */}
+          <div className="flex items-center gap-2">
+            <Button variant="outline" asChild>
+              <a href={jsonExportUrl} target="_blank" rel="noopener noreferrer">
+                <Download className="size-4" />
+                JSON出力
+              </a>
+            </Button>
+            <Button variant="ghost" size="sm" onClick={copyJsonUrl}>
+              {jsonUrlCopied ? (
+                <>
+                  <Check className="size-4" />
+                  コピー済み
+                </>
+              ) : (
+                <>
+                  <Copy className="size-4" />
+                  URLコピー
+                </>
+              )}
+            </Button>
+          </div>
         </CardFooter>
       </Card>
 
