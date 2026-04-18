@@ -110,7 +110,6 @@ export async function getEventResults(
     ["event-results", eventIdOrSlug],
     {
       tags: [`event-results-${eventIdOrSlug}`],
-      revalidate: 3600,
     }
   )();
 }
