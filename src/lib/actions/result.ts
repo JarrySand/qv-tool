@@ -8,6 +8,7 @@
  * @module lib/actions/result
  */
 
+import { unstable_cache } from "next/cache";
 import { getTranslations } from "next-intl/server";
 import { prisma } from "@/lib/db";
 
@@ -102,6 +103,19 @@ export interface EventResultData {
  * ```
  */
 export async function getEventResults(
+  eventIdOrSlug: string
+): Promise<EventResultData | null> {
+  return unstable_cache(
+    () => _fetchEventResults(eventIdOrSlug),
+    ["event-results", eventIdOrSlug],
+    {
+      tags: [`event-results-${eventIdOrSlug}`],
+      revalidate: 3600,
+    }
+  )();
+}
+
+async function _fetchEventResults(
   eventIdOrSlug: string
 ): Promise<EventResultData | null> {
   // イベント情報を取得

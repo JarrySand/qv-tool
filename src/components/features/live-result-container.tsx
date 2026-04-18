@@ -22,8 +22,6 @@ interface LiveResultContainerProps {
   isLive: boolean; // 開催中かどうか
 }
 
-const POLLING_INTERVAL = 10000; // 10秒
-
 export function LiveResultContainer({
   initialData,
   eventId,
@@ -57,14 +55,6 @@ export function LiveResultContainer({
       setIsRefreshing(false);
     }
   }, [eventId]);
-
-  // 自動更新（開催中のみ）
-  useEffect(() => {
-    if (!isLive) return;
-
-    const interval = setInterval(refreshData, POLLING_INTERVAL);
-    return () => clearInterval(interval);
-  }, [isLive, refreshData]);
 
   const { results, statistics, distributions, hiddenPreferences } = data;
   const sortedResults = [...results].sort(

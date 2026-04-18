@@ -10,6 +10,7 @@
  */
 
 import { headers } from "next/headers";
+import { updateTag } from "next/cache";
 import { getTranslations } from "next-intl/server";
 import { prisma } from "@/lib/db";
 type TransactionClient = Parameters<
@@ -117,6 +118,7 @@ export async function submitVote(
     where: { id: eventId },
     select: {
       id: true,
+      slug: true,
       votingMode: true,
       creditsPerVoter: true,
       startDate: true,
@@ -284,6 +286,9 @@ export async function submitVote(
         });
       });
 
+      updateTag(`event-results-${event.id}`);
+      if (event.slug) updateTag(`event-results-${event.slug}`);
+
       return { success: true, voteId: existingVoteId };
     } else {
       // 新規作成
@@ -311,6 +316,9 @@ export async function submitVote(
 
         return newVote;
       });
+
+      updateTag(`event-results-${event.id}`);
+      if (event.slug) updateTag(`event-results-${event.slug}`);
 
       return { success: true, voteId: vote.id };
     }
