@@ -105,13 +105,26 @@ export interface EventResultData {
 export async function getEventResults(
   eventIdOrSlug: string
 ): Promise<EventResultData | null> {
-  return unstable_cache(
+  const cached = await unstable_cache(
     () => _fetchEventResults(eventIdOrSlug),
     ["event-results", eventIdOrSlug],
     {
       tags: [`event-results-${eventIdOrSlug}`],
     }
   )();
+
+  if (!cached) return null;
+
+  // unstable_cache は JSON シリアライズを挟むため Date が文字列化される。
+  // 呼び出し側の Date メソッド利用に備えて復元する。
+  return {
+    ...cached,
+    event: {
+      ...cached.event,
+      startDate: new Date(cached.event.startDate),
+      endDate: new Date(cached.event.endDate),
+    },
+  };
 }
 
 async function _fetchEventResults(
