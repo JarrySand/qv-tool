@@ -3,6 +3,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { getTranslations } from "next-intl/server";
 import { prisma } from "@/lib/db";
+import { getCachedEventWithSubjects } from "@/lib/cache/event-cache";
 import { auth } from "@/auth";
 import { LinkifyText } from "@/components/ui/linkify-text";
 import {
@@ -33,20 +34,7 @@ export default async function EventPage({ params, searchParams }: PageProps) {
   const { token } = await searchParams;
   const t = await getTranslations();
 
-  // イベント情報を取得
-  const event = await prisma.event.findFirst({
-    where: {
-      OR: [{ id }, { slug: id }],
-    },
-    include: {
-      subjects: {
-        orderBy: { order: "asc" },
-      },
-      _count: {
-        select: { votes: true },
-      },
-    },
-  });
+  const event = await getCachedEventWithSubjects(id);
 
   if (!event) {
     notFound();

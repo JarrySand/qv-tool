@@ -20,6 +20,7 @@ import {
 } from "@/lib/validations";
 import { generateSlug, sanitizeSlug } from "@/lib/utils/slug";
 import { checkEventCreateRateLimit, getClientIp } from "@/lib/rate-limit";
+import { invalidateEventCache } from "@/lib/cache/event-cache";
 
 /**
  * イベント作成の結果型
@@ -278,6 +279,7 @@ export async function updateEvent(
     where: { id: eventId },
     select: {
       id: true,
+      slug: true,
       adminToken: true,
       votes: { select: { id: true }, take: 1 },
     },
@@ -337,6 +339,8 @@ export async function updateEvent(
         ...(data.endDate && { endDate: data.endDate }),
       },
     });
+
+    invalidateEventCache(event);
 
     return { success: true };
   } catch (error) {
@@ -630,6 +634,8 @@ export async function publishEvent(
   const event = await prisma.event.findUnique({
     where: { id: eventId },
     select: {
+      id: true,
+      slug: true,
       adminToken: true,
       isLocked: true,
       subjects: { select: { id: true } },
@@ -656,6 +662,7 @@ export async function publishEvent(
       where: { id: eventId },
       data: { isLocked: true },
     });
+    invalidateEventCache(event);
     return { success: true };
   } catch (error) {
     console.error("Failed to publish event:", error);

@@ -1,5 +1,45 @@
 import { NextRequest, NextResponse } from "next/server";
+import { unstable_cache } from "next/cache";
 import { prisma } from "@/lib/db";
+
+async function fetchExportData(id: string) {
+  const event = await prisma.event.findFirst({
+    where: { OR: [{ id }, { slug: id }] },
+    include: {
+      subjects: { orderBy: { order: "asc" } },
+    },
+  });
+  if (!event) return null;
+
+  const votes = await prisma.vote.findMany({
+    where: { eventId: event.id },
+    include: {
+      details: {
+        include: { subject: { select: { id: true, title: true } } },
+      },
+      user: {
+        select: {
+          id: true,
+          name: true,
+          email: true,
+          image: true,
+          accounts: {
+            select: { provider: true, providerAccountId: true },
+          },
+        },
+      },
+      accessToken: { select: { id: true, token: true } },
+    },
+    orderBy: { createdAt: "asc" },
+  });
+
+  return { event, votes };
+}
+
+const getCachedExportData = (id: string) =>
+  unstable_cache(() => fetchExportData(id), ["event-export", id], {
+    tags: [`event-export-${id}`],
+  })();
 
 /**
  * GET /api/events/[id]/export?adminToken=xxx
@@ -21,60 +61,15 @@ export async function GET(
     );
   }
 
-  // イベント取得 + adminToken検証
-  const event = await prisma.event.findFirst({
-    where: {
-      OR: [{ id }, { slug: id }],
-    },
-    include: {
-      subjects: {
-        orderBy: { order: "asc" },
-      },
-    },
-  });
-
-  if (!event) {
+  const cached = await getCachedExportData(id);
+  if (!cached) {
     return NextResponse.json({ error: "Event not found" }, { status: 404 });
   }
+  const { event, votes } = cached;
 
   if (event.adminToken !== adminToken) {
     return NextResponse.json({ error: "Invalid adminToken" }, { status: 403 });
   }
-
-  // 投票データを投票者情報付きで取得
-  const votes = await prisma.vote.findMany({
-    where: { eventId: event.id },
-    include: {
-      details: {
-        include: {
-          subject: {
-            select: { id: true, title: true },
-          },
-        },
-      },
-      user: {
-        select: {
-          id: true,
-          name: true,
-          email: true,
-          image: true,
-          accounts: {
-            select: {
-              provider: true,
-              providerAccountId: true,
-            },
-          },
-        },
-      },
-      accessToken: {
-        select: {
-          id: true,
-          token: true,
-        },
-      },
-    },
-    orderBy: { createdAt: "asc" },
-  });
 
   // レスポンス構築
   const exportData = {

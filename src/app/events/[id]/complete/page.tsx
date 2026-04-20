@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
-import { prisma } from "@/lib/db";
+import { getCachedEventWithSubjects } from "@/lib/cache/event-cache";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -26,18 +26,7 @@ export default async function CompletePage({
   const { token, voteId } = await searchParams;
   const t = await getTranslations();
 
-  // イベント情報を取得
-  const event = await prisma.event.findFirst({
-    where: {
-      OR: [{ id }, { slug: id }],
-    },
-    select: {
-      id: true,
-      slug: true,
-      title: true,
-      endMessage: true,
-    },
-  });
+  const event = await getCachedEventWithSubjects(id);
 
   if (!event) {
     notFound();

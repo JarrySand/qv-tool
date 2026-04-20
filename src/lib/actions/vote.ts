@@ -287,7 +287,13 @@ export async function submitVote(
       });
 
       updateTag(`event-results-${event.id}`);
-      if (event.slug) updateTag(`event-results-${event.slug}`);
+      updateTag(`event-export-${event.id}`);
+      updateTag(`event-meta-${event.id}`);
+      if (event.slug) {
+        updateTag(`event-results-${event.slug}`);
+        updateTag(`event-export-${event.slug}`);
+        updateTag(`event-meta-${event.slug}`);
+      }
 
       return { success: true, voteId: existingVoteId };
     } else {
@@ -318,7 +324,13 @@ export async function submitVote(
       });
 
       updateTag(`event-results-${event.id}`);
-      if (event.slug) updateTag(`event-results-${event.slug}`);
+      updateTag(`event-export-${event.id}`);
+      updateTag(`event-meta-${event.id}`);
+      if (event.slug) {
+        updateTag(`event-results-${event.slug}`);
+        updateTag(`event-export-${event.slug}`);
+        updateTag(`event-meta-${event.slug}`);
+      }
 
       return { success: true, voteId: vote.id };
     }

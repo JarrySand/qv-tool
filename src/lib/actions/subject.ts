@@ -12,6 +12,7 @@
 import { getTranslations } from "next-intl/server";
 import { prisma } from "@/lib/db";
 import { createSubjectSchema, updateSubjectSchema } from "@/lib/validations";
+import { invalidateEventCache } from "@/lib/cache/event-cache";
 
 /**
  * 投票候補作成の入力データ型
@@ -96,6 +97,8 @@ export async function createSubject(
   const event = await prisma.event.findUnique({
     where: { id: eventId },
     select: {
+      id: true,
+      slug: true,
       adminToken: true,
       isLocked: true,
       votes: { select: { id: true }, take: 1 },
@@ -145,6 +148,8 @@ export async function createSubject(
       },
     });
 
+    invalidateEventCache(event);
+
     return { success: true, subject };
   } catch (error) {
     console.error("Failed to create subject:", error);
@@ -184,6 +189,8 @@ export async function updateSubject(
   const event = await prisma.event.findUnique({
     where: { id: eventId },
     select: {
+      id: true,
+      slug: true,
       adminToken: true,
       isLocked: true,
       votes: { select: { id: true }, take: 1 },
@@ -228,6 +235,8 @@ export async function updateSubject(
       },
     });
 
+    invalidateEventCache(event);
+
     return { success: true };
   } catch (error) {
     console.error("Failed to update subject:", error);
@@ -265,6 +274,8 @@ export async function deleteSubject(
   const event = await prisma.event.findUnique({
     where: { id: eventId },
     select: {
+      id: true,
+      slug: true,
       adminToken: true,
       isLocked: true,
       votes: { select: { id: true }, take: 1 },
@@ -288,6 +299,8 @@ export async function deleteSubject(
     await prisma.subject.delete({
       where: { id: subjectId },
     });
+
+    invalidateEventCache(event);
 
     return { success: true };
   } catch (error) {

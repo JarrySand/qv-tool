@@ -1,7 +1,7 @@
 import { notFound, redirect } from "next/navigation";
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
-import { prisma } from "@/lib/db";
+import { getCachedEventWithSubjects } from "@/lib/cache/event-cache";
 import { LinkifyText } from "@/components/ui/linkify-text";
 import { VotingInterface } from "@/components/features/voting-interface";
 import { getExistingVote } from "@/lib/actions/vote";
@@ -20,17 +20,7 @@ export default async function VotePage({ params, searchParams }: PageProps) {
   const { token } = await searchParams;
   const t = await getTranslations();
 
-  // イベント情報を取得
-  const event = await prisma.event.findFirst({
-    where: {
-      OR: [{ id }, { slug: id }],
-    },
-    include: {
-      subjects: {
-        orderBy: { order: "asc" },
-      },
-    },
-  });
+  const event = await getCachedEventWithSubjects(id);
 
   if (!event) {
     notFound();
