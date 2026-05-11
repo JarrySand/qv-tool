@@ -24,8 +24,8 @@ export function invalidateEventCache(event: {
  * tag: event-meta-{idOrSlug}
  * 投票時 / イベント編集時に invalidate される。
  */
-export function getCachedEventWithSubjects(idOrSlug: string) {
-  return unstable_cache(
+export async function getCachedEventWithSubjects(idOrSlug: string) {
+  const cached = await unstable_cache(
     () =>
       prisma.event.findFirst({
         where: { OR: [{ id: idOrSlug }, { slug: idOrSlug }] },
@@ -37,4 +37,16 @@ export function getCachedEventWithSubjects(idOrSlug: string) {
     ["event-meta-with-subjects", idOrSlug],
     { tags: [`event-meta-${idOrSlug}`] }
   )();
+
+  if (!cached) return null;
+
+  // unstable_cache は JSON シリアライズを挟むため Date が文字列化される。
+  // 呼び出し側の Date メソッド利用に備えて復元する。
+  return {
+    ...cached,
+    startDate: new Date(cached.startDate),
+    endDate: new Date(cached.endDate),
+    createdAt: new Date(cached.createdAt),
+    updatedAt: new Date(cached.updatedAt),
+  };
 }

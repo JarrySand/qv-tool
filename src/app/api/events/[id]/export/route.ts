@@ -36,10 +36,32 @@ async function fetchExportData(id: string) {
   return { event, votes };
 }
 
-const getCachedExportData = (id: string) =>
-  unstable_cache(() => fetchExportData(id), ["event-export", id], {
-    tags: [`event-export-${id}`],
-  })();
+const getCachedExportData = async (id: string) => {
+  const cached = await unstable_cache(
+    () => fetchExportData(id),
+    ["event-export", id],
+    { tags: [`event-export-${id}`] }
+  )();
+
+  if (!cached) return null;
+
+  // unstable_cache は JSON シリアライズを挟むため Date が文字列化される。
+  // 呼び出し側の Date メソッド利用に備えて復元する。
+  return {
+    event: {
+      ...cached.event,
+      startDate: new Date(cached.event.startDate),
+      endDate: new Date(cached.event.endDate),
+      createdAt: new Date(cached.event.createdAt),
+      updatedAt: new Date(cached.event.updatedAt),
+    },
+    votes: cached.votes.map((vote) => ({
+      ...vote,
+      createdAt: new Date(vote.createdAt),
+      updatedAt: new Date(vote.updatedAt),
+    })),
+  };
+};
 
 /**
  * GET /api/events/[id]/export?adminToken=xxx
