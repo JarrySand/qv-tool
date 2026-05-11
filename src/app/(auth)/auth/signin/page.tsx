@@ -101,7 +101,7 @@ export default async function SignInPage({ searchParams }: PageProps) {
               )}
 
             {/* LINE Sign In */}
-            {process.env.LINE_CLIENT_ID &&
+            {process.env.LINE_CHANNEL_ID &&
               (!requiredProvider || requiredProvider === "line") && (
                 <form
                   action={async () => {
@@ -151,7 +151,7 @@ export default async function SignInPage({ searchParams }: PageProps) {
               )}
 
             {!process.env.GOOGLE_CLIENT_ID &&
-              !process.env.LINE_CLIENT_ID &&
+              !process.env.LINE_CHANNEL_ID &&
               !process.env.DISCORD_CLIENT_ID && (
                 <p className="text-muted-foreground text-center text-sm">
                   {t("auth.error.configuration")}
