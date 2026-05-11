@@ -191,9 +191,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       return session;
     },
     // 認証許可コールバック
-    async signIn({ user }) {
-      // ここで追加の認証チェックを行う（例：特定ドメインのみ許可など）
-      if (!user.email) {
+    async signIn({ user, account }) {
+      // LINEはemail不要、その他のプロバイダーはemail必須
+      if (account?.provider !== "line" && !user.email) {
         return false;
       }
       return true;

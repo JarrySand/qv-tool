@@ -23,7 +23,7 @@ export default function LineProvider(options: {
     authorization: {
       url: "https://access.line.me/oauth2/v2.1/authorize",
       params: {
-        scope: "profile openid email",
+        scope: "profile openid",
         bot_prompt: "normal",
       },
     },
