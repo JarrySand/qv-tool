@@ -1,9 +1,20 @@
 import type { OIDCConfig } from "next-auth/providers";
 
+/**
+ * LINE Login の ID トークン (JWT) のクレーム。
+ * OIDC フローでは Auth.js が ID トークン経由でユーザー情報を取得するため、
+ * userinfo エンドポイントの (`userId`, `displayName`, `pictureUrl`) ではなく
+ * OIDC 標準クレーム名 (`sub`, `name`, `picture`) を使う必要がある。
+ */
 export interface LineProfile {
-  userId: string;
-  displayName: string;
-  pictureUrl?: string;
+  iss: string;
+  sub: string;
+  aud: string;
+  exp: number;
+  iat: number;
+  amr?: string[];
+  name?: string;
+  picture?: string;
   email?: string;
 }
 
@@ -28,7 +39,6 @@ export default function LineProvider(options: {
       },
     },
     token: "https://api.line.me/oauth2/v2.1/token",
-    userinfo: "https://api.line.me/v2/profile",
     client: {
       token_endpoint_auth_method: "client_secret_post",
       // LINE は ID トークンを HS256 (HMAC-SHA256) で署名する。
@@ -36,14 +46,10 @@ export default function LineProvider(options: {
       id_token_signed_response_alg: "HS256",
     },
     checks: ["state"],
-    profile(profile) {
-      return {
-        id: profile.userId,
-        name: profile.displayName,
-        email: profile.email,
-        image: profile.pictureUrl,
-      };
-    },
+    // profile() はあえて指定しない。Auth.js の defaultProfile が
+    // ID トークンのクレーム (sub/name/picture) から自動でユーザー情報を
+    // 組み立ててくれる。独自実装すると userinfo のフィールド名と
+    // 取り違えやすく、providerAccountId が undefined になりがち。
     style: {
       bg: "#00B900",
       text: "#fff",
