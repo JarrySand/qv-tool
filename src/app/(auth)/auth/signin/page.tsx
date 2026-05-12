@@ -1,6 +1,7 @@
 import { auth, signIn } from "@/auth";
 import { redirect } from "next/navigation";
 import { getTranslations } from "next-intl/server";
+import { getCachedEventWithSubjects } from "@/lib/cache/event-cache";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -38,7 +39,19 @@ export default async function SignInPage({ searchParams }: PageProps) {
   const callbackUrl = params.callbackUrl || "/";
   const error = params.error;
   // 特定のプロバイダーのみ表示が必要な場合（例：投票ページからのリダイレクト時）
-  const requiredProvider = params.provider; // "google", "line", "discord", or undefined
+  // AuthJS はエラー時のリダイレクトで provider パラメータを引き継がないため、
+  // callbackUrl からイベントを引いて votingMode をフォールバックに使う。
+  let requiredProvider = params.provider; // "google", "line", "discord", or undefined
+  if (!requiredProvider) {
+    const eventMatch = callbackUrl.match(/\/events\/([^/?#]+)/);
+    if (eventMatch) {
+      const eventIdOrSlug = decodeURIComponent(eventMatch[1]);
+      const event = await getCachedEventWithSubjects(eventIdOrSlug);
+      if (event && event.votingMode !== "individual") {
+        requiredProvider = event.votingMode;
+      }
+    }
+  }
 
   return (
     <main className="bg-background flex min-h-screen items-center justify-center p-4">
