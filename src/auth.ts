@@ -6,6 +6,7 @@ import type { Provider } from "next-auth/providers";
 import type { JWT } from "next-auth/jwt";
 import { prisma } from "@/lib/db";
 import LineProvider from "@/lib/auth/line-provider";
+import { liffCredentials } from "@/lib/auth/liff-credentials";
 
 /**
  * Discord OAuthトークンをリフレッシュする
@@ -103,6 +104,8 @@ if (process.env.LINE_CHANNEL_ID && process.env.LINE_CHANNEL_SECRET) {
       clientSecret: process.env.LINE_CHANNEL_SECRET,
     })
   );
+  // LIFF 用の Credentials プロバイダー（LINEアプリ内ログイン用、パスワード不要）
+  providers.push(liffCredentials);
 }
 
 // Discord認証（環境変数が設定されている場合のみ有効化）
@@ -150,8 +153,10 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         token.id = user.id;
       }
       // ログインしたプロバイダーを保存
+      // LIFF経由のログイン（"line-liff"）は同一の LINE アカウントなので "line" に正規化する
       if (account?.provider) {
-        token.provider = account.provider;
+        token.provider =
+          account.provider === "line-liff" ? "line" : account.provider;
       }
       // Discord認証の場合、アクセストークン・リフレッシュトークン・有効期限を保存
       if (account?.provider === "discord" && account.access_token) {
@@ -192,8 +197,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     },
     // 認証許可コールバック
     async signIn({ user, account }) {
-      // LINEはemail不要、その他のプロバイダーはemail必須
-      if (account?.provider !== "line" && !user.email) {
+      // LINE / LIFF はemail不要、その他のプロバイダーはemail必須
+      const lineProviders = ["line", "line-liff"];
+      if (!lineProviders.includes(account?.provider ?? "") && !user.email) {
         return false;
       }
       return true;

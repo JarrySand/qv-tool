@@ -14,7 +14,7 @@ import {
   Circle,
 } from "lucide-react";
 import { generateAccessTokens } from "@/lib/actions/access-token";
-import { withLineExternalBrowser } from "@/lib/utils/share-url";
+import { buildEventShareUrl } from "@/lib/utils/share-url";
 
 type AccessToken = {
   id: string;
@@ -62,9 +62,7 @@ export function AccessTokenManager({
   };
 
   const handleCopy = async (token: string, id: string) => {
-    const url = withLineExternalBrowser(
-      `${baseUrl}/events/${eventId}/vote?token=${token}`
-    );
+    const url = buildEventShareUrl(eventId, { baseUrl, token });
     try {
       await navigator.clipboard.writeText(url);
       setCopiedId(id);
@@ -78,9 +76,7 @@ export function AccessTokenManager({
     const headers = ["トークン", "URL", "使用済み", "作成日時"];
     const rows = tokens.map((t) => [
       t.token,
-      withLineExternalBrowser(
-        `${baseUrl}/events/${eventId}/vote?token=${t.token}`
-      ),
+      buildEventShareUrl(eventId, { baseUrl, token: t.token }),
       t.isUsed ? "はい" : "いいえ",
       new Date(t.createdAt).toLocaleString("ja-JP"),
     ]);

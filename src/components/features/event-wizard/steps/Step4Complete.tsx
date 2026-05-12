@@ -27,7 +27,7 @@ import {
   ExternalLink,
 } from "lucide-react";
 import { generateAccessTokens } from "@/lib/actions/access-token";
-import { withLineExternalBrowser } from "@/lib/utils/share-url";
+import { buildEventShareUrl } from "@/lib/utils/share-url";
 import { useEventWizard } from "../EventWizardContext";
 
 /**
@@ -51,10 +51,10 @@ export function Step4Complete() {
 
   if (!createdEvent) return null;
 
-  const eventPath = createdEvent.slug
-    ? `/events/${createdEvent.slug}`
-    : `/events/${createdEvent.id}`;
-  const eventUrl = withLineExternalBrowser(`${baseUrl}${eventPath}`);
+  const eventIdOrSlug = createdEvent.slug ?? createdEvent.id;
+  const eventPath = `/events/${eventIdOrSlug}`;
+  // 共有用URLは LIFF が設定されていれば LIFF URL になる
+  const eventUrl = buildEventShareUrl(eventIdOrSlug, { baseUrl });
   const adminUrl = `${baseUrl}/admin/${createdEvent.id}?token=${createdEvent.adminToken}`;
 
   /**
@@ -203,39 +203,37 @@ export function Step4Complete() {
                   })}
                 </p>
                 <div className="max-h-60 space-y-1 overflow-y-auto rounded border p-2">
-                  {generatedTokens.map((token, index) => (
-                    <div
-                      key={token}
-                      className="flex items-center gap-2 text-sm"
-                    >
-                      <span className="text-muted-foreground w-6">
-                        {index + 1}.
-                      </span>
-                      <code className="flex-1 truncate font-mono">
-                        {baseUrl}
-                        {eventPath}?token={token}
-                      </code>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="size-6"
-                        onClick={() =>
-                          copyToClipboard(
-                            withLineExternalBrowser(
-                              `${baseUrl}${eventPath}?token=${token}`
-                            ),
-                            token
-                          )
-                        }
+                  {generatedTokens.map((token, index) => {
+                    const tokenShareUrl = buildEventShareUrl(eventIdOrSlug, {
+                      baseUrl,
+                      token,
+                    });
+                    return (
+                      <div
+                        key={token}
+                        className="flex items-center gap-2 text-sm"
                       >
-                        {copied === token ? (
-                          <Check className="size-3" />
-                        ) : (
-                          <Copy className="size-3" />
-                        )}
-                      </Button>
-                    </div>
-                  ))}
+                        <span className="text-muted-foreground w-6">
+                          {index + 1}.
+                        </span>
+                        <code className="flex-1 truncate font-mono">
+                          {tokenShareUrl}
+                        </code>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="size-6"
+                          onClick={() => copyToClipboard(tokenShareUrl, token)}
+                        >
+                          {copied === token ? (
+                            <Check className="size-3" />
+                          ) : (
+                            <Copy className="size-3" />
+                          )}
+                        </Button>
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
             )}

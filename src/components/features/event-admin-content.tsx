@@ -30,7 +30,7 @@ import { SubjectList } from "./subject-list";
 import { EventEditDialog } from "./event-edit-dialog";
 import { AccessTokenManager } from "./access-token-manager";
 import { SurveyResultsSection } from "./survey-results-section";
-import { withLineExternalBrowser } from "@/lib/utils/share-url";
+import { buildEventShareUrl } from "@/lib/utils/share-url";
 
 type Subject = {
   id: string;
@@ -93,7 +93,10 @@ export function EventAdminContent({ event, adminToken }: Props) {
   const eventPath = currentEvent.slug
     ? `/events/${currentEvent.slug}`
     : `/events/${currentEvent.id}`;
-  const eventUrl = withLineExternalBrowser(`${baseUrl}${eventPath}`);
+  // 共有用URLは LIFF が設定されていれば LIFF URL になる
+  const eventUrl = buildEventShareUrl(currentEvent.slug ?? currentEvent.id, {
+    baseUrl,
+  });
 
   const jsonExportUrl = `${baseUrl}/api/events/${currentEvent.id}/export?adminToken=${adminToken}`;
 

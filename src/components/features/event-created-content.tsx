@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { withLineExternalBrowser } from "@/lib/utils/share-url";
+import { buildEventShareUrl } from "@/lib/utils/share-url";
 import {
   CheckCircle,
   Copy,
@@ -45,10 +45,7 @@ export function EventCreatedContent({ event }: Props) {
 
   // URLの生成
   const baseUrl = typeof window !== "undefined" ? window.location.origin : "";
-  const eventPath = event.slug
-    ? `/events/${event.slug}`
-    : `/events/${event.id}`;
-  const eventUrl = withLineExternalBrowser(`${baseUrl}${eventPath}`);
+  const eventUrl = buildEventShareUrl(event.slug ?? event.id, { baseUrl });
   const adminUrl = `${baseUrl}/admin/${event.id}?token=${event.adminToken}`;
 
   const copyToClipboard = async (text: string, type: "admin" | "event") => {
