@@ -35,7 +35,6 @@ export default function LineProvider(options: {
       url: "https://access.line.me/oauth2/v2.1/authorize",
       params: {
         scope: "profile openid",
-        bot_prompt: "normal",
       },
     },
     token: "https://api.line.me/oauth2/v2.1/token",

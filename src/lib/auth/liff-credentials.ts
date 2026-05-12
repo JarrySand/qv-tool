@@ -88,6 +88,9 @@ export const liffCredentials = Credentials({
     }
 
     // 新規ユーザー作成 + Account 紐付け
+    // type は LINE OAuth (type: "oidc") と合わせて "oidc" にしておく。
+    // 同一 LINE ユーザーが OAuth/LIFF どちらでログインしても
+    // Account レコードの形式が揃う。
     const user = await prisma.user.create({
       data: {
         name: verified.name ?? null,
@@ -95,7 +98,7 @@ export const liffCredentials = Credentials({
         image: verified.picture ?? null,
         accounts: {
           create: {
-            type: "oauth",
+            type: "oidc",
             provider: "line",
             providerAccountId: lineUserId,
           },

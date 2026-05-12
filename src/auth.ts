@@ -207,9 +207,14 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   },
   // イベントフック
   events: {
-    async signIn({ user }) {
+    async signIn({ user, account }) {
       if (process.env.NODE_ENV === "development") {
-        console.log(`User signed in: ${user.email}`);
+        // LINE/LIFF など email スコープを持たないプロバイダーでは email が null。
+        // 識別子として email → name → id の順でフォールバック表示する。
+        const label = user.email ?? user.name ?? user.id;
+        console.log(
+          `User signed in: ${label} (${account?.provider ?? "unknown"})`
+        );
       }
     },
   },
