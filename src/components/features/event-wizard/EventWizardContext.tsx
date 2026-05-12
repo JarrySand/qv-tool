@@ -83,8 +83,8 @@ export function EventWizardProvider({ children }: EventWizardProviderProps) {
   // SSR 時(UTC)と client(JST)で `new Date()` の表現が異なるため、
   // useEffect でクライアントマウント後にだけ値をセットする必要がある。
   // 一回きりの初期化なので cascading render は発生しない。
-  // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setFormData((prev) => {
       if (prev.startDate || prev.endDate) return prev;
       const now = new Date();
