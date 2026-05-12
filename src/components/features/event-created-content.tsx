@@ -46,7 +46,10 @@ export function EventCreatedContent({ event }: Props) {
 
   // URLの生成
   const baseUrl = typeof window !== "undefined" ? window.location.origin : "";
-  const eventUrl = buildEventShareUrl(event.slug ?? event.id, { baseUrl });
+  const eventUrl = buildEventShareUrl(event.slug ?? event.id, {
+    baseUrl,
+    votingMode: event.votingMode,
+  });
   const adminUrl = `${baseUrl}/admin/${event.id}?token=${event.adminToken}`;
 
   const copyToClipboard = async (text: string, type: "admin" | "event") => {

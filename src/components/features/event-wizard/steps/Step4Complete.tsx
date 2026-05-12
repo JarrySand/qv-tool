@@ -54,7 +54,11 @@ export function Step4Complete() {
   const eventIdOrSlug = createdEvent.slug ?? createdEvent.id;
   const eventPath = `/events/${eventIdOrSlug}`;
   // 共有用URLは LIFF が設定されていれば LIFF URL になる
-  const eventUrl = buildEventShareUrl(eventIdOrSlug, { baseUrl });
+  // (ただし個別投票方式の場合は LINE 認証不要なので LIFF を経由しない)
+  const eventUrl = buildEventShareUrl(eventIdOrSlug, {
+    baseUrl,
+    votingMode: createdEvent.votingMode,
+  });
   const adminUrl = `${baseUrl}/admin/${createdEvent.id}?token=${createdEvent.adminToken}`;
 
   /**

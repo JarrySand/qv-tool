@@ -29,3 +29,17 @@ export function formatDateJa(value: Date | string): string {
 export function formatDateTimeJa(value: Date | string): string {
   return DATE_TIME_FORMATTER.format(new Date(value));
 }
+
+/**
+ * Date を `<input type="datetime-local">` 用のローカル時刻文字列に変換する。
+ * `"YYYY-MM-DDTHH:MM"` 形式。datetime-local input はタイムゾーン無しの文字列を
+ * **ローカル時刻** として解釈するため、`toISOString()` を直接使うと UTC が
+ * ローカル時刻のフリで表示されるバグになる。`getTimezoneOffset()` で補正する。
+ *
+ * 注: クライアント側でのみ呼ぶこと(`new Date().getTimezoneOffset()` は実行環境
+ * のタイムゾーンに依存し、Vercel サーバー側で呼ぶと UTC で 0 が返る)。
+ */
+export function toLocalDateTimeInputString(date: Date): string {
+  const offsetMs = date.getTimezoneOffset() * 60 * 1000;
+  return new Date(date.getTime() - offsetMs).toISOString().slice(0, 16);
+}

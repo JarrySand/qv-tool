@@ -95,8 +95,10 @@ export function EventAdminContent({ event, adminToken }: Props) {
     ? `/events/${currentEvent.slug}`
     : `/events/${currentEvent.id}`;
   // 共有用URLは LIFF が設定されていれば LIFF URL になる
+  // (ただし個別投票方式の場合は LINE 認証不要なので LIFF を経由しない)
   const eventUrl = buildEventShareUrl(currentEvent.slug ?? currentEvent.id, {
     baseUrl,
+    votingMode: currentEvent.votingMode,
   });
 
   const jsonExportUrl = `${baseUrl}/api/events/${currentEvent.id}/export?adminToken=${adminToken}`;

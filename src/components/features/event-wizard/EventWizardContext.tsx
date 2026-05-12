@@ -8,6 +8,7 @@
 import {
   createContext,
   useContext,
+  useEffect,
   useState,
   useTransition,
   type ReactNode,
@@ -17,6 +18,7 @@ import {
   createEventWithSubjects,
   type SubjectInput,
 } from "@/lib/actions/event";
+import { toLocalDateTimeInputString } from "@/lib/utils/format-date";
 import type {
   EventWizardContextType,
   EventFormData,
@@ -59,19 +61,15 @@ export function EventWizardProvider({ children }: EventWizardProviderProps) {
   const [currentStep, setCurrentStep] = useState(1);
   const totalSteps = 4;
 
-  // 日付のデフォルト値
-  const today = new Date();
-  const defaultStartDate = today.toISOString().slice(0, 16);
-  const nextWeek = new Date(today.getTime() + 7 * 24 * 60 * 60 * 1000);
-  const defaultEndDate = nextWeek.toISOString().slice(0, 16);
-
   // 基本情報
+  // datetime-local の初期値はマウント後に useEffect でセットする。
+  // SSR 時(UTC)とブラウザ(JST)で日時文字列がズレるのを避けるため。
   const [formData, setFormData] = useState<EventFormData>({
     title: "",
     description: "",
     slug: "",
-    startDate: defaultStartDate,
-    endDate: defaultEndDate,
+    startDate: "",
+    endDate: "",
     creditsPerVoter: 100,
     votingMode: "individual",
     discordGuildId: "",
@@ -80,6 +78,20 @@ export function EventWizardProvider({ children }: EventWizardProviderProps) {
     discordRequiredRoleName: "",
     endMessage: "",
   });
+
+  // マウント後にローカル時刻でデフォルト値を埋める
+  useEffect(() => {
+    setFormData((prev) => {
+      if (prev.startDate || prev.endDate) return prev;
+      const now = new Date();
+      const nextWeek = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
+      return {
+        ...prev,
+        startDate: toLocalDateTimeInputString(now),
+        endDate: toLocalDateTimeInputString(nextWeek),
+      };
+    });
+  }, []);
 
   // 投票候補
   const [subjects, setSubjects] = useState<SubjectInput[]>([]);

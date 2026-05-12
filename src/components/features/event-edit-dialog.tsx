@@ -7,6 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { X, Loader2 } from "lucide-react";
 import { updateEvent } from "@/lib/actions/event";
+import { toLocalDateTimeInputString } from "@/lib/utils/format-date";
 
 type EventData = {
   id: string;
@@ -72,13 +73,9 @@ export function EventEditDialog({
     });
   };
 
-  // 日時をローカルフォーマットに変換
-  const formatDateTime = (date: Date) => {
-    const d = new Date(date);
-    const offset = d.getTimezoneOffset();
-    const local = new Date(d.getTime() - offset * 60 * 1000);
-    return local.toISOString().slice(0, 16);
-  };
+  // 日時をローカルフォーマットに変換(共通ユーティリティに移行済み)
+  const formatDateTime = (date: Date) =>
+    toLocalDateTimeInputString(new Date(date));
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">

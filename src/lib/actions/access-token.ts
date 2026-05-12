@@ -81,15 +81,14 @@ export async function generateAccessTokens(
   }
 
   // 3. トークン生成
+  // 100件を $transaction で 1件ずつ create すると DB 往復が大量に発生して
+  // Pooler の transaction timeout を超えることがある。createManyAndReturn で
+  // 1ステートメントにまとめる。
   try {
-    const tokens = await prisma.$transaction(
-      Array.from({ length: count }, () =>
-        prisma.accessToken.create({
-          data: { eventId },
-          select: { id: true, token: true, isUsed: true, createdAt: true },
-        })
-      )
-    );
+    const tokens = await prisma.accessToken.createManyAndReturn({
+      data: Array.from({ length: count }, () => ({ eventId })),
+      select: { id: true, token: true, isUsed: true, createdAt: true },
+    });
 
     return { success: true, tokens };
   } catch (error) {
