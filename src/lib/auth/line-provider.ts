@@ -31,7 +31,11 @@ export default function LineProvider(options: {
     userinfo: "https://api.line.me/v2/profile",
     client: {
       token_endpoint_auth_method: "client_secret_post",
+      // LINE は ID トークンを HS256 (HMAC-SHA256) で署名する。
+      // OIDC デフォルトの RS256 のままだと署名検証に失敗するため明示。
+      id_token_signed_response_alg: "HS256",
     },
+    checks: ["state"],
     profile(profile) {
       return {
         id: profile.userId,
