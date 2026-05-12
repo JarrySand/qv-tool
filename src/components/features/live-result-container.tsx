@@ -60,7 +60,6 @@ export function LiveResultContainer({
   const sortedResults = [...results].sort(
     (a, b) => b.totalVotes - a.totalVotes
   );
-  const maxVotes = Math.max(...results.map((r) => r.totalVotes), 0);
 
   return (
     <div className="space-y-4 sm:space-y-8">

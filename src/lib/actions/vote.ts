@@ -21,6 +21,22 @@ import { submitVoteSchema, validateVoteCost } from "@/lib/validations";
 import { checkVoteRateLimit, getClientIp } from "@/lib/rate-limit";
 
 /**
+ * updateTag は Next.js 16 では Server Action 外 (Route Handler 等) から
+ * 呼ぶと throw する。負荷テスト用 API ルートなど非 Server Action コンテキスト
+ * から submitVote を呼ぶケースで、キャッシュ無効化が失敗しても投票自体は
+ * 完了させたいため、安全に try/catch でラップする。
+ */
+function safeUpdateTag(tag: string) {
+  try {
+    updateTag(tag);
+  } catch (e) {
+    if (process.env.NODE_ENV === "development") {
+      console.warn(`safeUpdateTag: failed to invalidate "${tag}":`, e);
+    }
+  }
+}
+
+/**
  * 投票送信の結果型
  */
 export type SubmitVoteResult =
@@ -301,13 +317,13 @@ export async function submitVote(
         { timeout: 15000, maxWait: 5000 }
       );
 
-      updateTag(`event-results-${event.id}`);
-      updateTag(`event-export-${event.id}`);
-      updateTag(`event-meta-${event.id}`);
+      safeUpdateTag(`event-results-${event.id}`);
+      safeUpdateTag(`event-export-${event.id}`);
+      safeUpdateTag(`event-meta-${event.id}`);
       if (event.slug) {
-        updateTag(`event-results-${event.slug}`);
-        updateTag(`event-export-${event.slug}`);
-        updateTag(`event-meta-${event.slug}`);
+        safeUpdateTag(`event-results-${event.slug}`);
+        safeUpdateTag(`event-export-${event.slug}`);
+        safeUpdateTag(`event-meta-${event.slug}`);
       }
 
       return { success: true, voteId: existingVoteId };
@@ -342,13 +358,13 @@ export async function submitVote(
         { timeout: 15000, maxWait: 5000 }
       );
 
-      updateTag(`event-results-${event.id}`);
-      updateTag(`event-export-${event.id}`);
-      updateTag(`event-meta-${event.id}`);
+      safeUpdateTag(`event-results-${event.id}`);
+      safeUpdateTag(`event-export-${event.id}`);
+      safeUpdateTag(`event-meta-${event.id}`);
       if (event.slug) {
-        updateTag(`event-results-${event.slug}`);
-        updateTag(`event-export-${event.slug}`);
-        updateTag(`event-meta-${event.slug}`);
+        safeUpdateTag(`event-results-${event.slug}`);
+        safeUpdateTag(`event-export-${event.slug}`);
+        safeUpdateTag(`event-meta-${event.slug}`);
       }
 
       return { success: true, voteId: vote.id };

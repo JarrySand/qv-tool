@@ -2,6 +2,21 @@ import { unstable_cache, updateTag } from "next/cache";
 import { prisma } from "@/lib/db";
 
 /**
+ * updateTag は Next.js 16 では Server Action 外 (Route Handler 等) から呼ぶと
+ * throw する。呼び出し元が必ず Server Action とは限らないため try/catch で
+ * ラップしておく(キャッシュ無効化が出来ない場合は次回 revalidate まで待つ)。
+ */
+function safeUpdateTag(tag: string) {
+  try {
+    updateTag(tag);
+  } catch (e) {
+    if (process.env.NODE_ENV === "development") {
+      console.warn(`safeUpdateTag: failed to invalidate "${tag}":`, e);
+    }
+  }
+}
+
+/**
  * 指定イベントに紐付くキャッシュ（meta / results / export）をすべて無効化する。
  * id と slug の両方でタグを発行しているので、両方を対象にする。
  */
@@ -9,13 +24,13 @@ export function invalidateEventCache(event: {
   id: string;
   slug: string | null;
 }) {
-  updateTag(`event-meta-${event.id}`);
-  updateTag(`event-results-${event.id}`);
-  updateTag(`event-export-${event.id}`);
+  safeUpdateTag(`event-meta-${event.id}`);
+  safeUpdateTag(`event-results-${event.id}`);
+  safeUpdateTag(`event-export-${event.id}`);
   if (event.slug) {
-    updateTag(`event-meta-${event.slug}`);
-    updateTag(`event-results-${event.slug}`);
-    updateTag(`event-export-${event.slug}`);
+    safeUpdateTag(`event-meta-${event.slug}`);
+    safeUpdateTag(`event-results-${event.slug}`);
+    safeUpdateTag(`event-export-${event.slug}`);
   }
 }
 
