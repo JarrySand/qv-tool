@@ -31,6 +31,7 @@ import { EventEditDialog } from "./event-edit-dialog";
 import { AccessTokenManager } from "./access-token-manager";
 import { SurveyResultsSection } from "./survey-results-section";
 import { buildEventShareUrl } from "@/lib/utils/share-url";
+import { formatDateTimeJa } from "@/lib/utils/format-date";
 
 type Subject = {
   id: string;
@@ -251,13 +252,13 @@ export function EventAdminContent({ event, adminToken }: Props) {
             <div>
               <p className="text-muted-foreground text-sm">開始日時</p>
               <p className="font-medium">
-                {new Date(currentEvent.startDate).toLocaleString("ja-JP")}
+                {formatDateTimeJa(currentEvent.startDate)}
               </p>
             </div>
             <div>
               <p className="text-muted-foreground text-sm">終了日時</p>
               <p className="font-medium">
-                {new Date(currentEvent.endDate).toLocaleString("ja-JP")}
+                {formatDateTimeJa(currentEvent.endDate)}
               </p>
             </div>
             <div>

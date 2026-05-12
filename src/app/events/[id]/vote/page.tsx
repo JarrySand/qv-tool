@@ -9,6 +9,7 @@ import { authenticateVoter } from "@/lib/auth/voting-auth";
 import { Button } from "@/components/ui/button";
 import { SignOutButton } from "@/components/features/sign-out-button";
 import { QvTutorialDialog } from "@/components/features/qv-tutorial-dialog";
+import { formatDateJa } from "@/lib/utils/format-date";
 
 interface PageProps {
   params: Promise<{ id: string }>;
@@ -36,7 +37,7 @@ export default async function VotePage({ params, searchParams }: PageProps) {
             {t("vote.errors.notActive")}
           </h1>
           <p className="text-muted-foreground mb-6">
-            {event.startDate.toLocaleDateString()}
+            {formatDateJa(event.startDate)}
           </p>
           <Button asChild variant="outline">
             <Link href={`/events/${event.slug ?? event.id}`}>
@@ -56,7 +57,7 @@ export default async function VotePage({ params, searchParams }: PageProps) {
             {t("vote.errors.notActive")}
           </h1>
           <p className="text-muted-foreground mb-6">
-            {event.endDate.toLocaleDateString()}
+            {formatDateJa(event.endDate)}
           </p>
           {event.endMessage && (
             <div className="mb-6 rounded-lg border border-blue-200 bg-blue-50/50 p-4 text-left dark:border-blue-800 dark:bg-blue-950/30">

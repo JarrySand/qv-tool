@@ -5,6 +5,7 @@ import { getTranslations } from "next-intl/server";
 import { prisma } from "@/lib/db";
 import { getCachedEventWithSubjects } from "@/lib/cache/event-cache";
 import { auth } from "@/auth";
+import { formatDateJa } from "@/lib/utils/format-date";
 import { LinkifyText } from "@/components/ui/linkify-text";
 import {
   Card,
@@ -130,16 +131,14 @@ export default async function EventPage({ params, searchParams }: PageProps) {
                   {t("event.create.startDateLabel")}
                 </div>
                 <div className="font-medium">
-                  {event.startDate.toLocaleDateString()}
+                  {formatDateJa(event.startDate)}
                 </div>
               </div>
               <div>
                 <div className="text-muted-foreground text-sm">
                   {t("event.create.endDateLabel")}
                 </div>
-                <div className="font-medium">
-                  {event.endDate.toLocaleDateString()}
-                </div>
+                <div className="font-medium">{formatDateJa(event.endDate)}</div>
               </div>
             </div>
             <div className="mt-4 border-t pt-4">

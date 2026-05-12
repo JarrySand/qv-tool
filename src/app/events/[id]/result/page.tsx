@@ -12,6 +12,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { LiveResultContainer } from "@/components/features/live-result-container";
 import { CsvExportButtons } from "@/components/features/csv-export-buttons";
+import { formatDateJa } from "@/lib/utils/format-date";
 
 type EventStatus = "upcoming" | "active" | "ended";
 
@@ -72,8 +73,8 @@ export default async function ResultPage({ params, searchParams }: PageProps) {
           <h1 className="mb-2 text-3xl font-bold md:text-4xl">{event.title}</h1>
           <p className="text-muted-foreground text-lg">{t("results.title")}</p>
           <div className="text-muted-foreground mt-2 text-sm">
-            {t("event.info.period")}: {event.startDate.toLocaleDateString()} 〜{" "}
-            {event.endDate.toLocaleDateString()}
+            {t("event.info.period")}: {formatDateJa(event.startDate)} 〜{" "}
+            {formatDateJa(event.endDate)}
           </div>
         </div>
 

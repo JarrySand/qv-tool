@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import { generateAccessTokens } from "@/lib/actions/access-token";
 import { buildEventShareUrl } from "@/lib/utils/share-url";
+import { formatDateTimeJa } from "@/lib/utils/format-date";
 
 type AccessToken = {
   id: string;
@@ -78,7 +79,7 @@ export function AccessTokenManager({
       t.token,
       buildEventShareUrl(eventId, { baseUrl, token: t.token }),
       t.isUsed ? "はい" : "いいえ",
-      new Date(t.createdAt).toLocaleString("ja-JP"),
+      formatDateTimeJa(t.createdAt),
     ]);
 
     const csvContent = [

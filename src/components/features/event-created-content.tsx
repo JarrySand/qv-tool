@@ -15,6 +15,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { buildEventShareUrl } from "@/lib/utils/share-url";
+import { formatDateTimeJa } from "@/lib/utils/format-date";
 import {
   CheckCircle,
   Copy,
@@ -177,17 +178,13 @@ export function EventCreatedContent({ event }: Props) {
               <p className="text-muted-foreground text-sm">
                 {t("event.create.startDateLabel")}
               </p>
-              <p className="font-medium">
-                {new Date(event.startDate).toLocaleString()}
-              </p>
+              <p className="font-medium">{formatDateTimeJa(event.startDate)}</p>
             </div>
             <div>
               <p className="text-muted-foreground text-sm">
                 {t("event.create.endDateLabel")}
               </p>
-              <p className="font-medium">
-                {new Date(event.endDate).toLocaleString()}
-              </p>
+              <p className="font-medium">{formatDateTimeJa(event.endDate)}</p>
             </div>
             <div>
               <p className="text-muted-foreground text-sm">

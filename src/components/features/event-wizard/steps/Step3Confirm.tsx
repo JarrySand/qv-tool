@@ -10,6 +10,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Lock } from "lucide-react";
 import { useEventWizard } from "../EventWizardContext";
 import type { VotingModeLabels } from "../types";
+import { formatDateTimeJa } from "@/lib/utils/format-date";
 
 /**
  * 確認画面ステップコンポーネント
@@ -74,13 +75,13 @@ export function Step3Confirm() {
               <p className="text-muted-foreground text-sm">
                 {t("startDateLabel")}
               </p>
-              <p>{new Date(formData.startDate).toLocaleString()}</p>
+              <p>{formatDateTimeJa(formData.startDate)}</p>
             </div>
             <div>
               <p className="text-muted-foreground text-sm">
                 {t("endDateLabel")}
               </p>
-              <p>{new Date(formData.endDate).toLocaleString()}</p>
+              <p>{formatDateTimeJa(formData.endDate)}</p>
             </div>
           </div>
           <div className="grid gap-2 sm:grid-cols-2">
