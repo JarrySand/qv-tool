@@ -34,7 +34,11 @@ export default function LineProvider(options: {
     authorization: {
       url: "https://access.line.me/oauth2/v2.1/authorize",
       params: {
-        scope: "profile openid",
+        // openid のみ要求し、表示名 / プロフィール画像 (profile) は取得しない。
+        // 投票の本人特定には sub (LINE ユーザーID) だけで十分。
+        // 認証画面で「メインプロフィール情報」の確認項目が出ない分、
+        // 参加者にとって心理的なハードルが下がる。
+        scope: "openid",
       },
     },
     token: "https://api.line.me/oauth2/v2.1/token",
