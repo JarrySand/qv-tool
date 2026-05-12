@@ -15,7 +15,9 @@ const Q1_OPTIONS = [
  */
 export const submitSurveySchema = z.object({
   eventId: z.string().min(1).max(100),
-  voteId: z.string().min(1).max(100).optional(),
+  // voteId は必須。未投票ユーザーからのアンケート送信を防ぎ、
+  // PoC のデータが匿名スパムで汚染されないようにする。
+  voteId: z.string().min(1).max(100),
   /** 個別投票方式の所有権確認用トークン (任意) */
   token: z.string().min(1).max(100).optional(),
   q1Difficulties: z.array(z.enum(Q1_OPTIONS)).max(Q1_OPTIONS.length).optional(),

@@ -163,11 +163,21 @@ async function createRateLimiter(
   }
 
   // フォールバック: インメモリレート制限
+  // 本番(serverless)では Lambda インスタンスごとに別 Map になり、レート制限が
+  // 実質機能しない。Upstash 必須運用とし、明示的な opt-out フラグが
+  // 設定されている場合のみ in-memory を許可する。
   if (process.env.NODE_ENV === "production") {
-    console.warn(
-      `⚠ Using in-memory rate limiting for ${prefix} in production. ` +
-        `Set UPSTASH_REDIS_REST_URL and UPSTASH_REDIS_REST_TOKEN for distributed rate limiting.`
-    );
+    if (process.env.ALLOW_IN_MEMORY_RATE_LIMIT === "true") {
+      console.warn(
+        `⚠ Using in-memory rate limiting for ${prefix} in production (ALLOW_IN_MEMORY_RATE_LIMIT=true). ` +
+          `Rate limits will NOT work across Lambda instances. Set Upstash for proper rate limiting.`
+      );
+    } else {
+      throw new Error(
+        `[rate-limit:${prefix}] UPSTASH_REDIS_REST_URL / UPSTASH_REDIS_REST_TOKEN are required in production. ` +
+          `Set ALLOW_IN_MEMORY_RATE_LIMIT=true to bypass (rate limits will be effectively disabled).`
+      );
+    }
   } else {
     console.info(`Using in-memory rate limiting for ${prefix}`);
   }

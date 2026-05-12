@@ -1,10 +1,9 @@
 "use server";
 
-import { headers } from "next/headers";
 import { prisma } from "@/lib/db";
 import { auth } from "@/auth";
 import { submitSurveySchema } from "@/lib/validations";
-import { checkSurveyRateLimit, getClientIp } from "@/lib/rate-limit";
+import { checkSurveyRateLimit } from "@/lib/rate-limit";
 
 export type SubmitSurveyResult =
   | { success: true }
@@ -12,7 +11,7 @@ export type SubmitSurveyResult =
 
 interface SubmitSurveyInput {
   eventId: string;
-  voteId?: string;
+  voteId: string;
   token?: string;
   q1Difficulties?: string[];
   q1Other?: string;
@@ -41,16 +40,9 @@ export async function submitSurvey(
   } = parsed.data;
 
   // レート制限。投票とは独立したバケットを使い、投票完了直後のアンケート
-  // 送信で投票バケットを消費しない。さらに CGNAT で同一 IP の複数ユーザーが
-  // 互いを締め出さないよう、可能な限り voteId/token を identifier に使う。
-  const headersList = await headers();
-  const clientIp = getClientIp(headersList);
-  const rateLimitId = voteId
-    ? `vote:${voteId}`
-    : token
-      ? `token:${token}`
-      : `ip:${clientIp}`;
-  const rateLimit = await checkSurveyRateLimit(rateLimitId);
+  // 送信で投票バケットを消費しない。voteId 単位で計測することで CGNAT 配下の
+  // ユーザー同士が締め出し合うのを避ける。
+  const rateLimit = await checkSurveyRateLimit(`vote:${voteId}`);
   if (!rateLimit.success) {
     const seconds = Math.ceil((rateLimit.reset - Date.now()) / 1000);
     return {
@@ -71,56 +63,54 @@ export async function submitSurvey(
     return { success: false, error: "Event not found" };
   }
 
-  // voteId が指定されている場合、所有権を確認する
+  // voteId の所有権を確認する。
   // - Social 認証の投票: 現在のセッションの user.id と一致するか
   // - 個別トークン方式の投票: クライアントが渡してきた token が
   //   vote.accessToken と一致するか
   // 所有権が一致しない投票への回答は受け付けない（なりすまし防止）。
-  if (voteId) {
-    const vote = await prisma.vote.findUnique({
-      where: { id: voteId },
-      select: {
-        eventId: true,
-        userId: true,
-        accessToken: { select: { token: true } },
-      },
-    });
+  const vote = await prisma.vote.findUnique({
+    where: { id: voteId },
+    select: {
+      eventId: true,
+      userId: true,
+      accessToken: { select: { token: true } },
+    },
+  });
 
-    if (!vote || vote.eventId !== event.id) {
-      return { success: false, error: "Vote not found" };
-    }
+  if (!vote || vote.eventId !== event.id) {
+    return { success: false, error: "Vote not found" };
+  }
 
-    if (vote.userId) {
-      // Social 認証ルート
-      const session = await auth();
-      if (!session?.user?.id || session.user.id !== vote.userId) {
-        return { success: false, error: "Unauthorized" };
-      }
-    } else if (vote.accessToken) {
-      // 個別トークン方式ルート
-      if (!token || token !== vote.accessToken.token) {
-        return { success: false, error: "Unauthorized" };
-      }
-    } else {
-      // ありえないが念のため
-      return { success: false, error: "Vote has no owner" };
+  if (vote.userId) {
+    // Social 認証ルート
+    const session = await auth();
+    if (!session?.user?.id || session.user.id !== vote.userId) {
+      return { success: false, error: "Unauthorized" };
     }
+  } else if (vote.accessToken) {
+    // 個別トークン方式ルート
+    if (!token || token !== vote.accessToken.token) {
+      return { success: false, error: "Unauthorized" };
+    }
+  } else {
+    // ありえないが念のため
+    return { success: false, error: "Vote has no owner" };
+  }
 
-    // 既に回答済みかチェック
-    const existing = await prisma.surveyResponse.findUnique({
-      where: { voteId },
-      select: { id: true },
-    });
-    if (existing) {
-      return { success: false, error: "Already submitted" };
-    }
+  // 既に回答済みかチェック
+  const existing = await prisma.surveyResponse.findUnique({
+    where: { voteId },
+    select: { id: true },
+  });
+  if (existing) {
+    return { success: false, error: "Already submitted" };
   }
 
   try {
     await prisma.surveyResponse.create({
       data: {
         eventId: event.id,
-        voteId: voteId || null,
+        voteId,
         q1Difficulties: q1Difficulties?.length
           ? q1Difficulties.join(",")
           : null,

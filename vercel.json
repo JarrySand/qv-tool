@@ -2,5 +2,9 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "framework": "nextjs",
   "regions": ["hnd1"],
-  "crons": []
+  "crons": [],
+  "functions": {
+    "src/app/**/route.ts": { "maxDuration": 30 },
+    "src/app/**/page.tsx": { "maxDuration": 30 }
+  }
 }

@@ -8,11 +8,15 @@ const globalForPrisma = globalThis as unknown as {
 };
 
 // PostgreSQLコネクションプールを作成
+// 100人同時アクセス想定: submitVote が 1 投票あたり 5+ クエリを直列実行
+// するため max=3 だと即詰まる。Vercel x Neon の推奨は Neon Pooler (pgbouncer
+// 経由の URL `?pgbouncer=true`) を使い、pool max は Lambda インスタンス
+// あたり 10〜15 程度。
 const pool =
   globalForPrisma.pool ??
   new Pool({
     connectionString: process.env.DATABASE_URL,
-    max: 3,
+    max: 10,
     idleTimeoutMillis: 10000,
     connectionTimeoutMillis: 5000,
   });

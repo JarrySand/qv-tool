@@ -64,7 +64,9 @@ export default async function CompletePage({
               <LinkifyText text={event.endMessage} />
             </div>
           )}
-          <PostVoteSurvey eventId={event.id} voteId={voteId} token={token} />
+          {voteId && (
+            <PostVoteSurvey eventId={event.id} voteId={voteId} token={token} />
+          )}
 
           <div className="flex flex-col gap-3">
             <Button asChild>

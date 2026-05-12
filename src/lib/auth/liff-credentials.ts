@@ -57,40 +57,55 @@ export const liffCredentials = Credentials({
     const lineUserId = verified.sub;
     if (!lineUserId) return null;
 
-    // 既存の LINE Account を検索
-    const existingAccount = await prisma.account.findUnique({
-      where: {
-        provider_providerAccountId: {
-          provider: "line",
-          providerAccountId: lineUserId,
-        },
+    // 既存 Account を検索 → 無ければ作成、というフローはレース条件で
+    // 二重 User 作成や Account.@@unique 違反を起こすので、リトライ込みで
+    // 安全に処理する。
+    return await findOrCreateLineUser(lineUserId, verified);
+  },
+});
+
+async function findOrCreateLineUser(
+  lineUserId: string,
+  verified: LineVerifyResponse
+) {
+  // まず既存 Account を検索
+  const existingAccount = await prisma.account.findUnique({
+    where: {
+      provider_providerAccountId: {
+        provider: "line",
+        providerAccountId: lineUserId,
       },
-      include: { user: true },
-    });
+    },
+    include: { user: true },
+  });
 
-    if (existingAccount) {
-      // プロフィール情報を最新に更新
-      if (verified.name || verified.picture) {
-        await prisma.user.update({
-          where: { id: existingAccount.userId },
-          data: {
-            ...(verified.name && { name: verified.name }),
-            ...(verified.picture && { image: verified.picture }),
-          },
-        });
-      }
-      return {
-        id: existingAccount.user.id,
-        name: verified.name ?? existingAccount.user.name,
-        email: existingAccount.user.email,
-        image: verified.picture ?? existingAccount.user.image,
-      };
+  if (existingAccount) {
+    // プロフィール情報を最新に更新（差分がある場合のみ）
+    if (
+      (verified.name && verified.name !== existingAccount.user.name) ||
+      (verified.picture && verified.picture !== existingAccount.user.image)
+    ) {
+      await prisma.user.update({
+        where: { id: existingAccount.userId },
+        data: {
+          ...(verified.name && { name: verified.name }),
+          ...(verified.picture && { image: verified.picture }),
+        },
+      });
     }
+    return {
+      id: existingAccount.user.id,
+      name: verified.name ?? existingAccount.user.name,
+      email: existingAccount.user.email,
+      image: verified.picture ?? existingAccount.user.image,
+    };
+  }
 
-    // 新規ユーザー作成 + Account 紐付け
-    // type は LINE OAuth (type: "oidc") と合わせて "oidc" にしておく。
-    // 同一 LINE ユーザーが OAuth/LIFF どちらでログインしても
-    // Account レコードの形式が揃う。
+  // 新規ユーザー作成 + Account 紐付け
+  // 同時リクエストが両方ここに到達した場合、二人目は Account の
+  // @@unique([provider, providerAccountId]) 制約で P2002 を投げる。
+  // そのケースを catch して既存 User を返すことで、二重 User 作成を防ぐ。
+  try {
     const user = await prisma.user.create({
       data: {
         name: verified.name ?? null,
@@ -112,5 +127,32 @@ export const liffCredentials = Credentials({
       email: user.email,
       image: user.image,
     };
-  },
-});
+  } catch (error) {
+    if (
+      error &&
+      typeof error === "object" &&
+      "code" in error &&
+      (error as { code: string }).code === "P2002"
+    ) {
+      // 並行リクエストで先に作られた User を取得し直して返す
+      const account = await prisma.account.findUnique({
+        where: {
+          provider_providerAccountId: {
+            provider: "line",
+            providerAccountId: lineUserId,
+          },
+        },
+        include: { user: true },
+      });
+      if (account) {
+        return {
+          id: account.user.id,
+          name: account.user.name,
+          email: account.user.email,
+          image: account.user.image,
+        };
+      }
+    }
+    throw error;
+  }
+}

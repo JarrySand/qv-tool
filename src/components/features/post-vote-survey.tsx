@@ -24,7 +24,8 @@ const Q1_OPTIONS = [
 
 interface PostVoteSurveyProps {
   eventId: string;
-  voteId?: string;
+  /** 投票後のアンケートのみ受け付けるため必須。complete ページから渡される */
+  voteId: string;
   /** 個別投票方式の場合の所有権確認用トークン */
   token?: string;
 }

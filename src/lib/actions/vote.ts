@@ -275,26 +275,31 @@ export async function submitVote(
       }
 
       // トランザクションで更新
-      await prisma.$transaction(async (tx: TransactionClient) => {
-        // 既存の詳細を削除
-        await tx.voteDetail.deleteMany({
-          where: { voteId: existingVoteId },
-        });
+      // Neon の cold start (数百ms〜数秒) を考慮し、デフォルト 5s では足りない
+      // ことがあるため timeout を 15s に拡張する。
+      await prisma.$transaction(
+        async (tx: TransactionClient) => {
+          // 既存の詳細を削除
+          await tx.voteDetail.deleteMany({
+            where: { voteId: existingVoteId },
+          });
 
-        // 新しい詳細を作成
-        await tx.voteDetail.createMany({
-          data: voteData.map((d) => ({
-            voteId: existingVoteId,
-            ...d,
-          })),
-        });
+          // 新しい詳細を作成
+          await tx.voteDetail.createMany({
+            data: voteData.map((d) => ({
+              voteId: existingVoteId,
+              ...d,
+            })),
+          });
 
-        // 更新日時を更新
-        await tx.vote.update({
-          where: { id: existingVoteId },
-          data: { updatedAt: new Date() },
-        });
-      });
+          // 更新日時を更新
+          await tx.vote.update({
+            where: { id: existingVoteId },
+            data: { updatedAt: new Date() },
+          });
+        },
+        { timeout: 15000, maxWait: 5000 }
+      );
 
       updateTag(`event-results-${event.id}`);
       updateTag(`event-export-${event.id}`);
@@ -308,30 +313,34 @@ export async function submitVote(
       return { success: true, voteId: existingVoteId };
     } else {
       // 新規作成
-      const vote = await prisma.$transaction(async (tx: TransactionClient) => {
-        // 投票を作成
-        const newVote = await tx.vote.create({
-          data: {
-            eventId,
-            userId,
-            accessTokenId,
-            details: {
-              create: voteData,
+      // Neon cold start を考慮して timeout を 15s に拡張
+      const vote = await prisma.$transaction(
+        async (tx: TransactionClient) => {
+          // 投票を作成
+          const newVote = await tx.vote.create({
+            data: {
+              eventId,
+              userId,
+              accessTokenId,
+              details: {
+                create: voteData,
+              },
             },
-          },
-          select: { id: true },
-        });
-
-        // 個別投票の場合、トークンを使用済みにマーク
-        if (accessTokenId) {
-          await tx.accessToken.update({
-            where: { id: accessTokenId },
-            data: { isUsed: true },
+            select: { id: true },
           });
-        }
 
-        return newVote;
-      });
+          // 個別投票の場合、トークンを使用済みにマーク
+          if (accessTokenId) {
+            await tx.accessToken.update({
+              where: { id: accessTokenId },
+              data: { isUsed: true },
+            });
+          }
+
+          return newVote;
+        },
+        { timeout: 15000, maxWait: 5000 }
+      );
 
       updateTag(`event-results-${event.id}`);
       updateTag(`event-export-${event.id}`);
@@ -345,6 +354,17 @@ export async function submitVote(
       return { success: true, voteId: vote.id };
     }
   } catch (error) {
+    // Prisma の P2002 (unique 制約違反) → ほぼ確実に「並行リクエストで
+    // 先に投票が確定したパターン」。連打やリトライで頻発するため、
+    // ユーザーには「既に投票済み」として案内する。
+    if (
+      error &&
+      typeof error === "object" &&
+      "code" in error &&
+      (error as { code: string }).code === "P2002"
+    ) {
+      return { success: false, error: t("alreadyVoted") };
+    }
     console.error("Failed to submit vote:", error);
     return {
       success: false,
