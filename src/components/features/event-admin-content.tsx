@@ -30,6 +30,7 @@ import { SubjectList } from "./subject-list";
 import { EventEditDialog } from "./event-edit-dialog";
 import { AccessTokenManager } from "./access-token-manager";
 import { SurveyResultsSection } from "./survey-results-section";
+import { withLineExternalBrowser } from "@/lib/utils/share-url";
 
 type Subject = {
   id: string;
@@ -92,7 +93,7 @@ export function EventAdminContent({ event, adminToken }: Props) {
   const eventPath = currentEvent.slug
     ? `/events/${currentEvent.slug}`
     : `/events/${currentEvent.id}`;
-  const eventUrl = `${baseUrl}${eventPath}`;
+  const eventUrl = withLineExternalBrowser(`${baseUrl}${eventPath}`);
 
   const jsonExportUrl = `${baseUrl}/api/events/${currentEvent.id}/export?adminToken=${adminToken}`;
 

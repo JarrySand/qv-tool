@@ -27,6 +27,7 @@ import {
   ExternalLink,
 } from "lucide-react";
 import { generateAccessTokens } from "@/lib/actions/access-token";
+import { withLineExternalBrowser } from "@/lib/utils/share-url";
 import { useEventWizard } from "../EventWizardContext";
 
 /**
@@ -53,7 +54,7 @@ export function Step4Complete() {
   const eventPath = createdEvent.slug
     ? `/events/${createdEvent.slug}`
     : `/events/${createdEvent.id}`;
-  const eventUrl = `${baseUrl}${eventPath}`;
+  const eventUrl = withLineExternalBrowser(`${baseUrl}${eventPath}`);
   const adminUrl = `${baseUrl}/admin/${createdEvent.id}?token=${createdEvent.adminToken}`;
 
   /**
@@ -220,7 +221,9 @@ export function Step4Complete() {
                         className="size-6"
                         onClick={() =>
                           copyToClipboard(
-                            `${baseUrl}${eventPath}?token=${token}`,
+                            withLineExternalBrowser(
+                              `${baseUrl}${eventPath}?token=${token}`
+                            ),
                             token
                           )
                         }
