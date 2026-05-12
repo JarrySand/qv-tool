@@ -20,12 +20,6 @@ export default defineConfig({
         "**/types/",
       ],
     },
-    server: {
-      deps: {
-        // Upstash packages are optional and may not be installed
-        external: ["@upstash/ratelimit", "@upstash/redis"],
-      },
-    },
   },
   resolve: {
     alias: {
