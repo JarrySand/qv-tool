@@ -4,7 +4,7 @@ import { headers } from "next/headers";
 import { prisma } from "@/lib/db";
 import { auth } from "@/auth";
 import { submitSurveySchema } from "@/lib/validations";
-import { checkVoteRateLimit, getClientIp } from "@/lib/rate-limit";
+import { checkSurveyRateLimit, getClientIp } from "@/lib/rate-limit";
 
 export type SubmitSurveyResult =
   | { success: true }
@@ -40,10 +40,17 @@ export async function submitSurvey(
     q4Feedback,
   } = parsed.data;
 
-  // レート制限（投票送信と同じバケットを共用してスパム送信を抑制）
+  // レート制限。投票とは独立したバケットを使い、投票完了直後のアンケート
+  // 送信で投票バケットを消費しない。さらに CGNAT で同一 IP の複数ユーザーが
+  // 互いを締め出さないよう、可能な限り voteId/token を identifier に使う。
   const headersList = await headers();
   const clientIp = getClientIp(headersList);
-  const rateLimit = await checkVoteRateLimit(clientIp);
+  const rateLimitId = voteId
+    ? `vote:${voteId}`
+    : token
+      ? `token:${token}`
+      : `ip:${clientIp}`;
+  const rateLimit = await checkSurveyRateLimit(rateLimitId);
   if (!rateLimit.success) {
     const seconds = Math.ceil((rateLimit.reset - Date.now()) / 1000);
     return {

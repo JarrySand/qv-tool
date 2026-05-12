@@ -42,6 +42,10 @@ export const RATE_LIMITS = {
   EVENT_CREATE_MAX_REQUESTS: 10,
   /** イベント作成のレート制限ウィンドウ（ミリ秒） */
   EVENT_CREATE_WINDOW_MS: 60 * 60 * 1000,
+  /** アンケート送信の最大リクエスト数（ウィンドウ内） */
+  SURVEY_MAX_REQUESTS: 5,
+  /** アンケート送信のレート制限ウィンドウ（ミリ秒） */
+  SURVEY_WINDOW_MS: 60 * 1000,
 } as const;
 
 /**

@@ -86,9 +86,19 @@ export async function submitVote(
   const { eventId, details, token, existingVoteId } = input;
 
   // 0. レート制限チェック
+  // CGNAT 配下のキャリア(ドコモ/au/SB 等)では複数ユーザーが同一 IP を
+  // 共有するため、IP 単位で 5回/分 だと一人が投票するだけで近隣ユーザーが
+  // ロックアウトされる。user/token 単位を優先的に identifier に使う。
   const headersList = await headers();
   const clientIp = getClientIp(headersList);
-  const rateLimitResult = await checkVoteRateLimit(clientIp);
+  // session は後の認証チェックでも使うので先に取得して再利用する
+  const earlySession = token ? null : await auth();
+  const rateLimitId = token
+    ? `token:${token}`
+    : earlySession?.user?.id
+      ? `user:${earlySession.user.id}`
+      : `ip:${clientIp}`;
+  const rateLimitResult = await checkVoteRateLimit(`${eventId}:${rateLimitId}`);
 
   if (!rateLimitResult.success) {
     const secondsUntilReset = Math.ceil(
@@ -199,8 +209,8 @@ export async function submitVote(
 
     accessTokenId = accessToken.id;
   } else {
-    // Social認証モード
-    const session = await auth();
+    // Social認証モード（レート制限時に取得済みの session を再利用）
+    const session = earlySession;
 
     if (!session?.user?.id) {
       return { success: false, error: t("loginRequired") };

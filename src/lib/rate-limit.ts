@@ -177,6 +177,7 @@ async function createRateLimiter(
 // レート制限インスタンス（遅延初期化）
 let voteRateLimiter: RateLimiter | null = null;
 let eventCreateRateLimiter: RateLimiter | null = null;
+let surveyRateLimiter: RateLimiter | null = null;
 
 /**
  * 投票送信用レート制限をチェック
@@ -237,6 +238,25 @@ export async function checkEventCreateRateLimit(
     );
   }
   return eventCreateRateLimiter.limit(identifier);
+}
+
+/**
+ * アンケート送信用レート制限をチェック
+ *
+ * 投票送信とは独立したバケット。投票完了直後にアンケート送信する
+ * 通常の動線で、投票のバケットを消費してしまわないように分離する。
+ */
+export async function checkSurveyRateLimit(
+  identifier: string
+): Promise<RateLimitResult> {
+  if (!surveyRateLimiter) {
+    surveyRateLimiter = await createRateLimiter(
+      RATE_LIMITS.SURVEY_MAX_REQUESTS,
+      RATE_LIMITS.SURVEY_WINDOW_MS,
+      "survey"
+    );
+  }
+  return surveyRateLimiter.limit(identifier);
 }
 
 /**
