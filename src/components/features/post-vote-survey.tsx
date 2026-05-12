@@ -25,9 +25,15 @@ const Q1_OPTIONS = [
 interface PostVoteSurveyProps {
   eventId: string;
   voteId?: string;
+  /** 個別投票方式の場合の所有権確認用トークン */
+  token?: string;
 }
 
-export function PostVoteSurvey({ eventId, voteId }: PostVoteSurveyProps) {
+export function PostVoteSurvey({
+  eventId,
+  voteId,
+  token,
+}: PostVoteSurveyProps) {
   const t = useTranslations("vote.survey");
   const [isPending, startTransition] = useTransition();
   const [submitted, setSubmitted] = useState(false);
@@ -64,6 +70,7 @@ export function PostVoteSurvey({ eventId, voteId }: PostVoteSurveyProps) {
       const result = await submitSurvey({
         eventId,
         voteId,
+        token,
         q1Difficulties:
           selectedDifficulties.length > 0 ? selectedDifficulties : undefined,
         q1Other: selectedDifficulties.includes("other") ? q1Other : undefined,
