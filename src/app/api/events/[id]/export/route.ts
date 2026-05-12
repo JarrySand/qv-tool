@@ -28,7 +28,7 @@ async function fetchExportData(id: string) {
           },
         },
       },
-      accessToken: { select: { id: true, token: true } },
+      accessToken: { select: { id: true } },
     },
     orderBy: { createdAt: "asc" },
   });
@@ -128,11 +128,10 @@ export async function GET(
           providerAccountId: account?.providerAccountId ?? null,
         };
       } else if (vote.accessToken) {
-        // Individual token
+        // Individual token: トークン本体は漏洩リスクがあるので返さない
         voter = {
           type: "token",
           accessTokenId: vote.accessToken.id,
-          token: vote.accessToken.token,
         };
       } else {
         voter = { type: "unknown" };
