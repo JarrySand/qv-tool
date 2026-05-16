@@ -18,8 +18,11 @@ export function withLineExternalBrowser(url: string): string {
  *   /events/{id}/vote 直リンク + ?openExternalBrowser=1。LIFF を経由しない。
  * - votingMode === "individual": そもそも LINE 認証不要なので LIFF を経由しない。
  *   /events/{id} 直リンク + ?openExternalBrowser=1。
- * - token なし + LIFF_ID 設定済み: LIFF URL を返す
- *   (LINE トーク内タップで LIFF ブラウザが開き、パスワード不要で自動ログイン)
+ * - token なし + LIFF_ID 設定済み: 自ドメインの /r/{id} 中継 URL を返す。
+ *   LINE オープンチャットは liff.line.me 直リンクの送信をブロックするため、
+ *   自ドメイン経由で liff.line.me へ 302 リダイレクトさせる。
+ *   既存の liff.line.me/{liffId}?eventId=... 直リンク (/liff ページ経由) も
+ *   引き続き有効。
  * - token なし + LIFF_ID 未設定: /events/{id} 直リンク + ?openExternalBrowser=1
  */
 export function buildEventShareUrl(
@@ -39,10 +42,9 @@ export function buildEventShareUrl(
 
   const liffId = process.env.NEXT_PUBLIC_LIFF_ID;
   // 個別投票方式は LINE 認証フローを使わないので、LIFF_ID が設定されていても
-  // LIFF URL を返さない。LINE/Google/Discord 認証のイベントだけ LIFF を使う。
+  // LIFF を使わない。LINE/Google/Discord 認証のイベントだけ LIFF を使う。
   if (liffId && votingMode !== "individual") {
-    const params = new URLSearchParams({ eventId: eventIdOrSlug });
-    return `https://liff.line.me/${liffId}?${params.toString()}`;
+    return `${origin}/r/${eventIdOrSlug}`;
   }
 
   return withLineExternalBrowser(`${origin}/events/${eventIdOrSlug}`);
