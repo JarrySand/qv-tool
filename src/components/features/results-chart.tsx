@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import {
   BarChart,
   Bar,
@@ -38,10 +39,25 @@ const COLORS = [
 ];
 
 export function ResultsChart({ results }: ResultsChartProps) {
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const mql = window.matchMedia("(max-width: 639px)");
+    const update = () => setIsMobile(mql.matches);
+    update();
+    mql.addEventListener("change", update);
+    return () => mql.removeEventListener("change", update);
+  }, []);
+
+  const maxNameChars = isMobile ? 8 : 16;
+  const yAxisWidth = isMobile ? 90 : 160;
+
   // グラフ用データの整形
   const chartData = results.map((result, index) => ({
     name:
-      result.title.length > 8 ? result.title.slice(0, 8) + "…" : result.title,
+      result.title.length > maxNameChars
+        ? result.title.slice(0, maxNameChars) + "…"
+        : result.title,
     fullName: result.title,
     votes: result.totalVotes,
     cost: result.totalCost,
@@ -94,8 +110,24 @@ export function ResultsChart({ results }: ResultsChartProps) {
           <YAxis
             type="category"
             dataKey="name"
-            width={80}
-            tick={{ fontSize: 11 }}
+            width={yAxisWidth}
+            interval={0}
+            tick={(props) => {
+              const { x, y, payload } = props;
+              return (
+                <text
+                  x={x - yAxisWidth + 4}
+                  y={y}
+                  dy={4}
+                  textAnchor="start"
+                  fontSize={11}
+                  fill="currentColor"
+                  className="text-muted-foreground"
+                >
+                  {payload.value}
+                </text>
+              );
+            }}
           />
           <Tooltip
             content={({ active, payload }) => {
