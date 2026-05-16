@@ -49,15 +49,11 @@ export function ResultsChart({ results }: ResultsChartProps) {
     return () => mql.removeEventListener("change", update);
   }, []);
 
-  const maxNameChars = isMobile ? 8 : 16;
-  const yAxisWidth = isMobile ? 90 : 160;
+  const yAxisWidth = isMobile ? 100 : 180;
 
-  // グラフ用データの整形
+  // グラフ用データの整形（ラベル省略は foreignObject 内の CSS ellipsis に任せる）
   const chartData = results.map((result, index) => ({
-    name:
-      result.title.length > maxNameChars
-        ? result.title.slice(0, maxNameChars) + "…"
-        : result.title,
+    name: result.title,
     fullName: result.title,
     votes: result.totalVotes,
     cost: result.totalCost,
@@ -114,18 +110,21 @@ export function ResultsChart({ results }: ResultsChartProps) {
             interval={0}
             tick={(props) => {
               const { x, y, payload } = props;
+              const labelWidth = yAxisWidth - 12;
               return (
-                <text
+                <foreignObject
                   x={x - yAxisWidth + 4}
-                  y={y}
-                  dy={4}
-                  textAnchor="start"
-                  fontSize={11}
-                  fill="currentColor"
-                  className="text-muted-foreground"
+                  y={y - 10}
+                  width={labelWidth}
+                  height={20}
                 >
-                  {payload.value}
-                </text>
+                  <div
+                    className="text-foreground/80 overflow-hidden text-[11px] leading-5 text-ellipsis whitespace-nowrap"
+                    title={payload.value}
+                  >
+                    {payload.value}
+                  </div>
+                </foreignObject>
               );
             }}
           />
