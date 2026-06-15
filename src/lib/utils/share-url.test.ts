@@ -55,18 +55,50 @@ describe("buildEventShareUrl", () => {
     expect(url).toBe("https://example.com/events/evt1?openExternalBrowser=1");
   });
 
-  it("LIFF_ID set: returns /r/{id} relay URL (not liff.line.me) for OpenChat compatibility", () => {
+  it("votingMode=line + LIFF_ID set: returns /r/{id} relay URL (not liff.line.me) for OpenChat compatibility", () => {
     process.env.NEXT_PUBLIC_LIFF_ID = "1234567890-abcdefgh";
     const url = buildEventShareUrl("evt1", {
       baseUrl: "https://example.com",
+      votingMode: "line",
     });
     expect(url).toBe("https://example.com/r/evt1");
     expect(url).not.toContain("liff.line.me");
   });
 
+  it("votingMode=discord: does NOT use LIFF even if LIFF_ID is set (LIFF is LINE-only)", () => {
+    process.env.NEXT_PUBLIC_LIFF_ID = "1234567890-abcdefgh";
+    const url = buildEventShareUrl("evt1", {
+      baseUrl: "https://example.com",
+      votingMode: "discord",
+    });
+    expect(url).toBe("https://example.com/events/evt1?openExternalBrowser=1");
+    expect(url).not.toContain("/r/");
+    expect(url).not.toContain("liff.line.me");
+  });
+
+  it("votingMode=google: does NOT use LIFF even if LIFF_ID is set", () => {
+    process.env.NEXT_PUBLIC_LIFF_ID = "1234567890-abcdefgh";
+    const url = buildEventShareUrl("evt1", {
+      baseUrl: "https://example.com",
+      votingMode: "google",
+    });
+    expect(url).toBe("https://example.com/events/evt1?openExternalBrowser=1");
+    expect(url).not.toContain("/r/");
+  });
+
+  it("votingMode undefined: does NOT use LIFF (can't assume LINE)", () => {
+    process.env.NEXT_PUBLIC_LIFF_ID = "1234567890-abcdefgh";
+    const url = buildEventShareUrl("evt1", {
+      baseUrl: "https://example.com",
+    });
+    expect(url).toBe("https://example.com/events/evt1?openExternalBrowser=1");
+    expect(url).not.toContain("/r/");
+  });
+
   it("LIFF_ID unset: returns /events/{id} with openExternalBrowser=1", () => {
     const url = buildEventShareUrl("evt1", {
       baseUrl: "https://example.com",
+      votingMode: "line",
     });
     expect(url).toBe("https://example.com/events/evt1?openExternalBrowser=1");
   });
@@ -75,6 +107,7 @@ describe("buildEventShareUrl", () => {
     process.env.NEXT_PUBLIC_LIFF_ID = "1234567890-abcdefgh";
     const url = buildEventShareUrl("my-event-slug", {
       baseUrl: "https://example.com",
+      votingMode: "line",
     });
     expect(url).toBe("https://example.com/r/my-event-slug");
   });
