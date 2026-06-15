@@ -12,6 +12,8 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Generated coverage report (vitest --coverage) is not source code.
+    "coverage/**",
   ]),
 ]);
 
