@@ -88,11 +88,11 @@ export default async function VotePage({ params, searchParams }: PageProps) {
 
   if (!authResult.authenticated) {
     // 未認証の場合
-    if (
-      authResult.error === "ログインが必要です" ||
-      authResult.error === "Discord認証が必要です"
-    ) {
-      // 未ログインの場合、サインインページへリダイレクト
+    // 未ログイン（セッション自体が無い）の場合のみサインインページへリダイレクト。
+    // セッションがある状態で /auth/signin に飛ばすと、サインインページが
+    // ログイン済みユーザーを callbackUrl に送り返すため、無限リダイレクト
+    // （ERR_TOO_MANY_REDIRECTS）になる。
+    if (authResult.error === "ログインが必要です") {
       const callbackUrl = `/events/${event.slug ?? event.id}/vote${token ? `?token=${token}` : ""}`;
       // 必要なプロバイダーをURLパラメータに追加（Social認証の場合のみ）
       const providerParam =
@@ -101,6 +101,43 @@ export default async function VotePage({ params, searchParams }: PageProps) {
           : "";
       redirect(
         `/auth/signin?callbackUrl=${encodeURIComponent(callbackUrl)}${providerParam}`
+      );
+    }
+
+    // Discord 認証のやり直しが必要な場合（アクセストークンが無い／期限切れ）。
+    // すでに Discord でログイン済みなので、そのまま /auth/signin へ飛ばすと
+    // 上記と同じ理由でループする。一度サインアウトしてから Discord で
+    // 再ログインさせることでループを断ち切る。
+    if (
+      authResult.error === "Discord認証が必要です" ||
+      authResult.error ===
+        "Discord認証の有効期限が切れました。再度ログインしてください"
+    ) {
+      const callbackUrl = `/events/${event.slug ?? event.id}/vote${token ? `?token=${token}` : ""}`;
+      const signInUrl = `/auth/signin?callbackUrl=${encodeURIComponent(callbackUrl)}&provider=discord`;
+      return (
+        <div className="flex min-h-screen items-center justify-center p-4">
+          <div className="max-w-md text-center">
+            <h1 className="mb-4 text-2xl font-bold">
+              Discordで再ログインしてください
+            </h1>
+            <p className="text-muted-foreground mb-6">{authResult.error}</p>
+            <p className="text-muted-foreground mb-6 text-sm">
+              お手数ですが、一度ログアウトしてから Discord
+              でログインし直してください。
+            </p>
+            <div className="flex flex-col gap-3">
+              <SignOutButton callbackUrl={signInUrl}>
+                ログアウトしてDiscordで再ログイン
+              </SignOutButton>
+              <Button asChild variant="outline">
+                <Link href={`/events/${event.slug ?? event.id}`}>
+                  イベントページに戻る
+                </Link>
+              </Button>
+            </div>
+          </div>
+        </div>
       );
     }
 
